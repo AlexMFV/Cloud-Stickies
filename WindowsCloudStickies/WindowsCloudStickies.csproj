@@ -105,5 +105,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\close.svg" />
+    <Content Include="Images\expand.svg" />
+    <Content Include="Images\lock.svg" />
+    <Content Include="Images\minimize.svg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

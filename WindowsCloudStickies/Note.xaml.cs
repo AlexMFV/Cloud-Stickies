@@ -33,7 +33,8 @@ namespace WindowsCloudStickies
 
         private void gripBar_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            if(e.ChangedButton == MouseButton.Left)
+                this.DragMove();
         }
         void randomizeColor()
         {

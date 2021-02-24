@@ -33,7 +33,7 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
         
       - name: Restore Nuget Packages
-        run: nuget restore /WindowsCloudStickies/WindowsCloudStickies.sln
+        run: nuget restore WindowsCloudStickies\WindowsCloudStickies.sln
         
       - name: Build Solution
-        run : msbuild /WindowsCloudStickies/WindowsCloudStickies.sln
+        run : msbuild WindowsCloudStickies\WindowsCloudStickies.sln

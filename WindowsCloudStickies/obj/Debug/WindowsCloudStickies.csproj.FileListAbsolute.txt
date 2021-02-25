@@ -17,4 +17,7 @@ C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\obj\Debug\Window
 C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\obj\Debug\WindowsCloudStickies.exe
 C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\obj\Debug\WindowsCloudStickies.pdb
 C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\obj\Debug\WindowsCloudStickies.csprojAssemblyReference.cache
-C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\obj\Debug\WindowsCloudStickies_Content.g.cs
+C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\bin\Debug\Hardcodet.Wpf.TaskbarNotification.dll
+C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\bin\Debug\Hardcodet.Wpf.TaskbarNotification.pdb
+C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\bin\Debug\Hardcodet.Wpf.TaskbarNotification.xml
+C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\obj\Debug\WindowsCloudStickies.csproj.CopyComplete

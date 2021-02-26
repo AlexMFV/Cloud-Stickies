@@ -21,3 +21,5 @@ C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\bin\Debug\Hardco
 C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\bin\Debug\Hardcodet.Wpf.TaskbarNotification.pdb
 C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\bin\Debug\Hardcodet.Wpf.TaskbarNotification.xml
 C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\obj\Debug\WindowsCloudStickies.csproj.CopyComplete
+C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Alex\Desktop\Repos\Cloud-Stickies\WindowsCloudStickies\bin\Debug\Newtonsoft.Json.xml

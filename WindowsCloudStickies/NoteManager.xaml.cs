@@ -24,7 +24,8 @@ namespace WindowsCloudStickies
 
         public NoteManager()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            //this.WindowState = WindowState.Minimized;
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)

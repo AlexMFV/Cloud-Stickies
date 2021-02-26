@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="{StaticResource Dark}">
-        <Button x:Name="btnAdd" Content="Add Note" Click="btnAdd_Click" Margin="10,10,680,372"/>
-        <Button x:Name="btnRemoveAll" Content="Remove All Notes" Margin="117,10,573,372" Click="btnRemoveAll_Click"/>
+        <Button x:Name="btnAdd" Content="Add Note" Click="btnAdd_Click" Margin="10,10,0,0" Height="37" VerticalAlignment="Top" HorizontalAlignment="Left" Width="102"/>
+        <Button x:Name="btnRemoveAll" Content="Remove All Notes" Margin="117,10,0,0" Click="btnRemoveAll_Click" HorizontalAlignment="Left" Width="102" Height="37" VerticalAlignment="Top"/>
     </Grid>
 </Window>

@@ -12,7 +12,7 @@
         <Grid x:Name="gripBar" Background="{StaticResource GreenTitle}" Height="14" VerticalAlignment="Top" PreviewMouseLeftButtonDown="gripBar_PreviewMouseLeftButtonDown">
             <Border BorderBrush="Black" BorderThickness="1" Height="14" VerticalAlignment="Top"/>
         </Grid>
-        <Button x:Name="btnClose" Height="12" VerticalAlignment="Top" BorderThickness="0" Background="Transparent" Click="btnClose_Click" Margin="258,1,1,0">
+        <Button x:Name="btnClose" Height="12" VerticalAlignment="Top" BorderThickness="0" Background="Transparent" Click="btnClose_Click" Margin="0,1,1,0" HorizontalAlignment="Right" Width="11">
             <Image Source="/Images/close.png" Width="7"/>
         </Button>
         <!--<Button x:Name="btnClose" Content="X" FontSize="7"  Height="12" VerticalAlignment="Top" HorizontalAlignment="Right" Width="12" Click="btnClose_Click" Margin="0,1,1,0" BorderThickness="0,0,0,2" FontWeight="Bold"/>-->

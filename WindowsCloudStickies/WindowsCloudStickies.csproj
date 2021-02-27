@@ -118,5 +118,17 @@
     <Resource Include="Images\lock.png" />
     <Resource Include="Images\minimize.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\hide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\onTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\gear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\tool.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

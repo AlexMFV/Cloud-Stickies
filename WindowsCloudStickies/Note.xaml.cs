@@ -27,7 +27,6 @@ namespace WindowsCloudStickies
 
         double h = 0;
 
-
         public Note()
         {
             InitializeComponent();
@@ -69,7 +68,7 @@ namespace WindowsCloudStickies
 
         void changeColor(string bg, string topbar)
         {
-            noteBackground.Background = (SolidColorBrush)Application.Current.Resources[bg];
+            textCanvas.Background = (SolidColorBrush)Application.Current.Resources[bg];
             gripBar.Background = (SolidColorBrush)Application.Current.Resources[topbar];
         }
 
@@ -137,5 +136,27 @@ namespace WindowsCloudStickies
             if (this.WindowState == WindowState.Maximized)
                 this.WindowState = WindowState.Normal;
         }
+
+        //private void noteWindow_MouseEnter(object sender, MouseEventArgs e)
+        //{
+        //    gripBar.Visibility = Visibility.Visible;
+        //    btnHideNote.Visibility = Visibility.Visible;
+        //    btnClose.Visibility = Visibility.Visible;
+        //    btnLockNote.Visibility = Visibility.Visible;
+        //    //gripBar.Visibility = Visibility.Visible;
+        //    //gripBar.Visibility = Visibility.Visible;
+        //    //gripBar.Visibility = Visibility.Visible;
+        //}
+
+        //private void noteWindow_MouseLeave(object sender, MouseEventArgs e)
+        //{
+        //    gripBar.Visibility = Visibility.Hidden;
+        //    gripBar.Visibility = Visibility.Hidden;
+        //    gripBar.Visibility = Visibility.Hidden;
+        //    gripBar.Visibility = Visibility.Hidden;
+        //    gripBar.Visibility = Visibility.Hidden;
+        //    gripBar.Visibility = Visibility.Hidden;
+        //    gripBar.Visibility = Visibility.Hidden;
+        //}
     }
 }

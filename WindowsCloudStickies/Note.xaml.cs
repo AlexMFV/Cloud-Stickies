@@ -79,11 +79,13 @@ namespace WindowsCloudStickies
             {
                 btnLockNote.Background = (SolidColorBrush)Application.Current.Resources["ButtonSelected"]; //Set button Toggle color
                 this.ResizeMode = ResizeMode.NoResize;
+                textCanvas.IsReadOnly = true;
             }
             else
             {
                 btnLockNote.Background = (SolidColorBrush)Application.Current.Resources["ButtonUnselected"];
                 this.ResizeMode = ResizeMode.CanResizeWithGrip;
+                textCanvas.IsReadOnly = false;
             }
         }
 
@@ -143,20 +145,16 @@ namespace WindowsCloudStickies
         //    btnHideNote.Visibility = Visibility.Visible;
         //    btnClose.Visibility = Visibility.Visible;
         //    btnLockNote.Visibility = Visibility.Visible;
-        //    //gripBar.Visibility = Visibility.Visible;
-        //    //gripBar.Visibility = Visibility.Visible;
-        //    //gripBar.Visibility = Visibility.Visible;
+        //    btnSettings.Visibility = Visibility.Visible;
         //}
 
         //private void noteWindow_MouseLeave(object sender, MouseEventArgs e)
         //{
         //    gripBar.Visibility = Visibility.Hidden;
-        //    gripBar.Visibility = Visibility.Hidden;
-        //    gripBar.Visibility = Visibility.Hidden;
-        //    gripBar.Visibility = Visibility.Hidden;
-        //    gripBar.Visibility = Visibility.Hidden;
-        //    gripBar.Visibility = Visibility.Hidden;
-        //    gripBar.Visibility = Visibility.Hidden;
+        //    btnHideNote.Visibility = Visibility.Hidden;
+        //    btnClose.Visibility = Visibility.Hidden;
+        //    btnLockNote.Visibility = Visibility.Hidden;
+        //    btnSettings.Visibility = Visibility.Hidden;
         //}
     }
 }

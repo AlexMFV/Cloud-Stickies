@@ -8,6 +8,6 @@ namespace WindowsCloudStickies
 {
     public static class Globals
     {
-        public static List<StickyNote> stickies = new List<StickyNote>();
+        //public static List<StickyNote> stickies = new List<StickyNote>();
     }
 }

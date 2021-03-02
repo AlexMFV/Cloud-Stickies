@@ -9,27 +9,33 @@ namespace WindowsCloudStickies
 {
     public class StickyNote
     {
-        private string noteText { get; set; }
-        private string noteTitle { get; set; }
-        private SolidColorBrush noteColor { get; set; } //Maybe Store this as a Hex Value OR send RGB values when sending to server
-        private SolidColorBrush titleColor { get; set; } //Maybe Store this as a Hex Value OR send RGB values when sending to server
-        private string dateCreated { get; set; }
-        private string baseFont { get; set; }
-        private string baseFontSize { get; set; }
-        private string baseFontColor { get; set; }
+        public Guid noteID { get; set; }
+        public string noteText { get; set; }
+        public string noteTitle { get; set; }
+        public SolidColorBrush noteColor { get; set; } //Maybe Store this as a Hex Value OR send RGB values when sending to server
+        public SolidColorBrush titleColor { get; set; } //Maybe Store this as a Hex Value OR send RGB values when sending to server
+        public DateTime dateCreated { get; set; }
+        public string baseFont { get; set; }
+        public string baseFontSize { get; set; }
+        public string baseFontColor { get; set; }
 
-        public StickyNote()
+        public StickyNote(Guid _noteGuid, Tuple<SolidColorBrush, SolidColorBrush> _noteColors)
         {
-
+            this.noteID = _noteGuid;
+            this.noteTitle = "Note ID:" + noteID.ToString();
+            this.dateCreated = DateTime.Now;
+            this.noteColor = _noteColors.Item1;
+            this.titleColor = _noteColors.Item2;
         }
 
-        string NoteText() { return noteText; }
-        string NoteTitle() { return noteTitle; }
-        SolidColorBrush NoteColor() { return noteColor; }
-        SolidColorBrush TitleColor() { return titleColor; }
-        string DateCreated() { return dateCreated; }
-        string BaseFont() { return baseFont; }
-        string BaseFontSize() { return baseFontSize; }
-        string BaseFontColor() { return baseFontColor; }
+        public Guid NoteID() { return noteID; }
+        public string NoteText() { return noteText; }
+        public string NoteTitle() { return noteTitle; }
+        public SolidColorBrush NoteColor() { return noteColor; }
+        public SolidColorBrush TitleColor() { return titleColor; }
+        public DateTime DateCreated() { return dateCreated; }
+        public string BaseFont() { return baseFont; }
+        public string BaseFontSize() { return baseFontSize; }
+        public string BaseFontColor() { return baseFontColor; }
     }
 }

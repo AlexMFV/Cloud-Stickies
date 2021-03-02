@@ -22,21 +22,22 @@ namespace WindowsCloudStickies
     /// </summary>
     public partial class Note : Window
     {
-        int _noteID;
+        public Guid noteID;
         bool isLocked = false; //Pass this to the Note Class later
         bool isClosed = false;
 
         double h = 0;
 
-        public Note(int noteID)
+        public Note(Guid _noteID, Tuple<SolidColorBrush, SolidColorBrush> _colors)
         {
             InitializeComponent();
-            this._noteID = noteID;
-            randomizeColor();
+            this.noteID = _noteID;
             this.ShowInTaskbar = false;
+            textCanvas.Background = _colors.Item1;
+            gripBar.Background = _colors.Item2;
 
             //Test only
-            textCanvas.AppendText(("Note ID: "+ this._noteID).ToString());
+            //textCanvas.AppendText(("Note ID: "+ this.noteID).ToString());
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -55,21 +56,6 @@ namespace WindowsCloudStickies
         {
             if(e.ChangedButton == MouseButton.Left && !isLocked)
                 this.DragMove();
-        }
-        void randomizeColor()
-        {
-            Random r = new Random();
-            int value = r.Next(0, 5);
-
-            switch (value)
-            {
-                case 0: textCanvas.Background = NoteColors.GreenNote; gripBar.Background = NoteColors.GreenTitle; break;
-                case 1: textCanvas.Background = NoteColors.PinkNote; gripBar.Background = NoteColors.PinkTitle; break;
-                case 2: textCanvas.Background = NoteColors.OrangeNote; gripBar.Background = NoteColors.OrangeTitle; break;
-                case 3: textCanvas.Background = NoteColors.AquaNote; gripBar.Background = NoteColors.AquaTitle; break;
-                case 4: textCanvas.Background = NoteColors.YellowNote; gripBar.Background = NoteColors.YellowTitle; break;
-                default: break;
-            }
         }
 
         private void btnLockNote_Click(object sender, RoutedEventArgs e)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace WindowsCloudStickies
     /// <summary>
     /// Interaction logic for NoteManager.xaml
     /// </summary>
-    public partial class NoteManager : Window
+    public partial class NoteManager : MetroWindow
     {
         List<Note> notes = new List<Note>();
 
@@ -30,7 +31,8 @@ namespace WindowsCloudStickies
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            Note n = new Note();
+            Note n = new Note(Globals.stickies.Count);
+            Globals.stickies.Add(new StickyNote());
             notes.Add(n);
             n.Show();
         }

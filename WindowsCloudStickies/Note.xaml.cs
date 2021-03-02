@@ -22,16 +22,21 @@ namespace WindowsCloudStickies
     /// </summary>
     public partial class Note : Window
     {
+        int _noteID;
         bool isLocked = false; //Pass this to the Note Class later
         bool isClosed = false;
 
         double h = 0;
 
-        public Note()
+        public Note(int noteID)
         {
             InitializeComponent();
+            this._noteID = noteID;
             randomizeColor();
             this.ShowInTaskbar = false;
+
+            //Test only
+            textCanvas.AppendText(("Note ID: "+ this._noteID).ToString());
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -54,22 +59,17 @@ namespace WindowsCloudStickies
         void randomizeColor()
         {
             Random r = new Random();
-            int value = r.Next(0, 4);
+            int value = r.Next(0, 5);
 
             switch (value)
             {
-                case 0: changeColor("GreenNote", "GreenTitle"); break;
-                case 1: changeColor("PinkNote", "PinkTitle"); break;
-                case 2: changeColor("AquaNote", "AquaTitle"); break;
-                case 3: changeColor("OrangeNote", "OrangeTitle"); break;
+                case 0: textCanvas.Background = NoteColors.GreenNote; gripBar.Background = NoteColors.GreenTitle; break;
+                case 1: textCanvas.Background = NoteColors.PinkNote; gripBar.Background = NoteColors.PinkTitle; break;
+                case 2: textCanvas.Background = NoteColors.OrangeNote; gripBar.Background = NoteColors.OrangeTitle; break;
+                case 3: textCanvas.Background = NoteColors.AquaNote; gripBar.Background = NoteColors.AquaTitle; break;
+                case 4: textCanvas.Background = NoteColors.YellowNote; gripBar.Background = NoteColors.YellowTitle; break;
                 default: break;
             }
-        }
-
-        void changeColor(string bg, string topbar)
-        {
-            textCanvas.Background = (SolidColorBrush)Application.Current.Resources[bg];
-            gripBar.Background = (SolidColorBrush)Application.Current.Resources[topbar];
         }
 
         private void btnLockNote_Click(object sender, RoutedEventArgs e)

@@ -19,6 +19,9 @@
     <SolidColorBrush x:Key="OrangeNote">#f0ae8d</SolidColorBrush>
     <SolidColorBrush x:Key="OrangeTitle">#d9672e</SolidColorBrush>
 
+    <SolidColorBrush x:Key="YellowNote">#fced95</SolidColorBrush>
+    <SolidColorBrush x:Key="YellowTitle">#e6ce43</SolidColorBrush>
+
     <SolidColorBrush x:Key="ButtonSelected">#f0fbff</SolidColorBrush>
     <SolidColorBrush x:Key="ButtonUnselected">#00FFFFFF</SolidColorBrush>
 

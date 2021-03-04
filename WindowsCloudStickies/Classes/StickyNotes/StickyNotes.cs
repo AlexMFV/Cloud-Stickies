@@ -19,6 +19,11 @@ namespace WindowsCloudStickies
             List.Remove(note);
         }
 
+        public StickyNote GetNoteFromGUID(Guid id)
+        {
+            return List.Cast<StickyNote>().First(note => note.noteID == id);
+        }
+
         public StickyNote this[int index]
         {
             get { return (StickyNote)List[index]; }

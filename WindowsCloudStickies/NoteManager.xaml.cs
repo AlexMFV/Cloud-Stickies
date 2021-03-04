@@ -35,8 +35,8 @@ namespace WindowsCloudStickies
         {
             Guid ID = Guid.NewGuid();
             Tuple<SolidColorBrush, SolidColorBrush> colors = randomizeColor();
-            Note note = new Note(ID, colors);
             Globals.stickies.Add(new StickyNote(ID, colors));
+            Note note = new Note(ID, colors);
             notes.Add(note);
             note.Show();
             updateList();
@@ -131,6 +131,25 @@ namespace WindowsCloudStickies
         private void btnCloseAll_Click(object sender, RoutedEventArgs e)
         {
             notes.ForEach(note => note.Close());
+            notes = new List<Note>();
+        }
+
+        private void btnShowHide_Click(object sender, RoutedEventArgs e)
+        {
+            StickyNote pressednote = ((sender as Button).DataContext as StickyNote);
+            if(!notes.Exists(note => note.noteID == pressednote.noteID))
+            {
+                Tuple<SolidColorBrush, SolidColorBrush> colors = new Tuple<SolidColorBrush, SolidColorBrush>(pressednote.noteColor, pressednote.titleColor);
+                Note note = new Note(pressednote.noteID, colors);
+                notes.Add(note);
+                note.Show();
+            }
+            else
+            {
+                Note open = notes.First(note => note.noteID == pressednote.noteID);
+                notes.Remove(open);
+                open.Close();
+            }
         }
     }
 }

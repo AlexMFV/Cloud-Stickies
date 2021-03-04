@@ -25,19 +25,20 @@ namespace WindowsCloudStickies
         public Guid noteID;
         bool isLocked = false; //Pass this to the Note Class later
         bool isClosed = false;
+        StickyNote current_note;
 
         double h = 0;
 
         public Note(Guid _noteID, Tuple<SolidColorBrush, SolidColorBrush> _colors)
         {
             InitializeComponent();
+            current_note = Globals.stickies.GetNoteFromGUID(_noteID);
             this.noteID = _noteID;
             this.ShowInTaskbar = false;
             textCanvas.Background = _colors.Item1;
             gripBar.Background = _colors.Item2;
 
-            //Test only
-            //textCanvas.AppendText(("Note ID: "+ this.noteID).ToString());
+            this.textCanvas.AppendText(this.current_note.noteText);
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)

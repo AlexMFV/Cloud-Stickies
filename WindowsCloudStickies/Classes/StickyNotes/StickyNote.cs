@@ -28,6 +28,8 @@ namespace WindowsCloudStickies
             this.titleColor = _noteColors.Item2;
         }
 
+        public StickyNote() { }
+
         public Guid NoteID() { return noteID; }
         public string NoteText() { return noteText; }
         public string NoteTitle() { return noteTitle; }

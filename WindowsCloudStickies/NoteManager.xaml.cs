@@ -21,13 +21,13 @@ namespace WindowsCloudStickies
     /// </summary>
     public partial class NoteManager : MetroWindow
     {
-        StickyNotes stickies = new StickyNotes();
         List<Note> notes = new List<Note>();
 
         public NoteManager()
         {
             InitializeComponent();
-            lstNotes.ItemsSource = stickies;
+            LocalSave.LoadStickyNotes(Guid.NewGuid());
+            lstNotes.ItemsSource = Globals.stickies;
             //this.WindowState = WindowState.Minimized;
         }
 
@@ -36,7 +36,7 @@ namespace WindowsCloudStickies
             Guid ID = Guid.NewGuid();
             Tuple<SolidColorBrush, SolidColorBrush> colors = randomizeColor();
             Note note = new Note(ID, colors);
-            stickies.Add(new StickyNote(ID, colors));
+            Globals.stickies.Add(new StickyNote(ID, colors));
             notes.Add(note);
             note.Show();
             updateList();
@@ -50,7 +50,7 @@ namespace WindowsCloudStickies
                 notes[i].Close();
 
             notes = new List<Note>();
-            stickies = new StickyNotes();
+            Globals.stickies = new StickyNotes();
 
             updateList();
         }
@@ -60,18 +60,22 @@ namespace WindowsCloudStickies
             Random r = new Random();
             int value = r.Next(0, 5);
 
-            Tuple<SolidColorBrush, SolidColorBrush> colors;
-
+            SolidColorBrush color1, color2;
             switch (value)
             {
-                case 0: colors = new Tuple<SolidColorBrush, SolidColorBrush>(NoteColors.GreenNote,NoteColors.GreenTitle); break;
-                case 1: colors = new Tuple<SolidColorBrush, SolidColorBrush>(NoteColors.PinkNote, NoteColors.PinkTitle); break;
-                case 2: colors = new Tuple<SolidColorBrush, SolidColorBrush>(NoteColors.AquaNote, NoteColors.AquaTitle); break;
-                case 3: colors = new Tuple<SolidColorBrush, SolidColorBrush>(NoteColors.OrangeNote, NoteColors.OrangeTitle); break;
-                default: colors = new Tuple<SolidColorBrush, SolidColorBrush>(NoteColors.YellowNote, NoteColors.YellowTitle); break;
+                case 0: color1 = NoteColors.GreenNote; color2 = NoteColors.GreenTitle; break;
+                case 1: color1 = NoteColors.PinkNote; color2 = NoteColors.PinkTitle; break;
+                case 2: color1 = NoteColors.AquaNote; color2 = NoteColors.AquaTitle; break;
+                case 3: color1 = NoteColors.OrangeNote; color2 = NoteColors.OrangeTitle; break;
+                default: color1 = NoteColors.YellowNote; color2 = NoteColors.YellowTitle; break;
             }
 
-            return colors;
+            return createColorObject(color1, color2);
+        }
+
+        public Tuple<SolidColorBrush, SolidColorBrush> createColorObject(SolidColorBrush color1, SolidColorBrush color2)
+        {
+            return new Tuple<SolidColorBrush, SolidColorBrush>(color1, color2);
         }
 
         private void btnRemoveSelected_Click(object sender, RoutedEventArgs e)
@@ -114,7 +118,15 @@ namespace WindowsCloudStickies
         void updateList()
         {
             lstNotes.ItemsSource = null;
-            lstNotes.ItemsSource = stickies;
+            lstNotes.ItemsSource = Globals.stickies;
+        }
+
+        private void btnSaveAll_Click(object sender, RoutedEventArgs e)
+        {
+            if(Globals.stickies.Count > 0)
+            {
+                LocalSave.SaveAllStickyNotes(Guid.NewGuid()); //Change to User GUID later
+            }
         }
     }
 }

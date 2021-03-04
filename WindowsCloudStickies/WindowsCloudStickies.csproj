@@ -77,9 +77,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Globals.cs" />
-    <Compile Include="NoteColors.cs" />
-    <Compile Include="StickyNote.cs" />
+    <Compile Include="Classes\StickyNotes\StickyNotes.cs" />
+    <Compile Include="Classes\Globals.cs" />
+    <Compile Include="Classes\LocalSaving\LocalSave.cs" />
+    <Compile Include="Resources\NoteColors.cs" />
+    <Compile Include="Classes\StickyNotes\StickyNote.cs" />
     <Page Include="Note.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

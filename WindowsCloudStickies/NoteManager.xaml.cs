@@ -21,7 +21,7 @@ namespace WindowsCloudStickies
     /// </summary>
     public partial class NoteManager : MetroWindow
     {
-        public static List<StickyNote> stickies = new List<StickyNote>();
+        StickyNotes stickies = new StickyNotes();
         List<Note> notes = new List<Note>();
 
         public NoteManager()
@@ -50,7 +50,7 @@ namespace WindowsCloudStickies
                 notes[i].Close();
 
             notes = new List<Note>();
-            stickies = new List<StickyNote>();
+            stickies = new StickyNotes();
 
             updateList();
         }

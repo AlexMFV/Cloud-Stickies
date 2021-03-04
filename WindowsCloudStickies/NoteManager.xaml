@@ -11,7 +11,8 @@
         <Button x:Name="btnAdd" Content="Add Note" Click="btnAdd_Click" Margin="10,10,0,0" Height="37" VerticalAlignment="Top" HorizontalAlignment="Left" Width="102"/>
         <Button x:Name="btnRemoveAll" Content="Remove All Notes" Margin="117,10,0,0" Click="btnRemoveAll_Click" HorizontalAlignment="Left" Width="110" Height="37" VerticalAlignment="Top"/>
         <Button x:Name="btnRemoveSelected" Content="Remove Selected" Margin="232,10,0,0" Click="btnRemoveSelected_Click"  HorizontalAlignment="Left" Width="110" Height="37" VerticalAlignment="Top"/>
-        <Button x:Name="btnSaveAll" Content="Save All Notes" Width="100" Height="37" Margin="347,10,345,372" Click="btnSaveAll_Click"></Button>
+        <Button x:Name="btnSaveAll" Content="Save All Notes" Width="100" Height="37" Margin="347,10,0,0" Click="btnSaveAll_Click" VerticalAlignment="Top" HorizontalAlignment="Left"></Button>
+        <Button x:Name="btnCloseAll" Content="Close All Notes" Width="100" Height="37" Margin="452,10,0,0" VerticalAlignment="Top" Click="btnCloseAll_Click" HorizontalAlignment="Left"></Button>
         <ListView Margin="10,52,10,10" Background="{StaticResource Dark}" ItemsSource="{Binding Mode=OneWay, IsAsync=True}" x:Name="lstNotes" BorderBrush="{StaticResource AquaTitle}" BorderThickness="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">

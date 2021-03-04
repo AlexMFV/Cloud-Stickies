@@ -78,6 +78,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\Parser.cs" />
+    <Compile Include="Classes\Settings\Settings.cs" />
     <Compile Include="Classes\StickyNotes\StickyNotes.cs" />
     <Compile Include="Classes\Globals.cs" />
     <Compile Include="Classes\LocalSaving\LocalSave.cs" />

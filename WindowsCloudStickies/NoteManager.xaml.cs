@@ -51,6 +51,7 @@ namespace WindowsCloudStickies
 
             notes = new List<Note>();
             Globals.stickies = new StickyNotes();
+            LocalSave.DeleteAllNotes(Guid.NewGuid()); //REMOVE THE NEWGUID as this will override the actual user GUID
 
             updateList();
         }
@@ -124,9 +125,12 @@ namespace WindowsCloudStickies
         private void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
             if(Globals.stickies.Count > 0)
-            {
                 LocalSave.SaveAllStickyNotes(Guid.NewGuid()); //Change to User GUID later
-            }
+        }
+
+        private void btnCloseAll_Click(object sender, RoutedEventArgs e)
+        {
+            notes.ForEach(note => note.Close());
         }
     }
 }

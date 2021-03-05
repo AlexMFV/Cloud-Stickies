@@ -12,12 +12,18 @@ namespace WindowsCloudStickies
         public Guid noteID { get; set; }
         public string noteText { get; set; }
         public string noteTitle { get; set; }
-        public SolidColorBrush noteColor { get; set; } //Maybe Store this as a Hex Value OR send RGB values when sending to server
-        public SolidColorBrush titleColor { get; set; } //Maybe Store this as a Hex Value OR send RGB values when sending to server
+        public SolidColorBrush noteColor { get; set; }
+        public SolidColorBrush titleColor { get; set; }
         public DateTime dateCreated { get; set; }
         public string baseFont { get; set; }
         public string baseFontSize { get; set; }
         public string baseFontColor { get; set; }
+        public int x { get; set; }
+        public int y { get; set; }
+        public int width { get; set; }
+        public int height { get; set; }
+        public bool isClosed { get; set; }
+        public bool isLocked { get; set; }
 
         public StickyNote(Guid _noteGuid, Tuple<SolidColorBrush, SolidColorBrush> _noteColors)
         {

@@ -24,6 +24,11 @@ namespace WindowsCloudStickies
             return List.Cast<StickyNote>().First(note => note.noteID == id);
         }
 
+        public int GetNoteIndex(Guid id)
+        {
+            return List.IndexOf(List.Cast<StickyNote>().First(note => note.noteID == id));
+        }
+
         public StickyNote this[int index]
         {
             get { return (StickyNote)List[index]; }

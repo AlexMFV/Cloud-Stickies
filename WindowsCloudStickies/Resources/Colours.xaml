@@ -25,4 +25,8 @@
     <SolidColorBrush x:Key="ButtonSelected">#f0fbff</SolidColorBrush>
     <SolidColorBrush x:Key="ButtonUnselected">#00FFFFFF</SolidColorBrush>
 
+    <Brush x:Key="Saved">#00f54e</Brush>
+    <Brush x:Key="NotSaved">#bf0b0b</Brush>
+    <Brush x:Key="Unknown">#bbbbbb</Brush>
+
 </ResourceDictionary>

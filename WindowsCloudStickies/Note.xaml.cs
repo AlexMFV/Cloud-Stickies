@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Diagnostics;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace WindowsCloudStickies
 {
@@ -22,60 +24,50 @@ namespace WindowsCloudStickies
     /// </summary>
     public partial class Note : Window
     {
-        bool isLocked = false; //Pass this to the Note Class later
-        bool isClosed = false;
+        public StickyNote current_note;
+        System.Timers.Timer saveWait = new System.Timers.Timer();
+        NoteManager manager;
 
         double h = 0;
 
-        public Note()
+        public Note(Guid _noteID, NoteManager _manager)
         {
             InitializeComponent();
-            randomizeColor();
+            current_note = Globals.stickies.GetNoteFromGUID(_noteID);
             this.ShowInTaskbar = false;
+            textCanvas.Background = current_note.noteColor;
+            gripBar.Background = current_note.titleColor;
+
+            saveWait.Interval = 3000;
+            saveWait.Elapsed += SaveWait_Elapsed;
+            saveWait.AutoReset = false;
+
+            manager = _manager;
+
+            this.textCanvas.AppendText(this.current_note.noteText);
+            saveWait.Start();
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            //Ask user if sure to delete
-            //Shift + Click on close button (Force delete without asking)
-            //Delete note if not locked
-            //If note is locked requires Shift + Click to delete
-            MessageBox.Show("Are you sure you want to delete the note?", "Delete Note", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            //Delete the note
-            //Delete note from Database
-            this.Close();
+            if (!this.current_note.isLocked)
+            {
+                MessageBoxResult res = MessageBox.Show("Are you sure you want to delete the note?", "Delete Note", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (res == MessageBoxResult.Yes)
+                    CloseAndDeleteNote();
+            }
         }
 
         private void gripBar_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.ChangedButton == MouseButton.Left && !isLocked)
+            if(e.ChangedButton == MouseButton.Left && !current_note.isLocked)
                 this.DragMove();
-        }
-        void randomizeColor()
-        {
-            Random r = new Random();
-            int value = r.Next(0, 4);
-
-            switch (value)
-            {
-                case 0: changeColor("GreenNote", "GreenTitle"); break;
-                case 1: changeColor("PinkNote", "PinkTitle"); break;
-                case 2: changeColor("AquaNote", "AquaTitle"); break;
-                case 3: changeColor("OrangeNote", "OrangeTitle"); break;
-                default: break;
-            }
-        }
-
-        void changeColor(string bg, string topbar)
-        {
-            textCanvas.Background = (SolidColorBrush)Application.Current.Resources[bg];
-            gripBar.Background = (SolidColorBrush)Application.Current.Resources[topbar];
         }
 
         private void btnLockNote_Click(object sender, RoutedEventArgs e)
         {
-            isLocked = !isLocked;
-            if (isLocked)
+            current_note.isLocked = !current_note.isLocked;
+            if (current_note.isLocked)
             {
                 btnLockNote.Background = (SolidColorBrush)Application.Current.Resources["ButtonSelected"]; //Set button Toggle color
                 this.ResizeMode = ResizeMode.NoResize;
@@ -91,7 +83,7 @@ namespace WindowsCloudStickies
 
         private void noteWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.Height < 15 && !isClosed)
+            if (this.Height < 15 && !current_note.isClosed)
                 this.Height = 30;
 
             if (this.Width <= 100)
@@ -100,18 +92,18 @@ namespace WindowsCloudStickies
 
         private void gripBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2 && !isClosed)
+            if (e.ClickCount == 2 && !current_note.isClosed)
             {
-                isClosed = !isClosed;
+                current_note.isClosed = !current_note.isClosed;
                 h = this.Height;
                 this.Height = 14;
                 this.ResizeMode = ResizeMode.NoResize;
                 return;
             }
 
-            if(e.ClickCount == 2 && isClosed)
+            if(e.ClickCount == 2 && current_note.isClosed)
             {
-                isClosed = !isClosed;
+                current_note.isClosed = !current_note.isClosed;
                 this.Height = h;
                 this.ResizeMode = ResizeMode.CanResizeWithGrip;
                 return;
@@ -121,6 +113,7 @@ namespace WindowsCloudStickies
         private void btnHideNote_Click(object sender, RoutedEventArgs e)
         {
             //Save Note, position, color and size
+            manager.DeleteNoteForm(this.current_note.noteID);
             this.Close();
         }
 
@@ -137,6 +130,86 @@ namespace WindowsCloudStickies
             //Prevent the notes from maximizing, when grabbed to the top
             if (this.WindowState == WindowState.Maximized)
                 this.WindowState = WindowState.Normal;
+        }
+
+        private void textCanvas_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            saveWait.Stop();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() => ChangeSavedState(State.NotSaved)));
+            saveWait.Start();
+        }
+
+        private void SaveWait_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            this.current_note.noteText = TextFromRichTextBox(this.textCanvas);
+            SaveFullNote();
+            saveWait.Stop();
+        }
+
+        string TextFromRichTextBox(RichTextBox rtb)
+        {
+            return new TextRange( rtb.Document.ContentStart,
+                rtb.Document.ContentEnd).Text;
+        }
+
+        public void ChangeSavedState(State state)
+        {
+            switch (state)
+            {
+                case State.NotSaved: savedIndicator.Background = (Brush)Application.Current.Resources["NotSaved"]; break;
+                case State.Saved: savedIndicator.Background = (Brush)Application.Current.Resources["Saved"]; break;
+                case State.Unknown: savedIndicator.Background = (Brush)Application.Current.Resources["Unknown"]; break;
+            }
+        }
+
+        public void SaveFullNote()
+        {
+            try
+            {
+                Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.noteID)] = this.current_note;
+                Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)); //DEBUG: Change later to user ID)
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                    new Action(() => ChangeSavedState(State.Saved)));
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void SaveNoteSettings()
+        {
+            try
+            {
+                Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.noteID)] = this.current_note;
+                Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)); //DEBUG: Change later to user ID)
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void CloseAndDeleteNote()
+        {
+            manager.DeleteNoteForm(this.current_note.noteID);
+            Globals.stickies.RemoveAt(Globals.stickies.GetNoteIndex(this.current_note.noteID));
+            manager.updateList();
+            LocalSave.DeleteNote(Guid.NewGuid(), this.current_note.noteID);
+            this.Close();
+        }
+
+        public void CloseNote()
+        {
+            manager.DeleteNoteForm(this.current_note.noteID);
+            this.Close();
+        }
+
+        private void savedIndicator_Click(object sender, RoutedEventArgs e)
+        {
+            saveWait.Stop();
+            SaveFullNote();
         }
 
         //private void noteWindow_MouseEnter(object sender, MouseEventArgs e)

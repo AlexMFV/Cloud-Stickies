@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:WindowsCloudStickies.Resources">
+                    xmlns:local="clr-namespace:WindowsCloudStickies">
 
     <!--Main theme colours-->
     <SolidColorBrush x:Key="Dark">#FF242424</SolidColorBrush>
@@ -19,7 +19,14 @@
     <SolidColorBrush x:Key="OrangeNote">#f0ae8d</SolidColorBrush>
     <SolidColorBrush x:Key="OrangeTitle">#d9672e</SolidColorBrush>
 
+    <SolidColorBrush x:Key="YellowNote">#fced95</SolidColorBrush>
+    <SolidColorBrush x:Key="YellowTitle">#e6ce43</SolidColorBrush>
+
     <SolidColorBrush x:Key="ButtonSelected">#f0fbff</SolidColorBrush>
     <SolidColorBrush x:Key="ButtonUnselected">#00FFFFFF</SolidColorBrush>
+
+    <Brush x:Key="Saved">#00f54e</Brush>
+    <Brush x:Key="NotSaved">#bf0b0b</Brush>
+    <Brush x:Key="Unknown">#bbbbbb</Brush>
 
 </ResourceDictionary>

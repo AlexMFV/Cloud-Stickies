@@ -13,6 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AutoUpdaterDotNET;
+using System.Windows.Threading;
+using System.Reflection;
+using System.Net;
 
 namespace WindowsCloudStickies
 {
@@ -26,6 +30,9 @@ namespace WindowsCloudStickies
         public NoteManager()
         {
             InitializeComponent();
+            Version version = Assembly.GetEntryAssembly().GetName().Version;
+            txtVersion.Text = "v" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
+            AutoUpdater.Synchronous = true;
             LocalSave.LoadStickyNotes(Guid.NewGuid());
             lstNotes.ItemsSource = Globals.stickies;
             //this.WindowState = WindowState.Minimized;
@@ -157,5 +164,14 @@ namespace WindowsCloudStickies
             Note toDelete = notes.First(note => note.current_note.noteID == id);
             notes.Remove(toDelete);
         }
+
+        #region Updates
+
+        private void btnUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            AutoUpdater.Start("http://alexmfv.com/StickyUpdates/latest_update.xml");
+        }
+
+        #endregion
     }
 }

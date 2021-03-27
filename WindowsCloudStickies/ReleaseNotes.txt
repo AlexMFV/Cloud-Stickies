@@ -1,0 +1,5 @@
+﻿**Release Notes v0.1.1.0**
+
+Manager Changes:
+	- Double Click to Hide/Unhide Note
+	- Delete Selected Notes

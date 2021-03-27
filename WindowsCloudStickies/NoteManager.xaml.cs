@@ -88,39 +88,25 @@ namespace WindowsCloudStickies
 
         private void btnRemoveSelected_Click(object sender, RoutedEventArgs e)
         {
-            /*IList<Note> selectedNotes = (IList<Note>)lstNotes.SelectedItems;
-            Guid[] idSublist = (Guid[])selectedNotes.Select(note => note.noteID);
+            List<Guid> toDelete = new List<Guid>();
 
-            Globals.stickies.RemoveAll(note => idSublist.Contains(note.NoteID()));
-            notes.ToList().ForEach(note => note.Close());
-            notes.RemoveAll(note => idSublist.Contains(note.noteID));
+            for(int i = 0; i < Globals.stickies.Count; i++)
+            {
+                for(int j = 0; j < lstNotes.SelectedItems.Count; j++)
+                {
+                    if (lstNotes.SelectedItems[j].Equals(Globals.stickies[i]))
+                        toDelete.Add(Globals.stickies[i].noteID);
+                }
+            }
 
-            updateList();*/
+            foreach (Guid delID in toDelete)
+            {
+                StickyNote note = Globals.stickies.GetNoteFromGUID(delID);
+                LocalSave.DeleteNote(new Guid(), note.noteID);
+                Globals.stickies.Remove(note);
+            }
 
-            ///DELETE SELECTED
-            //bool[] toDelete = new bool[notes.Count];
-            //int aux = 0;
-            //foreach (StickyNote note in Globals.stickies)
-            //{
-            //    for (int i = 0; i < lstNotes.SelectedItems.Count; i++)
-            //    {
-            //        if (note == lstNotes.SelectedItems[i])
-            //        {
-            //            toDelete[note.NoteID()] = true;
-            //            notes[note.NoteID()].Close();
-            //        }
-            //    }
-            //    aux++;
-            //}
-
-            //for (int i = notes.Count - 1; i >= 0; i--)
-            //{
-            //    if (toDelete[i] == true)
-            //    {
-            //        Globals.stickies.RemoveAt(i);
-            //        notes.RemoveAt(i);
-            //    }
-            //}
+            updateList();
         }
 
         public void updateList()
@@ -143,20 +129,7 @@ namespace WindowsCloudStickies
 
         private void btnShowHide_Click(object sender, RoutedEventArgs e)
         {
-            StickyNote pressednote = ((sender as Button).DataContext as StickyNote);
-            if(!notes.Exists(note => note.current_note.noteID == pressednote.noteID))
-            {
-                Tuple<SolidColorBrush, SolidColorBrush> colors = new Tuple<SolidColorBrush, SolidColorBrush>(pressednote.noteColor, pressednote.titleColor);
-                Note note = new Note(pressednote.noteID, this);
-                notes.Add(note);
-                note.Show();
-            }
-            else
-            {
-                Note open = notes.First(note => note.current_note.noteID == pressednote.noteID);
-                notes.Remove(open);
-                open.Close();
-            }
+            ShowPressedNote(((sender as Button).DataContext as StickyNote));            
         }
 
         public void DeleteNoteForm(Guid id)
@@ -173,5 +146,28 @@ namespace WindowsCloudStickies
         }
 
         #endregion
+
+        private void lstNotes_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (lstNotes.SelectedItem != null)
+                ShowPressedNote(lstNotes.SelectedItem as StickyNote);
+        }
+
+        void ShowPressedNote(StickyNote pressedNote)
+        {
+            if (!notes.Exists(note => note.current_note.noteID == pressedNote.noteID))
+            {
+                Tuple<SolidColorBrush, SolidColorBrush> colors = new Tuple<SolidColorBrush, SolidColorBrush>(pressedNote.noteColor, pressedNote.titleColor);
+                Note note = new Note(pressedNote.noteID, this);
+                notes.Add(note);
+                note.Show();
+            }
+            else
+            {
+                Note open = notes.First(note => note.current_note.noteID == pressedNote.noteID);
+                notes.Remove(open);
+                open.Close();
+            }
+        }
     }
 }

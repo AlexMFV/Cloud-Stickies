@@ -19,6 +19,16 @@ namespace WindowsCloudStickies
             List.Remove(note);
         }
 
+        public List<StickyNote> ToList()
+        {
+            List<StickyNote> clone = new List<StickyNote>();
+
+            for (int i = 0; i < List.Count; i++)
+                clone.Add((List[i] as StickyNote));
+
+            return clone;
+        }
+
         public StickyNote GetNoteFromGUID(Guid id)
         {
             return List.Cast<StickyNote>().First(note => note.noteID == id);

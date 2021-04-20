@@ -5,3 +5,14 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/alexmfv/cloud-stickies/badge)](https://www.codefactor.io/repository/github/alexmfv/cloud-stickies)
 
 Engineering Project developed for final year dissertation @ University of Portsmouth 2020/2021
+
+## Server
+
+database/config.json, needs to be added and the format is:
+
+{
+    "host": "db_ip",
+    "user": "db_username",
+    "password": "db_password",
+    "database": "db_name"
+}

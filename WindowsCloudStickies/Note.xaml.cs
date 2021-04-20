@@ -143,6 +143,7 @@ namespace WindowsCloudStickies
         private void SaveWait_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             this.current_note.noteText = TextFromRichTextBox(this.textCanvas);
+            this.current_note.ChangeTitleToParagraph();
             SaveFullNote();
             saveWait.Stop();
         }

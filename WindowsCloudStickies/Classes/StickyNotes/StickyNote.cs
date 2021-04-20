@@ -28,7 +28,7 @@ namespace WindowsCloudStickies
         public StickyNote(Guid _noteGuid, Tuple<SolidColorBrush, SolidColorBrush> _noteColors)
         {
             this.noteID = _noteGuid;
-            this.noteTitle = "Note ID:" + noteID.ToString();
+            this.noteTitle = "Note " + Globals.stickies.Count.ToString(); //"Note ID:" + noteID.ToString();
             this.dateCreated = DateTime.Now;
             this.noteColor = _noteColors.Item1;
             this.titleColor = _noteColors.Item2;
@@ -45,5 +45,14 @@ namespace WindowsCloudStickies
         public string BaseFont() { return baseFont; }
         public string BaseFontSize() { return baseFontSize; }
         public string BaseFontColor() { return baseFontColor; }
+
+        public void ChangeTitleToParagraph()
+        {
+            if(noteText != null)
+            {
+                string pre = this.noteText.Split('\n')[0];
+                this.noteTitle = pre.Length > 30 ? pre.Substring(0,30) : pre;
+            }
+        }
     }
 }

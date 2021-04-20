@@ -1,0 +1,10 @@
+body {
+  background-color: lightblue;
+}
+
+.header {
+  background-color: blueviolet;
+  width: 20em;
+  height: 10em;
+  border-radius: 25%;
+}

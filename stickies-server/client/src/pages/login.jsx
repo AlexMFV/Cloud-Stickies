@@ -4,6 +4,7 @@ import { Button, FormGroup, Form } from 'react-bootstrap';
 
 //Functional Component 
 const LoginPage = () => {
+  document.body.style.backgroundColor = "#4f4f4f";
   return (
     <>
       <div className="loginContainer">
@@ -26,7 +27,7 @@ const LoginPage = () => {
         </div>
         <div className="buttonContainer">
           <Button className="loginButton" variant="success">Login</Button>
-          <Button className="loginButton" variant="info">No Account?</Button>
+          <Button className="loginButton" href="/register" variant="info">No Account?</Button>
         </div>
       </div>
     </>

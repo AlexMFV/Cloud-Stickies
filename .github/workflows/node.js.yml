@@ -28,9 +28,9 @@ jobs:
     - name: Installing dependencies
       working-directory: ./stickies-server
       run: npm install
-    #- name: Running build
-    #  working-directory: ./stickies-server
-    #  run: npm run build      
+    - name: Running build
+      working-directory: ./stickies-server
+      run: npm run build      
     - name: Running dev
       working-directory: ./stickies-server
       run: npm run dev      

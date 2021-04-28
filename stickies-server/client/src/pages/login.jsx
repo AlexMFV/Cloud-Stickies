@@ -5,6 +5,42 @@ import { Button, FormGroup, Form } from 'react-bootstrap';
 //Functional Component 
 const LoginPage = () => {
   document.body.style.backgroundColor = "#4f4f4f";
+
+  async function processLogin() {
+    const user = document.getElementById('txtUser').value;
+    const pass = document.getElementById('txtPass').value;
+
+    //encrypt both user and password using js-sha256
+    const data = { user, pass };
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    };
+
+    await fetch('/api/login', options).then(function (res) {
+      if (res.status !== 200) {
+        console.log('There was a problem. Status Code: ' +
+          res.status);
+        return;
+      }
+
+      res.json().then(function (exists) {
+        if (exists) {
+          alert("Login Successful, redirecting...");
+          //redirectToIndex(); //?user=" + usr;
+        }
+        else {
+          alert("Incorrect details, please try again!");
+        }
+      });
+    }).catch(function (err) {
+      console.log('Fetch Error: ', err);
+    });
+  }
+
   return (
     <>
       <div className="loginContainer">
@@ -14,19 +50,19 @@ const LoginPage = () => {
         <div className="inputContainer">
           <Form.Group controlId="formUser">
             <Form.Label className="textboxText">Username</Form.Label>
-            <Form.Control type="email" placeholder="Enter Username" />
+            <Form.Control id="txtUser" type="text" placeholder="Enter Username" />
           </Form.Group>
 
           <Form.Group controlId="formPwd">
             <Form.Label className="textboxText">Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
+            <Form.Control id="txtPass" type="password" placeholder="Password" />
           </Form.Group>
           <Form.Group controlId="formRemember">
             <Form.Check type="checkbox" label="Remember me" />
           </Form.Group>
         </div>
         <div className="buttonContainer">
-          <Button className="loginButton" variant="success">Login</Button>
+          <Button className="loginButton" onClick={processLogin} variant="success">Login</Button>
           <Button className="loginButton" href="/register" variant="info">No Account?</Button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { Button, FormGroup, Form } from 'react-bootstrap';
 //Functional Component 
 const RegisterPage = () => {
   document.body.style.backgroundColor = "#4f4f4f";
+
   return (
     <>
       <div className="registerContainer">
@@ -13,7 +14,7 @@ const RegisterPage = () => {
         <div className="inputContainer">
           <Form.Group controlId="formUser">
             <Form.Label className="textboxText">Username</Form.Label>
-            <Form.Control type="email" placeholder="Enter Username" />
+            <Form.Control type="text" placeholder="Enter Username" />
           </Form.Group>
 
           <Form.Group controlId="formPwd">

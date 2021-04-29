@@ -1,17 +1,18 @@
 import React from "react";
 import '../login.css';
 import { Button, FormGroup, Form } from 'react-bootstrap';
+import { sha256 } from 'js-sha256';
 
 //Functional Component 
 const LoginPage = () => {
   document.body.style.backgroundColor = "#4f4f4f";
 
   async function processLogin() {
-    const user = document.getElementById('txtUser').value;
-    const pass = document.getElementById('txtPass').value;
+    const user = sha256(document.getElementById('txtUser').value);
+    const pass = sha256(document.getElementById('txtPass').value);
 
-    //encrypt both user and password using js-sha256
     const data = { user, pass };
+    console.log(data);
     const options = {
       method: "POST",
       headers: {

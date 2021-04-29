@@ -1,23 +1,19 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 var config = require('./config.json')
 var con = mysql.createConnection(config);
 
-function checkUserLogin(user, pass){
-    //console.log(callProcedure('checkUserLogin', [user, pass]));
-    /*if(callProcedure('checkUserLogin', [user, pass])[0].length > 0)
+async function checkUserLogin(user, pass){
+    let rows = await callProcedure('checkUserLogin', [user, pass]);
+    
+    if(rows[0].length > 0)
         return true;
-    return false;*/
-    callProcedure('checkUserLogin', [user, pass]);
+    return false;
 }
 
-function callProcedure(name, parameters){
-    const values = con.query(formatQuery(name, parameters), function (error, results, fields) {
-        if (error) throw error;
-        return results;
-    });
-
-    console.log(values);
+async function callProcedure(name, parameters){
+    let [rows] = await con.promise().query(formatQuery(name, parameters));
+    return rows;
 }
 
 function formatQuery(name, parameters){

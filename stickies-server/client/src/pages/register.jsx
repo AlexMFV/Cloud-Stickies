@@ -12,43 +12,50 @@ const RegisterPage = () => {
     const pass = sha256(document.getElementById('txtPass').value);
     const pass2 = sha256(document.getElementById('txtPass2').value);
 
-    if(pass !== pass2){
+    if (pass !== pass2) {
+      alert("Passwords do not match! Please try again!");
       clearFields();
     }
-    const data = { user, pass };
-    console.log(data);
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    };
+    else {
+      const data = { user, pass };
 
-    await fetch('/api/register', options).then(function (res) {
-      if (res.status !== 200) {
-        console.log('There was a problem. Status Code: ' +
-          res.status);
-        return;
-      }
+      console.log(data);
+      console.log("User Size: " + user.length);
+      console.log("Pass Size: " + pass.length);
 
-      res.json().then(function (exists) {
-        if (exists) {
-          alert("Login Successful, redirecting...");
-          //redirectToIndex(); //?user=" + usr;
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      };
+
+      await fetch('/api/register', options).then(function (res) {
+        if (res.status !== 200) {
+          console.log('There was a problem. Status Code: ' +
+            res.status);
+          return;
         }
-        else {
-          alert("Incorrect details, please try again!");
-        }
+
+        res.json().then(function (success) {
+          if (success) {
+            alert("Register successful, you can login now!");
+            //redirectToIndex(); //?user=" + usr;
+          }
+          else {
+            alert("There was an error creating the account, please try again later!");
+          }
+        });
+      }).catch(function (err) {
+        console.log('Fetch Error: ', err);
       });
-    }).catch(function (err) {
-      console.log('Fetch Error: ', err);
-    });
+    }
   }
 
   function clearFields(){
-    alert("Passwords do not match! Please try again!");
-    //Clear all the fields
+    document.getElementById('txtPass').value = "";
+    document.getElementById('txtPass2').value = "";
   }
 
   return (

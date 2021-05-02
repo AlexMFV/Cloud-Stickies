@@ -4,7 +4,7 @@ begin
 	where users.usr = @username and users.pwd = @pass limit 1;
 end
 
-CREATE PROCEDURE cloudstickies.createUser(in username varchar(50), in pass varchar(64))
+CREATE PROCEDURE cloudstickies.createUser(in username varchar(64), in pass varchar(64))
 begin
 	insert into users (usr, pwd, time_created)
 	values (username, pass, now());

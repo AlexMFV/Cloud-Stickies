@@ -10,5 +10,6 @@ app.use(morgan('common'));
 app.use(express.json());
 
 app.post('/api/login', func.processLogin);
+app.post('/api/register', func.processRegistration);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

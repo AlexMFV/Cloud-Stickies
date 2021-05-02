@@ -11,6 +11,16 @@ async function checkUserLogin(user, pass){
     return false;
 }
 
+async function createUser(user, pass){
+    let rows = await callProcedure('createUser', [user, pass]);
+
+    console.log(rows);
+    
+    //if(rows[0].length > 0)
+        //return true;
+    //return false;
+}
+
 async function callProcedure(name, parameters){
     let [rows] = await con.promise().query(formatQuery(name, parameters));
     return rows;
@@ -23,4 +33,4 @@ function formatQuery(name, parameters){
                         .replace('<parameters>', parameters.join(','));
 }
 
-module.exports = { checkUserLogin }
+module.exports = { checkUserLogin, createUser }

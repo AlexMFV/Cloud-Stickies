@@ -1,14 +1,14 @@
 //
-//  CloudStickiesTests.swift
-//  CloudStickiesTests
+//  Cloud_StickiesTests.swift
+//  Cloud-StickiesTests
 //
-//  Created by Alex Valente on 09/02/2021.
+//  Created by Alex Valente on 19/02/2021.
 //
 
 import XCTest
-@testable import CloudStickies
+@testable import Cloud_Stickies
 
-class CloudStickiesTests: XCTestCase {
+class Cloud_StickiesTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

@@ -13,6 +13,11 @@ async function createUser(user, pass){
     return numRows == 1 ? true : false;
 }
 
+async function checkUserExists(user){
+    let count = await callProcedureFirstRow('checkUserExists', [user]);
+    return count.result == 1 ? true : false;
+}
+
 /**
  * Gets all the rows returned by the called procedure.
  * @param {*} name Name of the procedure
@@ -53,4 +58,4 @@ function formatQuery(name, parameters){
                         .replace('<parameters>', parameters.join(','));
 }
 
-module.exports = { checkUserLogin, createUser }
+module.exports = { checkUserLogin, createUser, checkUserExists }

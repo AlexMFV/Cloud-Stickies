@@ -12,7 +12,10 @@ const LoginPage = () => {
     const pass = sha256(document.getElementById('txtPass').value);
 
     const data = { user, pass };
+
+    //Debug
     console.log(data);
+
     const options = {
       method: "POST",
       headers: {

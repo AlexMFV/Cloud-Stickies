@@ -1,3 +1,4 @@
+const { restart } = require('nodemon');
 const db = require('./dbconnection');
 
 async function processLogin(req, res){
@@ -17,15 +18,25 @@ async function processLogin(req, res){
 
 async function processRegistration(req, res){
     try{
-        const exists = await db.createUser(req.body.user, req.body.pass);
+        const success = await db.createUser(req.body.user, req.body.pass);
 
         //Add the user to the session, to remember sign in
         //if (exists)
             //req.session.userId = req.body.usr;
 
-        res.json(exists);
+        res.json(success);
     }
     catch(e){
+        error(res, e);
+    }
+}
+
+async function checkUserExists(req, res){
+    try {
+        const result = await db.checkUserExists(req.params.user);
+        res.json(result);
+    }
+    catch (e) {
         error(res, e);
     }
 }
@@ -35,4 +46,4 @@ function error(res, msg) {
     console.error(msg);
 }
 
-module.exports = { processLogin, processRegistration }
+module.exports = { processLogin, processRegistration, checkUserExists }

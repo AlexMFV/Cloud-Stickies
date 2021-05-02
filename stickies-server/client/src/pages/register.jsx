@@ -19,37 +19,42 @@ const RegisterPage = () => {
     else {
       const data = { user, pass };
 
-      console.log(data);
-      console.log("User Size: " + user.length);
-      console.log("Pass Size: " + pass.length);
-
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      };
-
-      await fetch('/api/register', options).then(function (res) {
-        if (res.status !== 200) {
-          console.log('There was a problem. Status Code: ' +
-            res.status);
-          return;
-        }
-
-        res.json().then(function (success) {
-          if (success) {
-            alert("Register successful, you can login now!");
-            //redirectToIndex(); //?user=" + usr;
-          }
-          else {
-            alert("There was an error creating the account, please try again later!");
-          }
-        });
-      }).catch(function (err) {
-        console.log('Fetch Error: ', err);
+      const userExists = await fetch('/api/user/' + user).then((res) => {
+        return res.json();
       });
+
+      if (!userExists) {
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        };
+
+        await fetch('/api/register', options).then(function (res) {
+          if (res.status !== 200) {
+            console.log('There was a problem. Status Code: ' +
+              res.status);
+            return;
+          }
+
+          res.json().then(function (success) {
+            if (success) {
+              alert("Register successful, you can login now!");
+              //redirectToIndex(); //?user=" + usr;
+            }
+            else {
+              alert("There was an error creating the account, please try again later!");
+            }
+          });
+        }).catch(function (err) {
+          console.log('Fetch Error: ', err);
+        });
+      }
+      else{
+        alert('This username is already in use! Please choose another one!');
+      }
     }
   }
 

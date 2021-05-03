@@ -1,0 +1,66 @@
+/**FIRST DESIGN**/
+/*.mainCanvas{
+    display: flex;
+    flex-direction: column;
+}
+
+.doubleCanvas{
+    display: flex;
+    flex-grow:initial;
+}
+
+.topBar{
+    display: flex;
+    background-color: black;
+    width: 100%;
+    height: 5vh;
+}
+
+.navBar{
+    background-color:blue;
+    width: 35vh;
+    height: calc(100vh - 5vh);
+    scroll-behavior: smooth;
+}
+
+.noteContent{
+    background-color:green;
+    width: 100%;
+    height: calc(100vh - 5vh);
+    scroll-behavior: smooth;
+}*/
+
+/**SECOND DESIGN**/
+.topBar{
+    display: flex;
+    background-color: black;
+    width: 100%;
+    height: 5vh;
+}
+
+.titleBar{
+    width: 11.5vw;
+    display: flex;
+    flex-direction: row;
+}
+
+.logo{
+    margin: 5px;
+    width: 40px;
+    height: 40px;
+}
+
+.appName{
+    margin-top: 5px;
+    font-family: "Brush Script MT";
+    font-weight: lighter;
+    color: white;
+}
+
+.controlBar{
+    background-color: black;
+    width: calc(100vw - 11.5vw);
+    margin-top: 5px;
+    border-left: 3px solid white;
+    height: 4vh;
+}

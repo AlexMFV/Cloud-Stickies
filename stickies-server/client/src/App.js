@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
+import HomePage from "./pages/home";
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 //Import all needed Component for this tutorial
@@ -26,6 +27,7 @@ class App extends Component {
               <Redirect to="/login" />  ) }} />
        <Route path="/login" component={LoginPage} />
        <Route path="/register" component={RegisterPage} />
+       <Route path="/home" component={HomePage} />
       </Router>
     );
   }

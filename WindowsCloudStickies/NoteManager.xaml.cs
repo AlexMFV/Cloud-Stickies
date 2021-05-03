@@ -169,5 +169,26 @@ namespace WindowsCloudStickies
                 open.Close();
             }
         }
+
+        private async void btnApiTest_Click(object sender, RoutedEventArgs e)
+        {
+            string username = "alexmfv3";
+            string newUser = Encrypt.ComputeHash(username);
+
+            string response = null;
+
+            //Instantiate method from String
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(async () => response = await DAL.CheckUserExists(newUser)));
+
+            if(response == null)
+            {
+                MessageBox.Show("String is null!");
+            }
+            else
+            {
+                MessageBox.Show(response);
+            }
+        }
     }
 }

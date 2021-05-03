@@ -59,5 +59,32 @@ namespace WindowsCloudStickies.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to application/json.
+        /// </summary>
+        internal static string JsonHeader {
+            get {
+                return ResourceManager.GetString("JsonHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://localhost:5000/.
+        /// </summary>
+        internal static string LocalIP {
+            get {
+                return ResourceManager.GetString("LocalIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change this to Server IP, later.
+        /// </summary>
+        internal static string ServerIP {
+            get {
+                return ResourceManager.GetString("ServerIP", resourceCulture);
+            }
+        }
     }
 }

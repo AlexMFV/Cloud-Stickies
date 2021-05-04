@@ -14,20 +14,27 @@ namespace WindowsCloudStickies
 
         public static async Task<string> Fetch(RequestType type, string route, List<string> parameters = null)
         {
-            http.BaseAddress = new Uri(Properties.Resources.LocalIP);
-            http.DefaultRequestHeaders.Accept.Clear();
-            http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(Properties.Resources.JsonHeader));
-
-            HttpResponseMessage response = http.GetAsync(route).Result;
-
-            string message = "";
-            
-            if (response.IsSuccessStatusCode)
+            try
             {
-                message = await response.Content.ReadAsStringAsync();
+                http.BaseAddress = new Uri(Properties.Resources.LocalIP);
+                http.DefaultRequestHeaders.Accept.Clear();
+                http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(Properties.Resources.JsonHeader));
+
+                HttpResponseMessage response = http.GetAsync(route).Result;
+
+                string message = "";
+
+                if (response.IsSuccessStatusCode)
+                {
+                    message = await response.Content.ReadAsStringAsync();
+                }
+
+                return message;
             }
-            
-            return message;
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

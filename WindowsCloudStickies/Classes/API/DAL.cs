@@ -36,9 +36,7 @@ namespace WindowsCloudStickies
         public static async Task<string> CheckUserExists(string user)
         {
             string response = "";
-
             response = await API.Fetch(RequestType.GET, ("/api/user/" + user));
-
             return response;
         }
 

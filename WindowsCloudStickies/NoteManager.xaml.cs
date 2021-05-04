@@ -26,16 +26,21 @@ namespace WindowsCloudStickies
     public partial class NoteManager : MetroWindow
     {
         List<Note> notes = new List<Note>();
+        string auth = null;
 
-        public NoteManager()
+        public NoteManager(string auth)
         {
             InitializeComponent();
+            this.auth = auth;
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             txtVersion.Text = "v" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
             AutoUpdater.Synchronous = true;
             LocalSave.LoadStickyNotes(Guid.NewGuid());
             lstNotes.ItemsSource = Globals.stickies;
             //this.WindowState = WindowState.Minimized;
+
+            //DEBUG
+            btnApiTest.Content = auth;
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)

@@ -48,9 +48,9 @@ namespace WindowsCloudStickies
 
         public void ChangeTitleToParagraph()
         {
-            if(noteText != null)
+            if(noteText != null && noteText != "")
             {
-                string pre = this.noteText.Split('\n')[0];
+                string pre = this.noteText.Split('\n', '\r')[0];
                 this.noteTitle = pre.Length > 30 ? pre.Substring(0,30) : pre;
             }
         }

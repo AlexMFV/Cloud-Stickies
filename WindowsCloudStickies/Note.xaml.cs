@@ -142,10 +142,10 @@ namespace WindowsCloudStickies
 
         private void SaveWait_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            saveWait.Stop();
             this.current_note.noteText = TextFromRichTextBox(this.textCanvas);
             this.current_note.ChangeTitleToParagraph();
             SaveFullNote();
-            saveWait.Stop();
         }
 
         string TextFromRichTextBox(RichTextBox rtb)
@@ -164,13 +164,18 @@ namespace WindowsCloudStickies
             }
         }
 
-        public void SaveFullNote()
+        public async void SaveFullNote()
         {
             try
             {
                 Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.noteID)] = this.current_note;
-                Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)); //DEBUG: Change later to user ID)
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+
+                //await Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)); //DEBUG: Change later to user ID)
+
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                    new Action(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)));
+
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                     new Action(() => ChangeSavedState(State.Saved)));
             }
             catch (Exception ex)
@@ -184,7 +189,11 @@ namespace WindowsCloudStickies
             try
             {
                 Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.noteID)] = this.current_note;
-                Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)); //DEBUG: Change later to user ID)
+                //Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)); //DEBUG: Change later to user ID)
+
+                //TEST: add await if not working or uncomment code above, and delete this one, below
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                    new Action(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)));
             }
             catch (Exception ex)
             {

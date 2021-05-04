@@ -38,9 +38,6 @@ namespace WindowsCloudStickies
             LocalSave.LoadStickyNotes(Guid.NewGuid());
             lstNotes.ItemsSource = Globals.stickies;
             //this.WindowState = WindowState.Minimized;
-
-            //DEBUG
-            btnApiTest.Content = auth;
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -172,27 +169,6 @@ namespace WindowsCloudStickies
                 Note open = notes.First(note => note.current_note.noteID == pressedNote.noteID);
                 notes.Remove(open);
                 open.Close();
-            }
-        }
-
-        private async void btnApiTest_Click(object sender, RoutedEventArgs e)
-        {
-            string username = "alexmfv3";
-            string newUser = Encrypt.ComputeHash(username);
-
-            string response = null;
-
-            //Instantiate method from String
-            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                new Action(async () => response = await DAL.CheckUserExists(newUser)));
-
-            if(response == null)
-            {
-                MessageBox.Show("String is null!");
-            }
-            else
-            {
-                MessageBox.Show(response);
             }
         }
     }

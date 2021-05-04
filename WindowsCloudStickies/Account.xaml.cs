@@ -29,16 +29,40 @@ namespace WindowsCloudStickies
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            //Code to register the user
-            UserSuccessfullyAuthenticated = "Auth";
-            CloseLogin();
+            try
+            {
+                UserSuccessfullyAuthenticated = "Auth";
+                CloseLogin();
+            }
+            catch(Exception ex)
+            {
+                Messager.Process(ex);
+            }
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            //Code to verify login
-            UserSuccessfullyAuthenticated = "Auth";
-            CloseLogin();
+            try
+            {
+                if(txtUserL.Text == "" || txtPassL.Text == "")
+                    MessageBox.Show("Username and password cannot be empty!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                {
+                    if (await DAL.CheckUserLogin(txtUserL.Text, txtPassL.Text))
+                    {
+                        UserSuccessfullyAuthenticated = "Auth";
+                        CloseLogin();
+                    }
+                    else
+                    {
+                        MessageBox.Show("The credentials are not valid!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+            }
         }
 
         private void lblGuest_MouseEnter(object sender, MouseEventArgs e)

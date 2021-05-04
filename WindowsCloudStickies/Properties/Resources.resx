@@ -121,7 +121,7 @@
     <value>application/json</value>
   </data>
   <data name="LocalIP" xml:space="preserve">
-    <value>http://localhost:5000/</value>
+    <value>http://localhost:5000</value>
   </data>
   <data name="ServerIP" xml:space="preserve">
     <value>Change this to Server IP, later</value>

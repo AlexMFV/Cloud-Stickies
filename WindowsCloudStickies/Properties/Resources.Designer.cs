@@ -70,7 +70,7 @@ namespace WindowsCloudStickies.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://localhost:5000/.
+        ///   Looks up a localized string similar to http://localhost:5000.
         /// </summary>
         internal static string LocalIP {
             get {

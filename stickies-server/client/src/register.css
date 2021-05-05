@@ -1,0 +1,39 @@
+
+
+.registerContainer{
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    position: fixed;
+    background-color: rgb(190, 190, 190);
+    border-radius: 20px;
+    width: 600px;
+    height: 480px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-300px, -240px);
+    justify-content: space-evenly;
+}
+
+.registerTitle {
+    display: flex;
+    justify-content: center;
+}
+
+.inputContainer {
+    padding: 20px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.registerButton {
+    width: 200px;
+} 
+
+.textboxText {
+    font-weight: 500;
+    font-size: 17px;
+}

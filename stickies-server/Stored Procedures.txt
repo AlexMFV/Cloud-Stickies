@@ -1,0 +1,17 @@
+CREATE PROCEDURE cloudstickies.checkUserLogin(in username varchar(64), in pass varchar(64))
+begin
+	select * from cloudstickies.users
+	where users.usr = username and users.pwd = pass limit 1;
+end
+
+CREATE PROCEDURE cloudstickies.createUser(in username varchar(64), in pass varchar(64))
+begin
+	insert into users (usr, pwd, time_created)
+	values (username, pass, now());
+end
+
+CREATE PROCEDURE cloudstickies.checkUserExists(in username varchar(64))
+BEGIN
+	select count(usr) as result from users
+    	where users.usr = username;
+END

@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Manually removed files and directories
+StickiesServer/.vscode/
+StickiesServer/tmp/
+StickiesServer/.remote-sync.json
+StickiesServer/database/config.json
+
 # User-specific files
 *.rsuser
 *.suo
@@ -360,3 +366,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+stickies-server/server/config.json

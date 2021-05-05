@@ -6,10 +6,18 @@ Manager Changes:
 
 ----------------------------------------------
 
-**Release Notes v0.1.2.0**
+**Release Notes v0.1.2.0** (Pending release)
 
-Manager Changes:
-	- Something
+Developer Log:
+	- Implemented base infrastructure for API connection
+	- Quality of life improvements for DB connection
 
-Note Changes:
-	- Something
+New Features:
+	- (Account System v1.0) Implemented Login for users that already created an account from the website application
+		- Added ability to use a Guest account and save notes only locally
+		- New starting window for the users to Login/Register
+	- Force save notes when pressing the note's "saving indicator"
+	- Added ability to delete selected notes from the manager note list.
+
+Patches:
+	- Fixed a bug while saving on a new thread that corrupted the notes (**MAJOR**)

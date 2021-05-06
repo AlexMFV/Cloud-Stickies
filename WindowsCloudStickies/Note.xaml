@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowsCloudStickies"
         mc:Ignorable="d"
-        Title="Note" Height="280" Width="270" AllowsTransparency="True" WindowStyle="None" ResizeMode="CanResizeWithGrip" SizeChanged="noteWindow_SizeChanged" StateChanged="noteWindow_StateChanged">
+        Title="Note" Height="280" Width="270" AllowsTransparency="True" WindowStyle="None" Loaded="noteWindow_Loaded" ResizeMode="CanResizeWithGrip" LocationChanged="noteWindow_LocationChanged" SizeChanged="noteWindow_SizeChanged" StateChanged="noteWindow_StateChanged">
     <!--MouseEnter="noteWindow_MouseEnter" MouseLeave="noteWindow_MouseLeave">-->
 
     <Grid x:Name="noteBackground" Background="{StaticResource GreenNote}">

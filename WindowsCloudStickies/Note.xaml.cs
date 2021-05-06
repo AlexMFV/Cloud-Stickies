@@ -34,7 +34,9 @@ namespace WindowsCloudStickies
         {
             InitializeComponent();
             current_note = Globals.stickies.GetNoteFromGUID(_noteID);
+
             this.ShowInTaskbar = false;
+
             textCanvas.Background = current_note.noteColor;
             gripBar.Background = current_note.titleColor;
 
@@ -44,8 +46,7 @@ namespace WindowsCloudStickies
 
             manager = _manager;
 
-            this.textCanvas.AppendText(this.current_note.noteText);
-            saveWait.Start();
+            LoadNoteProperties();
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -88,6 +89,14 @@ namespace WindowsCloudStickies
 
             if (this.Width <= 100)
                 this.Width = 100;
+
+            this.current_note.width = (int)this.Width;
+            this.current_note.height = (int)this.Height;
+
+            saveWait.Stop();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() => ChangeSavedState(State.NotSaved)));
+            saveWait.Start();
         }
 
         private void gripBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -220,6 +229,47 @@ namespace WindowsCloudStickies
         {
             saveWait.Stop();
             SaveFullNote();
+        }
+
+        private void noteWindow_LocationChanged(object sender, EventArgs e)
+        {
+            this.current_note.x = (int)this.Left;
+            this.current_note.y = (int)this.Top;
+
+            saveWait.Stop();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() => ChangeSavedState(State.NotSaved)));
+            saveWait.Start();
+        }
+
+        public void LoadNoteProperties()
+        {
+            this.textCanvas.AppendText(this.current_note.noteText); //Load Text
+
+            //This is necessary to have, because if this code was on the Loaded event
+            //the note would ignore the positions and size set, and move randomly across the screen
+            if ((this.current_note.width > 0 && this.current_note.height > 0) &&
+                (this.current_note.x > 0 && this.current_note.y > 0))
+            {
+                this.Width = this.current_note.width;
+                this.Height = this.current_note.height;
+                this.Left = this.current_note.x;
+                this.Top = this.current_note.y;
+            }
+        }
+
+        private void noteWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if ((this.current_note.width <= 0 || this.current_note.height <= 0) ||
+                (this.current_note.x <= 0 || this.current_note.y <= 0))
+            {
+                this.current_note.x = (int)this.Left;
+                this.current_note.y = (int)this.Top;
+                this.current_note.width = (int)this.Width;
+                this.current_note.height = (int)this.Height;
+            }
+
+            saveWait.Start();
         }
 
         //private void noteWindow_MouseEnter(object sender, MouseEventArgs e)

@@ -17,21 +17,50 @@ namespace WindowsCloudStickies
 
         public static async Task<bool> CheckUserLogin(string user, string pass)
         {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters.Add("user", Encrypt.ComputeHash(user));
-            parameters.Add("pass", Encrypt.ComputeHash(pass));
-            bool response = Convert.ToBoolean(await API.FetchPOST(RequestType.POST, ReadType.String, "/api/login", parameters));
-            return response;
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("user", Encrypt.ComputeHash(user));
+                parameters.Add("pass", Encrypt.ComputeHash(pass));
+                bool response = Convert.ToBoolean(await API.Fetch(RequestType.POST, "/api/login", parameters));
+                return response;
+            }
+            catch(Exception ex)
+            {
+                Messager.Process(ex);
+                return false;
+            }
         }
 
         #endregion
 
         #region Register
 
-        //public static bool CreateUser(string user, string pass)
-        //{
-        //
-        //}
+        public static async Task<string> CreateUser(string user, string pass)
+        {
+            try
+            {
+                //Check if user exists
+                if (!await CheckUserExists(Encrypt.ComputeHash(user)))
+                {
+                    Dictionary<string, string> parameters = new Dictionary<string, string>();
+                    parameters.Add("user", Encrypt.ComputeHash(user));
+                    parameters.Add("pass", Encrypt.ComputeHash(pass));
+                    bool response = Convert.ToBoolean(await API.Fetch(RequestType.POST, "/api/register", parameters));
+
+                    if (response)
+                        return "OK";
+                    else
+                        return "ERROR";
+                }
+                return "EXISTS";
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return "EX";
+            }
+        }
 
         #endregion
 
@@ -39,8 +68,16 @@ namespace WindowsCloudStickies
 
         public static async Task<bool> CheckUserExists(string user)
         {
-            bool response = (bool)await API.Fetch(RequestType.GET, ReadType.String, ("/api/user/" + user));
-            return response;
+            try
+            {
+                bool response = Convert.ToBoolean(await API.Fetch(RequestType.GET, "/api/user/" + user));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return false;
+            }
         }
 
         #endregion

@@ -6,7 +6,7 @@ Manager Changes:
 
 ----------------------------------------------
 
-**Release Notes v0.1.2.0** (Pending release)
+**Release Notes v0.1.2.0** (Released)
 
 Developer Log:
 	- Implemented base infrastructure for API connection
@@ -21,3 +21,11 @@ New Features:
 
 Patches:
 	- Fixed a bug while saving on a new thread that corrupted the notes (**MAJOR**)
+
+----------------------------------------------
+
+**Release Notes v0.1.3.0** (Unreleased)
+
+- Added the ability to register a new user
+- Quality of life update on the Fetch method
+- Added Exception handling

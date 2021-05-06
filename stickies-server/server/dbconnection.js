@@ -9,8 +9,17 @@ async function checkUserLogin(user, pass){
 }
 
 async function createUser(user, pass){
-    let numRows = await callProcedureNonQuery('createUser', [user, pass]);
-    return numRows == 1 ? true : false;
+    try {
+        let numRows = await callProcedureNonQuery('createUser', [user, pass]);
+
+        if (numRows == 1) {
+            return true;
+        }
+        return false;
+    }
+    catch(e){
+        return false;
+    }
 }
 
 async function checkUserExists(user){

@@ -27,12 +27,31 @@ namespace WindowsCloudStickies
             //Check if user is logged in, and the login hasn't expired yet
         }
 
-        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        private async void btnRegister_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                UserSuccessfullyAuthenticated = "Auth";
-                CloseLogin();
+                if (txtUserR.Text == "" || txtPassR.Text == "" || txtPass2R.Text == "")
+                    MessageBox.Show("Username and password cannot be empty!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                {
+                    if (txtPassR.Text != txtPass2R.Text)
+                        MessageBox.Show("Passwords must match! Please try again", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    else
+                    {
+                        string result = await DAL.CreateUser(txtUserR.Text, txtPassR.Text);
+
+                        switch (result)
+                        {
+                            case "OK": MessageBox.Show("User created successfully!");
+                                UserSuccessfullyAuthenticated = "Auth";
+                                CloseLogin(); break;
+                            case "ERROR": MessageBox.Show("There was an error creating the account, please try again later!"); break;
+                            case "EXISTS": MessageBox.Show("This username already exists, please choose another one!"); break;
+                            case "EX": MessageBox.Show("An internal server error occured, please try again later!"); break;
+                        }
+                    }
+                }
             }
             catch(Exception ex)
             {

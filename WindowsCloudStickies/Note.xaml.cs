@@ -16,6 +16,7 @@ using System.Windows.Interop;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Threading;
+using System.IO;
 
 namespace WindowsCloudStickies
 {
@@ -152,24 +153,57 @@ namespace WindowsCloudStickies
         private void SaveWait_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             saveWait.Stop();
-            this.current_note.noteText = TextFromRichTextBox(this.textCanvas);
+            this.current_note.noteText = (string)Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
+                new Func<string>(() => TextFromRichTextBox(this.textCanvas)));
             this.current_note.ChangeTitleToParagraph();
             SaveFullNote();
         }
 
         string TextFromRichTextBox(RichTextBox rtb)
         {
+            foreach(Block block in rtb.Document.Blocks)
+            {
+                break;
+            }
+
             return new TextRange( rtb.Document.ContentStart,
                 rtb.Document.ContentEnd).Text;
+        }
+
+        private void textCanvas_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            bool ctrlV = e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V;
+            bool shiftIns = e.KeyboardDevice.Modifiers == ModifierKeys.Shift && e.Key == Key.Insert;
+            if (ctrlV || shiftIns)
+                if (Clipboard.ContainsImage())
+                {
+                    BitmapSource source = Clipboard.GetImage();
+                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                    encoder.QualityLevel = 100;
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        encoder.Frames.Add(BitmapFrame.Create(source));
+                        encoder.Save(stream);
+                        byte[] bit = stream.ToArray();
+                        stream.Close();
+                        Paragraph imageBlock = new Paragraph();
+                        Figure image = new Figure(imageBlock);
+                        this.textCanvas.Document.Blocks.Add(image);
+                        string base64 = Convert.ToBase64String(bit); //Base64 String to add to the noteText, then convert it back to image (when coming from DB)
+                    }
+                    //Allow the user to also paste text
+                    e.Handled = true;
+                }
         }
 
         public void ChangeSavedState(State state)
         {
             switch (state)
             {
-                case State.NotSaved: savedIndicator.Background = (Brush)Application.Current.Resources["NotSaved"]; break;
-                case State.Saved: savedIndicator.Background = (Brush)Application.Current.Resources["Saved"]; break;
-                case State.Unknown: savedIndicator.Background = (Brush)Application.Current.Resources["Unknown"]; break;
+                case State.NotSaved: savedIndicator.Background = (System.Windows.Media.Brush)Application.Current.Resources["NotSaved"]; break;
+                case State.Saved: savedIndicator.Background = (System.Windows.Media.Brush)Application.Current.Resources["Saved"]; break;
+                case State.Unknown: savedIndicator.Background = (System.Windows.Media.Brush)Application.Current.Resources["Unknown"]; break;
             }
         }
 

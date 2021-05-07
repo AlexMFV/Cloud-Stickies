@@ -48,7 +48,7 @@
             </Button.Style>
         </Button>
 
-        <RichTextBox x:Name="textCanvas" TextChanged="textCanvas_TextChanged" Margin="1,14,1,0" Background="{StaticResource GreenNote}" BorderBrush="Black" BorderThickness="0">
+        <RichTextBox x:Name="textCanvas" PreviewKeyDown="textCanvas_PreviewKeyDown" TextChanged="textCanvas_TextChanged" Margin="1,14,1,0" Background="{StaticResource GreenNote}" BorderBrush="Black" BorderThickness="0">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter x:Name="paragraphSpacing" Property="Margin" Value="0"/>

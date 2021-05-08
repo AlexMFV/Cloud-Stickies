@@ -30,3 +30,4 @@ Patches:
 - Quality of life update on the Fetch method
 - Added Exception handling
 - Notes now stay where they were with the sizes they were set to
+- On login, password boxes now hide the password

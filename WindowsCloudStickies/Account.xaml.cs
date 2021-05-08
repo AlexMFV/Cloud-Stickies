@@ -31,15 +31,15 @@ namespace WindowsCloudStickies
         {
             try
             {
-                if (txtUserR.Text == "" || txtPassR.Text == "" || txtPass2R.Text == "")
+                if (txtUserR.Text == "" || txtPassR.Password == "" || txtPass2R.Password == "")
                     MessageBox.Show("Username and password cannot be empty!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 else
                 {
-                    if (txtPassR.Text != txtPass2R.Text)
+                    if (txtPassR.Password != txtPass2R.Password)
                         MessageBox.Show("Passwords must match! Please try again", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     else
                     {
-                        string result = await DAL.CreateUser(txtUserR.Text, txtPassR.Text);
+                        string result = await DAL.CreateUser(txtUserR.Text, txtPassR.Password);
 
                         switch (result)
                         {
@@ -63,11 +63,11 @@ namespace WindowsCloudStickies
         {
             try
             {
-                if(txtUserL.Text == "" || txtPassL.Text == "")
+                if(txtUserL.Text == "" || txtPassL.Password == "")
                     MessageBox.Show("Username and password cannot be empty!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 else
                 {
-                    if (await DAL.CheckUserLogin(txtUserL.Text, txtPassL.Text))
+                    if (await DAL.CheckUserLogin(txtUserL.Text, txtPassL.Password))
                     {
                         UserSuccessfullyAuthenticated = "Auth";
                         CloseLogin();

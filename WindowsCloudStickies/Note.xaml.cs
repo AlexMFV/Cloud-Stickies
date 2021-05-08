@@ -161,10 +161,10 @@ namespace WindowsCloudStickies
 
         string TextFromRichTextBox(RichTextBox rtb)
         {
-            foreach(Block block in rtb.Document.Blocks)
+            /*foreach(Block block in rtb.Document.Blocks)
             {
                 break;
-            }
+            }*/
 
             return new TextRange( rtb.Document.ContentStart,
                 rtb.Document.ContentEnd).Text;
@@ -172,6 +172,7 @@ namespace WindowsCloudStickies
 
         private void textCanvas_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            /* This is where the image will be implemented
             bool ctrlV = e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V;
             bool shiftIns = e.KeyboardDevice.Modifiers == ModifierKeys.Shift && e.Key == Key.Insert;
             if (ctrlV || shiftIns)
@@ -195,6 +196,7 @@ namespace WindowsCloudStickies
                     //Allow the user to also paste text
                     e.Handled = true;
                 }
+            */
         }
 
         public void ChangeSavedState(State state)

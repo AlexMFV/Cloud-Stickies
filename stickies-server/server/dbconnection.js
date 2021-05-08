@@ -8,9 +8,9 @@ async function checkUserLogin(user, pass){
     return rows.length > 0 ? true : false;
 }
 
-async function createUser(user, pass){
+async function createUser(id, user, pass){
     try {
-        let numRows = await callProcedureNonQuery('createUser', [user, pass]);
+        let numRows = await callProcedureNonQuery('createUser', [id, user, pass]);
 
         if (numRows == 1) {
             return true;

@@ -18,7 +18,7 @@ async function processLogin(req, res){
 
 async function processRegistration(req, res){
     try{
-        const success = await db.createUser(req.body.user, req.body.pass);
+        const success = await db.createUser(req.body.id, req.body.user, req.body.pass);
 
         //Add the user to the session, to remember sign in
         //if (exists)

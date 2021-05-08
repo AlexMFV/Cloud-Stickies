@@ -44,6 +44,7 @@ namespace WindowsCloudStickies
                 if (!await CheckUserExists(Encrypt.ComputeHash(user)))
                 {
                     Dictionary<string, string> parameters = new Dictionary<string, string>();
+                    parameters.Add("id", Guid.NewGuid().ToString());
                     parameters.Add("user", Encrypt.ComputeHash(user));
                     parameters.Add("pass", Encrypt.ComputeHash(pass));
                     bool response = Convert.ToBoolean(await API.Fetch(RequestType.POST, "/api/register", parameters));

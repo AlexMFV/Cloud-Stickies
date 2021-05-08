@@ -6,15 +6,16 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:WindowsCloudStickies"        
         mc:Ignorable="d"
-        Title="Stickies Manager" Height="450" Width="800">
+        Title="Stickies Manager" Height="455" Width="800" WindowStartupLocation="CenterScreen" Closing="MetroWindow_Closing">
     <Grid Background="{StaticResource Dark}">
         <Button x:Name="btnAdd" Content="Add Note" Click="btnAdd_Click" Margin="10,10,0,0" Height="37" VerticalAlignment="Top" HorizontalAlignment="Left" Width="102"/>
         <Button x:Name="btnRemoveAll" Content="Remove All Notes" Margin="117,10,0,0" Click="btnRemoveAll_Click" HorizontalAlignment="Left" Width="110" Height="37" VerticalAlignment="Top"/>
         <Button x:Name="btnRemoveSelected" Content="Remove Selected" Margin="232,10,0,0" Click="btnRemoveSelected_Click"  HorizontalAlignment="Left" Width="110" Height="37" VerticalAlignment="Top"/>
         <Button x:Name="btnSaveAll" Content="Save All Notes" Width="100" Height="37" Margin="347,10,0,0" Click="btnSaveAll_Click" VerticalAlignment="Top" HorizontalAlignment="Left"></Button>
         <Button x:Name="btnCloseAll" Content="Close All Notes" Width="100" Height="37" Margin="452,10,0,0" VerticalAlignment="Top" Click="btnCloseAll_Click" HorizontalAlignment="Left"></Button>
+        <Button x:Name="btnLogout" Click="btnLogout_Click" Height="37" Content="Logout" Margin="557,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100"/>
         <Button x:Name="btnUpdates" Click="btnUpdates_Click" Height="37" Width="120" Content="Check For Updates" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top"></Button>
-        <ListView Margin="10,52,10,10" Background="{StaticResource Dark}" ItemsSource="{Binding Mode=OneWay, IsAsync=True}" x:Name="lstNotes" BorderBrush="{StaticResource AquaTitle}" BorderThickness="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MouseDoubleClick="lstNotes_MouseDoubleClick">
+        <ListView Margin="10,52,10,17" Background="{StaticResource Dark}" ItemsSource="{Binding Mode=OneWay, IsAsync=True}" x:Name="lstNotes" BorderBrush="{StaticResource AquaTitle}" BorderThickness="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MouseDoubleClick="lstNotes_MouseDoubleClick">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Padding" Value="0"/>
@@ -38,7 +39,8 @@
                     <!-- Button Hide/Show Note (Eye image that changes between Eye and Crossed Eye)-->
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>        
-        <TextBlock x:Name="txtVersion" Text="v0.1.0.1" Height="12" Width="50" HorizontalAlignment="Right" TextAlignment="Center" FontSize="9" Foreground="White" VerticalAlignment="Bottom"/>
+        </ListView>
+        <TextBlock x:Name="txtUsername" Text="Logged in as: User" Height="15" Width="257" HorizontalAlignment="Left" TextAlignment="Left" FontSize="10" Foreground="White" VerticalAlignment="Bottom" Margin="10,0,0,1"></TextBlock>
+        <TextBlock x:Name="txtVersion" Text="v0.1.0.1" Height="12" Width="50" HorizontalAlignment="Right" TextAlignment="Center" FontSize="9" Foreground="White" VerticalAlignment="Bottom" Margin="0,0,0,3"/>
     </Grid>
 </mah:MetroWindow>

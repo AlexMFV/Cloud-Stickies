@@ -17,6 +17,7 @@ using AutoUpdaterDotNET;
 using System.Windows.Threading;
 using System.Reflection;
 using System.Net;
+using System.IO;
 
 namespace WindowsCloudStickies
 {
@@ -30,14 +31,51 @@ namespace WindowsCloudStickies
         public NoteManager()
         {
             InitializeComponent();
+            SetSystemTrayNotification();
+
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             txtVersion.Text = "v" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
             AutoUpdater.Synchronous = true;
-            LocalSave.LoadStickyNotes(Guid.NewGuid());
+            LocalSave.LoadStickyNotes(Globals.user.ID);
             lstNotes.ItemsSource = Globals.stickies;
+            txtUsername.Text = "Logged in as: " + Globals.user.Username;
+
             //Do stuff depending on Registered, Login or Guest user
             //Use: Globals.user.authType
             //this.WindowState = WindowState.Minimized;
+        }
+
+        public void SetSystemTrayNotification()
+        {
+            Globals.ni = new System.Windows.Forms.NotifyIcon();
+            Globals.ni.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+
+            Globals.ni.ContextMenuStrip.Items.Add("Close").Click +=
+                delegate (object sender, EventArgs e)
+                {
+                    this.Close();
+                };
+
+            Globals.ni.Icon = new System.Drawing.Icon(new DirectoryInfo(Environment.CurrentDirectory).Parent.Parent.FullName + "/Images/notes.ico");
+            Globals.ni.Visible = false;
+            Globals.ni.DoubleClick +=
+                delegate (object sender, EventArgs args)
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                    Globals.ni.Visible = false;
+                };
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+                Globals.ni.Visible = true;
+            }
+
+            base.OnStateChanged(e);
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -60,7 +98,7 @@ namespace WindowsCloudStickies
 
             notes = new List<Note>();
             Globals.stickies = new StickyNotes();
-            LocalSave.DeleteAllNotes(Guid.NewGuid()); //REMOVE THE NEWGUID as this will override the actual user GUID
+            LocalSave.DeleteAllNotes(Globals.user.ID);
 
             updateList();
         }
@@ -104,7 +142,7 @@ namespace WindowsCloudStickies
             foreach (Guid delID in toDelete)
             {
                 StickyNote note = Globals.stickies.GetNoteFromGUID(delID);
-                LocalSave.DeleteNote(new Guid(), note.noteID);
+                LocalSave.DeleteNote(Globals.user.ID, note.noteID);
                 Globals.stickies.Remove(note);
             }
 
@@ -120,7 +158,7 @@ namespace WindowsCloudStickies
         private void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
             if(Globals.stickies.Count > 0)
-                LocalSave.SaveAllStickyNotes(Guid.NewGuid()); //Change to User GUID later
+                LocalSave.SaveAllStickyNotes(Globals.user.ID);
         }
 
         private void btnCloseAll_Click(object sender, RoutedEventArgs e)
@@ -170,6 +208,31 @@ namespace WindowsCloudStickies
                 notes.Remove(open);
                 open.Close();
             }
+        }
+
+        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            //If it's a connected user, save all the notes to the cloud first, then logout
+            Globals.user = null;
+            WindowManager.OpenLogin(this);
+        }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool result = Messager.CloseApplication();
+            if (result)
+            {
+                foreach (Note n in notes)
+                    n.Close(); //Maybe save first, the notes
+                notes = null;
+                Globals.stickies = null;
+                Globals.ni.Visible = false;
+                Globals.ni.Icon.Dispose();
+                Globals.ni.Dispose();
+                Application.Current.Shutdown();
+            }
+            else
+                e.Cancel = true;
         }
     }
 }

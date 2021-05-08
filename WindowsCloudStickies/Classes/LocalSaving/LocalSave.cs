@@ -23,11 +23,14 @@ namespace WindowsCloudStickies
         public static void LoadStickyNotes(Guid userID)
         {
             bool isCorrupted = false;
-            //-------------------------------DEBUG ONLY-----------------------------------
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
 
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies"); //Change To Sticky Notes
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            string userDir;
+
+            if (userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
 
             StickyNotes collection = new StickyNotes();
 
@@ -62,11 +65,13 @@ namespace WindowsCloudStickies
 
         public static void SaveAllStickyNotes(Guid userID)
         {
-            //-------------DEBUG ONLY----------------
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
-
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+
+            string userDir;
+            if(userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
 
             if (!Directory.Exists(cacheDir))
                 Directory.CreateDirectory(cacheDir);
@@ -89,11 +94,13 @@ namespace WindowsCloudStickies
 
         public static void SaveStickyNote(Guid userID, Guid noteID)
         {
-            //-------------DEBUG ONLY----------------
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
-
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+
+            string userDir;
+            if (userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
 
             if (!Directory.Exists(cacheDir))
                 Directory.CreateDirectory(cacheDir);
@@ -150,21 +157,28 @@ namespace WindowsCloudStickies
 
         public static void DeleteAllNotes(Guid userID)
         {
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
-
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
 
-            foreach(string filePath in Directory.GetFiles(userDir).ToList())
+            string userDir;
+            if (userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
+
+            foreach (string filePath in Directory.GetFiles(userDir).ToList())
                 File.Delete(filePath);
         }
 
         public static void DeleteNote(Guid userID, Guid noteID)
         {
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
-
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+
+            string userDir;
+            if (userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
+
             string filepath = Path.Combine(userDir + "\\" + noteID);
 
             if (File.Exists(filepath))
@@ -172,11 +186,6 @@ namespace WindowsCloudStickies
             else
                 MessageBox.Show("There was a problem deleting the note!");
         }
-
-        //public static void DeleteSelectedNotes(Guid userID, Guid noteIDs)
-        //{
-
-        //}
 
         //public static void LoadUserSettings(Guid userID)
         //{

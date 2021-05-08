@@ -33,6 +33,7 @@ namespace WindowsCloudStickies
 
         public Note(Guid _noteID, NoteManager _manager)
         {
+            MakeWin();
             InitializeComponent();
             current_note = Globals.stickies.GetNoteFromGUID(_noteID);
 
@@ -48,6 +49,31 @@ namespace WindowsCloudStickies
             manager = _manager;
 
             LoadNoteProperties();
+
+            RemoveFromAltTab();
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindowEx(IntPtr hP, IntPtr hC, string sC, string sW);
+
+        void MakeWin()
+        {
+            IntPtr nWinHandle = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "Progman", null);
+            nWinHandle = FindWindowEx(nWinHandle, IntPtr.Zero, "SHELLDLL_DefView", null);
+            SetParent(new WindowInteropHelper(this).Handle, nWinHandle);
+        }
+
+        /// <summary>
+        /// Method responsible for hiding the notes from the Alt+Tab menu
+        /// </summary>
+        protected void RemoveFromAltTab()
+        {
+            Globals.helperWindow.Show(); // We need to show window before set is as owner to our main window
+            this.Owner = Globals.helperWindow; // Okey, this will result to disappear icon for main window.
+            Globals.helperWindow.Hide(); // Hide helper window just in case
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -215,10 +241,10 @@ namespace WindowsCloudStickies
             {
                 Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.noteID)] = this.current_note;
 
-                //await Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)); //DEBUG: Change later to user ID)
+                //await Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Globals.user.ID,, this.current_note.noteID)); //DEBUG: Change later to user ID)
 
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                    new Action(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)));
+                    new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.noteID)));
 
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                     new Action(() => ChangeSavedState(State.Saved)));
@@ -234,11 +260,11 @@ namespace WindowsCloudStickies
             try
             {
                 Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.noteID)] = this.current_note;
-                //Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)); //DEBUG: Change later to user ID)
+                //Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Globals.user.ID,, this.current_note.noteID)); //DEBUG: Change later to user ID)
 
                 //TEST: add await if not working or uncomment code above, and delete this one, below
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                    new Action(() => LocalSave.SaveStickyNote(Guid.NewGuid(), this.current_note.noteID)));
+                    new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.noteID)));
             }
             catch (Exception ex)
             {
@@ -251,7 +277,7 @@ namespace WindowsCloudStickies
             manager.DeleteNoteForm(this.current_note.noteID);
             Globals.stickies.RemoveAt(Globals.stickies.GetNoteIndex(this.current_note.noteID));
             manager.updateList();
-            LocalSave.DeleteNote(Guid.NewGuid(), this.current_note.noteID);
+            LocalSave.DeleteNote(Globals.user.ID, this.current_note.noteID);
             this.Close();
         }
 

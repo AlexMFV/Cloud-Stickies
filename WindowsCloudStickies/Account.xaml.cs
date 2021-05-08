@@ -44,7 +44,8 @@ namespace WindowsCloudStickies
                         switch (result)
                         {
                             case "OK": MessageBox.Show("User created successfully!");
-                                Globals.user.AuthType = AuthType.Register;
+                                string id = JsonConvert.DeserializeObject<string>(await DAL.GetUserID(txtUserL.Text));
+                                Globals.user = new User(id, txtUserL.Text, AuthType.Login, true);
                                 CloseLogin(); break;
                             case "ERROR": MessageBox.Show("There was an error creating the account, please try again later!"); break;
                             case "EXISTS": MessageBox.Show("This username already exists, please choose another one!"); break;

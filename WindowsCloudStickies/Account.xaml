@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WindowsCloudStickies"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="WindowsCloudStickies.Account"
         mc:Ignorable="d"
-        Title="User Account" Height="330.626" Width="500" ResizeMode="NoResize" BorderBrush="#41A8BF" BorderThickness="2">
+        Title="User Account" Height="330.626" Width="500" ResizeMode="NoResize" BorderBrush="#41A8BF" BorderThickness="2" WindowStartupLocation="CenterScreen">
     <Grid Background="{StaticResource Dark}">
         <Label Width="100" Height="25" Content="Username" Foreground="White" Margin="21,11,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBox x:Name="txtUserL" BorderBrush="#41A8BF" BorderThickness="1" Width="200" Height="25" Margin="21,37,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>

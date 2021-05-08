@@ -10,7 +10,7 @@ namespace WindowsCloudStickies
     {
         public static void OpenManager(Account toClose)
         {
-            NoteManager manager = new NoteManager(toClose.UserSuccessfullyAuthenticated);
+            NoteManager manager = new NoteManager();
             toClose.Close();
             manager.Show();
         }

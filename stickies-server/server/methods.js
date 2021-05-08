@@ -41,9 +41,18 @@ async function checkUserExists(req, res){
     }
 }
 
+async function getUserID(req, res){
+    try {
+        const result = await db.getUserID(req.params.user)
+        res.json(result);
+    } catch (error) {
+        error(res, e);
+    }
+}
+
 function error(res, msg) {
     res.sendStatus(500);
     console.error(msg);
 }
 
-module.exports = { processLogin, processRegistration, checkUserExists }
+module.exports = { processLogin, processRegistration, checkUserExists, getUserID }

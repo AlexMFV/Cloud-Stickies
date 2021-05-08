@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Newtonsoft.Json;
 
 namespace WindowsCloudStickies
 {
@@ -19,8 +21,6 @@ namespace WindowsCloudStickies
     /// </summary>
     public partial class Account : Window
     {
-        public string UserSuccessfullyAuthenticated { get; private set; }
-
         public Account()
         {
             InitializeComponent();
@@ -44,7 +44,7 @@ namespace WindowsCloudStickies
                         switch (result)
                         {
                             case "OK": MessageBox.Show("User created successfully!");
-                                UserSuccessfullyAuthenticated = "Auth";
+                                Globals.user.AuthType = AuthType.Register;
                                 CloseLogin(); break;
                             case "ERROR": MessageBox.Show("There was an error creating the account, please try again later!"); break;
                             case "EXISTS": MessageBox.Show("This username already exists, please choose another one!"); break;
@@ -69,7 +69,8 @@ namespace WindowsCloudStickies
                 {
                     if (await DAL.CheckUserLogin(txtUserL.Text, txtPassL.Password))
                     {
-                        UserSuccessfullyAuthenticated = "Auth";
+                        string id = JsonConvert.DeserializeObject<string>(await DAL.GetUserID(txtUserL.Text));
+                        Globals.user = new User(id, txtUserL.Text, AuthType.Login, true);
                         CloseLogin();
                     }
                     else
@@ -100,7 +101,7 @@ namespace WindowsCloudStickies
 
         private void lblGuest_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            UserSuccessfullyAuthenticated = "Guest";
+            Globals.user = new User(true);
             CloseLogin();
         }
 

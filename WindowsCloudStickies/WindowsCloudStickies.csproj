@@ -181,6 +181,7 @@
     <Compile Include="Classes\API\DAL.cs" />
     <Compile Include="Classes\Conversion\Conversion.cs" />
     <Compile Include="Classes\Encrypt.cs" />
+    <Compile Include="Classes\Enums\AuthType.cs" />
     <Compile Include="Classes\Enums\ReadType.cs" />
     <Compile Include="Classes\Enums\RequestType.cs" />
     <Compile Include="Classes\Enums\SavedState.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Classes\StickyNotes\StickyNotes.cs" />
     <Compile Include="Classes\Globals.cs" />
     <Compile Include="Classes\LocalSaving\LocalSave.cs" />
+    <Compile Include="Classes\User\User.cs" />
     <Compile Include="Classes\WindowManager.cs" />
     <Compile Include="Resources\NoteColors.cs" />
     <Compile Include="Classes\StickyNotes\StickyNote.cs" />

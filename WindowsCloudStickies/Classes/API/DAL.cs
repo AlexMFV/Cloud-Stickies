@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Newtonsoft.Json;
 
 namespace WindowsCloudStickies
 {
@@ -81,6 +82,19 @@ namespace WindowsCloudStickies
             }
         }
 
+        public static async Task<string> GetUserID(string user)
+        {
+            try
+            {                
+                return (string)(await API.Fetch(RequestType.GET, "/api/getUserID/" + Encrypt.ComputeHash(user)));
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return null;
+            }
+        }
+         
         #endregion
 
         #endregion

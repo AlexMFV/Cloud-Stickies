@@ -12,5 +12,6 @@ app.use(express.json());
 app.post('/api/login', func.processLogin);
 app.post('/api/register', func.processRegistration);
 app.get('/api/user/:user', func.checkUserExists);
+app.get('/api/getUserID/:user', func.getUserID);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

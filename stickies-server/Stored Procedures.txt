@@ -15,3 +15,9 @@ BEGIN
 	select count(usr) as result from users
     	where users.usr = username;
 END
+
+CREATE PROCEDURE cloudstickies.getUserID(in username varchar(64))
+BEGIN
+	select user_id from users
+    where users.usr = username;
+end

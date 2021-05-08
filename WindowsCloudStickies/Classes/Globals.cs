@@ -11,5 +11,6 @@ namespace WindowsCloudStickies
         public static string UserName = ""; //Debug
         public static StickyNotes stickies = new StickyNotes();
         public static string AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        public static User user = null;
     }
 }

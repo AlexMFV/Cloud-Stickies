@@ -27,6 +27,11 @@ async function checkUserExists(user){
     return count.result == 1 ? true : false;
 }
 
+async function getUserID(user){
+    let userData = await callProcedureFirstRow('getUserID', [user]);
+    return userData.user_id !== undefined ? userData.user_id : null;
+}
+
 /**
  * Gets all the rows returned by the called procedure.
  * @param {*} name Name of the procedure
@@ -67,4 +72,4 @@ function formatQuery(name, parameters){
                         .replace('<parameters>', parameters.join(','));
 }
 
-module.exports = { checkUserLogin, createUser, checkUserExists }
+module.exports = { checkUserLogin, createUser, checkUserExists, getUserID }

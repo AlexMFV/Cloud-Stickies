@@ -94,7 +94,6 @@ async function callProcedureFirstRow(name, parameters){
  */
 async function callProcedureNonQuery(name, parameters){
     let [rows] = await con.promise().query(formatQuery(name, parameters));
-    console.log(rows);
     return rows.affectedRows;
 }
 

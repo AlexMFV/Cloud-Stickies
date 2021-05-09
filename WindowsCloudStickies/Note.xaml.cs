@@ -89,7 +89,10 @@ namespace WindowsCloudStickies
         private void gripBar_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if(e.ChangedButton == MouseButton.Left && !current_note.IsLocked)
+            {
                 this.DragMove();
+                this.current_note.hasUpdated = true;
+            }
         }
 
         private void btnLockNote_Click(object sender, RoutedEventArgs e)
@@ -107,6 +110,12 @@ namespace WindowsCloudStickies
                 this.ResizeMode = ResizeMode.CanResizeWithGrip;
                 textCanvas.IsReadOnly = false;
             }
+            this.current_note.hasUpdated = true;
+
+            saveWait.Stop();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() => ChangeSavedState(State.NotSaved)));
+            saveWait.Start();
         }
 
         private void noteWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -119,6 +128,7 @@ namespace WindowsCloudStickies
 
             this.current_note.Width = (int)this.Width;
             this.current_note.Height = (int)this.Height;
+            this.current_note.hasUpdated = true;
 
             saveWait.Stop();
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
@@ -134,6 +144,7 @@ namespace WindowsCloudStickies
                 h = this.Height;
                 this.Height = 14;
                 this.ResizeMode = ResizeMode.NoResize;
+                this.current_note.hasUpdated = true;
                 return;
             }
 
@@ -142,6 +153,7 @@ namespace WindowsCloudStickies
                 current_note.IsClosed = !current_note.IsClosed;
                 this.Height = h;
                 this.ResizeMode = ResizeMode.CanResizeWithGrip;
+                this.current_note.hasUpdated = true;
                 return;
             }
         }
@@ -174,9 +186,10 @@ namespace WindowsCloudStickies
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                 new Action(() => ChangeSavedState(State.NotSaved)));
 
-            if (this.current_note != null && this.current_note.hasUpdated != true && !this.current_note.isNew && this.current_note.NoteText != null &&
-                e.Changes.Count > 0 && e.Changes.First<TextChange>().AddedLength < this.current_note.NoteText.Length)
-                this.current_note.hasUpdated = true;
+            //if (this.current_note != null && this.current_note.hasUpdated != true && !this.current_note.isNew && this.current_note.NoteText != null &&
+                //e.Changes.Count > 0 && e.Changes.First<TextChange>().AddedLength < this.current_note.NoteText.Length)
+                if(this.current_note != null && !this.current_note.isNew)
+                    this.current_note.hasUpdated = true;
 
             saveWait.Start();
         }

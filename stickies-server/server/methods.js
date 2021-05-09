@@ -50,9 +50,39 @@ async function getUserID(req, res){
     }
 }
 
+async function createNote(req, res){
+    try {
+        const result = await db.createNote(req.body.conID, req.body.userID,req.body.note_id,
+            req.body.noteText,req.body.noteTitle,req.body.noteColor,
+            req.body.titleColor, req.body.dateCreated, req.body.baseFont,
+            req.body.baseFontSize,req.body.baseFontColor,req.body.posX,
+            req.body.posY,req.body.width,req.body.height,req.body.isClosed,
+            req.body.isLocked);
+
+        res.json(result);
+    } catch (error) {
+        error(res, e);
+    }
+}
+
+async function updateNote(req, res){
+    try {
+        const result = await db.updateNote(req.body.note_id,
+            req.body.noteText,req.body.noteTitle,req.body.noteColor,
+            req.body.titleColor, req.body.baseFont,
+            req.body.baseFontSize,req.body.baseFontColor,req.body.posX,
+            req.body.posY,req.body.width,req.body.height,req.body.isClosed,
+            req.body.isLocked);
+
+        res.json(result);
+    } catch (error) {
+        error(res, e);
+    }
+}
+
 function error(res, msg) {
     res.sendStatus(500);
     console.error(msg);
 }
 
-module.exports = { processLogin, processRegistration, checkUserExists, getUserID }
+module.exports = { processLogin, processRegistration, checkUserExists, getUserID, createNote, updateNote }

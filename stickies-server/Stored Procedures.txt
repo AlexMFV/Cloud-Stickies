@@ -13,11 +13,36 @@ end
 CREATE PROCEDURE cloudstickies.checkUserExists(in username varchar(64))
 BEGIN
 	select count(usr) as result from users
-    	where users.usr = username;
+    where users.usr = username;
 END
 
 CREATE PROCEDURE cloudstickies.getUserID(in username varchar(64))
 BEGIN
 	select user_id from users
     where users.usr = username;
+end
+
+CREATE DEFINER=`alexmfv`@`%` PROCEDURE `cloudstickies`.`connectNote`(in id varchar(64), in userID varchar(64), in noteID varchar(64))
+begin
+	insert into user_notes
+	values(id, userID, noteID);
+end
+
+CREATE DEFINER=`alexmfv`@`%` PROCEDURE `cloudstickies`.`createNote`(in conID varchar(64), in userID varchar(64), in id varchar(64), in nText text, in nTitle text, in noteC varchar(10), in titleC varchar(10),
+in dateC timestamp, in baseF varchar(100), in baseFSize int, in baseFColor varchar(10), in xPos int, in yPos int, in w int,
+in h int, in closed bool, in locked bool)
+begin
+	insert into notes
+	values(id, nText, nTitle, noteC, titleC, dateC, null, baseF, baseFSize, baseFColor, xPos, yPos, w, h, closed, locked);
+	call connectNote(conID, userID, id);
+end
+
+CREATE DEFINER=`alexmfv`@`%` PROCEDURE `cloudstickies`.`updateNote`(in id varchar(64), in nText text, in nTitle text, in noteC varchar(10), in titleC varchar(10),
+in baseF varchar(100), in baseFSize int, in baseFColor varchar(10), in xPos int, in yPos int, in w int,
+in h int, in closed bool, in locked bool)
+begin
+	update notes
+	set noteText = nText, noteTitle = nTitle, noteColor = noteC, titleColor = titleC, lastUpdate = now(), baseFont = baseF,
+	baseFontSize = baseFSize, baseFontColor = baseFColor, posX = xPos, posY = yPos, width = w, height = h, isClosed = closed, isLocked = locked
+	where note_id = id;
 end

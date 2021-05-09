@@ -26,9 +26,9 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel Background="{StaticResource Dark}" HorizontalAlignment="Stretch">
-                        <Button IsEnabled="False" Width="30" Padding="0" Height="30" MinWidth="30" Background="{Binding titleColor}" HorizontalAlignment="Left"></Button>
-                        <Label Content="{Binding noteTitle}" Foreground="White" MinWidth="300" VerticalAlignment="Center"></Label>
-                        <Label Content="{Binding dateCreated}" Foreground="White" Width="250" VerticalAlignment="Center"></Label>
+                        <Button IsEnabled="False" Width="30" Padding="0" Height="30" MinWidth="30" Background="{Binding TitleColor}" HorizontalAlignment="Left"></Button>
+                        <Label Content="{Binding NoteTitle}" Foreground="White" MinWidth="300" VerticalAlignment="Center"></Label>
+                        <Label Content="{Binding DateCreated}" Foreground="White" Width="250" VerticalAlignment="Center"></Label>
                         <Button x:Name="btnShowHide" HorizontalAlignment="Right" Click="btnShowHide_Click">
                             <Image Source="/Images/hide.png" Width="20" Height="20"/>
                         </Button>

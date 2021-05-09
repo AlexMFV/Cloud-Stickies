@@ -82,7 +82,7 @@ namespace WindowsCloudStickies
             foreach (StickyNote note in Globals.stickies)
             {
                 //From Stickies Collection To JSON To File
-                using (StreamWriter file = File.CreateText(userDir + "\\" + note.noteID.ToString()))
+                using (StreamWriter file = File.CreateText(userDir + "\\" + note.NoteID.ToString()))
                 using (JsonTextWriter writer = new JsonTextWriter(file))
                 {
                     JObject toAdd = new JObject();
@@ -110,7 +110,7 @@ namespace WindowsCloudStickies
 
             StickyNote note = Globals.stickies.GetNoteFromGUID(noteID);
 
-            using (StreamWriter file = File.CreateText(userDir + "\\" + note.noteID.ToString()))
+            using (StreamWriter file = File.CreateText(userDir + "\\" + note.NoteID.ToString()))
             using (JsonTextWriter writer = new JsonTextWriter(file))
             {
                 JObject toAdd = new JObject();
@@ -121,37 +121,39 @@ namespace WindowsCloudStickies
 
         private static JObject AddNoteProperties(StickyNote note, JObject toAdd)
         {
-            toAdd.Add("noteID", note.noteID);
-            toAdd.Add("noteText", note.noteText);
-            toAdd.Add("noteTitle", note.noteTitle);
-            toAdd.Add("noteColor", ColorRGBToString(note.noteColor));
-            toAdd.Add("titleColor", ColorRGBToString(note.titleColor));
-            toAdd.Add("dateCreated", note.dateCreated);
-            toAdd.Add("baseFont", note.baseFont);
-            toAdd.Add("baseFontSize", note.baseFontSize);
-            toAdd.Add("baseFontColor", note.baseFontColor);
-            toAdd.Add("x", note.x);
-            toAdd.Add("y", note.y);
-            toAdd.Add("width", note.width);
-            toAdd.Add("height", note.height);
+            toAdd.Add("noteID", note.NoteID);
+            toAdd.Add("noteText", note.NoteText);
+            toAdd.Add("noteTitle", note.NoteTitle);
+            toAdd.Add("noteColor", ColorRGBToString(note.NoteColor));
+            toAdd.Add("titleColor", ColorRGBToString(note.TitleColor));
+            toAdd.Add("dateCreated", note.DateCreated);
+            toAdd.Add("baseFont", note.BaseFont);
+            toAdd.Add("baseFontSize", note.BaseFontSize);
+            toAdd.Add("baseFontColor", note.BaseFontColor);
+            toAdd.Add("x", note.X);
+            toAdd.Add("y", note.Y);
+            toAdd.Add("width", note.Width);
+            toAdd.Add("height", note.Height);
             return toAdd;
         }
 
         private static StickyNote LoadNoteProperties(StickyNote note, JObject toLoad)
         {
-            note.noteID = Guid.Parse(toLoad.Property("noteID").Value.ToString());
-            note.noteText = toLoad.Property("noteText").Value.ToString();
-            note.noteTitle = toLoad.Property("noteTitle").Value.ToString();
-            note.noteColor = Parser.ToColor(toLoad.Property("noteColor").Value.ToString());
-            note.titleColor = Parser.ToColor(toLoad.Property("titleColor").Value.ToString());
-            note.dateCreated = DateTime.Parse(toLoad.Property("dateCreated").Value.ToString());
-            note.baseFont = toLoad.Property("baseFont").Value.ToString();
-            note.baseFontSize = toLoad.Property("baseFontSize").Value.ToString();
-            note.baseFontColor = toLoad.Property("baseFontColor").Value.ToString();
-            note.x = int.Parse(toLoad.Property("x").Value.ToString());
-            note.y = int.Parse(toLoad.Property("y").Value.ToString());
-            note.width = int.Parse(toLoad.Property("width").Value.ToString());
-            note.height = int.Parse(toLoad.Property("height").Value.ToString());
+            note.NoteID = Guid.Parse(toLoad.Property("noteID").Value.ToString());
+            note.NoteText = toLoad.Property("noteText").Value.ToString();
+            note.NoteTitle = toLoad.Property("noteTitle").Value.ToString();
+            note.NoteColor = Parser.ToColor(toLoad.Property("noteColor").Value.ToString());
+            note.TitleColor = Parser.ToColor(toLoad.Property("titleColor").Value.ToString());
+            note.DateCreated = DateTime.Parse(toLoad.Property("dateCreated").Value.ToString());
+            note.BaseFont = toLoad.Property("baseFont").Value.ToString();
+            note.BaseFontSize = int.Parse(toLoad.Property("baseFontSize").Value.ToString());
+            note.BaseFontColor = toLoad.Property("baseFontColor").Value.ToString();
+            note.X = int.Parse(toLoad.Property("x").Value.ToString());
+            note.Y = int.Parse(toLoad.Property("y").Value.ToString());
+            note.Width = int.Parse(toLoad.Property("width").Value.ToString());
+            note.Height = int.Parse(toLoad.Property("height").Value.ToString());
+            note.isNew = false;
+            note.hasUpdated = false;
             return note;
         }
 

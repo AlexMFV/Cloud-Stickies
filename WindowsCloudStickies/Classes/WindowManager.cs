@@ -18,8 +18,15 @@ namespace WindowsCloudStickies
         public static void OpenLogin(NoteManager toClose)
         {
             Account login = new Account();
-            toClose.Close();
-            login.Show();
+            bool result = Messager.Logout();
+
+            if (result)
+            {
+                toClose.isLogout = true;
+                Globals.user = null;
+                toClose.Close();
+                login.Show();
+            }
         }
     }
 }

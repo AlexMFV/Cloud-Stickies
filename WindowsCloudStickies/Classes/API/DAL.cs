@@ -66,6 +66,73 @@ namespace WindowsCloudStickies
 
         #endregion
 
+        #region Notes
+
+        public static async Task<bool> CreateNote(string user, StickyNote note)
+        {
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("conID", Guid.NewGuid().ToString());
+                parameters.Add("userID", user);
+                parameters.Add("note_id", note.NoteID.ToString());
+                parameters.Add("noteText", note.NoteText);
+                parameters.Add("noteTitle", note.NoteTitle);
+                parameters.Add("noteColor", note.NoteColorHex);
+                parameters.Add("titleColor", note.TitleColorHex);
+                parameters.Add("dateCreated", note.DateCreated.ToString("yyyy-MM-dd HH:mm:ss"));
+                parameters.Add("baseFont", note.BaseFont);
+                parameters.Add("baseFontSize", note.BaseFontSize.ToString());
+                parameters.Add("baseFontColor", note.BaseFontColor);
+                parameters.Add("posX", note.X.ToString());
+                parameters.Add("posY", note.Y.ToString());
+                parameters.Add("width", note.Width.ToString());
+                parameters.Add("height", note.Height.ToString());
+                parameters.Add("isClosed", note.IsClosed ? "1" : "0");
+                parameters.Add("isLocked", note.IsLocked ? "1" : "0");
+
+                bool response = Convert.ToBoolean(await API.Fetch(RequestType.POST, "/api/note/create", parameters));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return false;
+            }
+        }
+
+        public static async Task<bool> UpdateNote(string user, StickyNote note)
+        {
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("note_id", note.NoteID.ToString());
+                parameters.Add("noteText", note.NoteText);
+                parameters.Add("noteTitle", note.NoteTitle);
+                parameters.Add("noteColor", note.NoteColorHex);
+                parameters.Add("titleColor", note.TitleColorHex);
+                parameters.Add("baseFont", note.BaseFont);
+                parameters.Add("baseFontSize", note.BaseFontSize.ToString());
+                parameters.Add("baseFontColor", note.BaseFontColor);
+                parameters.Add("posX", note.X.ToString());
+                parameters.Add("posY", note.Y.ToString());
+                parameters.Add("width", note.Width.ToString());
+                parameters.Add("height", note.Height.ToString());
+                parameters.Add("isClosed", note.IsClosed ? "1" : "0");
+                parameters.Add("isLocked", note.IsLocked ? "1" : "0");
+
+                bool response = Convert.ToBoolean(await API.Fetch(RequestType.POST, "/api/note/update", parameters));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return false;
+            }
+        }
+
+        #endregion
+
         #region Misc
 
         public static async Task<bool> CheckUserExists(string user)
@@ -94,7 +161,7 @@ namespace WindowsCloudStickies
                 return null;
             }
         }
-         
+
         #endregion
 
         #endregion

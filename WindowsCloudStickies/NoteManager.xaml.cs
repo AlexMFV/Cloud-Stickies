@@ -27,6 +27,7 @@ namespace WindowsCloudStickies
     public partial class NoteManager : MetroWindow
     {
         List<Note> notes = new List<Note>();
+        public bool isLogout = false;
 
         public NoteManager()
         {
@@ -42,7 +43,6 @@ namespace WindowsCloudStickies
 
             //Do stuff depending on Registered, Login or Guest user
             //Use: Globals.user.authType
-            //this.WindowState = WindowState.Minimized;
         }
 
         public void SetSystemTrayNotification()
@@ -135,14 +135,14 @@ namespace WindowsCloudStickies
                 for(int j = 0; j < lstNotes.SelectedItems.Count; j++)
                 {
                     if (lstNotes.SelectedItems[j].Equals(Globals.stickies[i]))
-                        toDelete.Add(Globals.stickies[i].noteID);
+                        toDelete.Add(Globals.stickies[i].NoteID);
                 }
             }
 
             foreach (Guid delID in toDelete)
             {
                 StickyNote note = Globals.stickies.GetNoteFromGUID(delID);
-                LocalSave.DeleteNote(Globals.user.ID, note.noteID);
+                LocalSave.DeleteNote(Globals.user.ID, note.NoteID);
                 Globals.stickies.Remove(note);
             }
 
@@ -174,7 +174,7 @@ namespace WindowsCloudStickies
 
         public void DeleteNoteForm(Guid id)
         {
-            Note toDelete = notes.First(note => note.current_note.noteID == id);
+            Note toDelete = notes.First(note => note.current_note.NoteID == id);
             notes.Remove(toDelete);
         }
 
@@ -195,16 +195,16 @@ namespace WindowsCloudStickies
 
         void ShowPressedNote(StickyNote pressedNote)
         {
-            if (!notes.Exists(note => note.current_note.noteID == pressedNote.noteID))
+            if (!notes.Exists(note => note.current_note.NoteID == pressedNote.NoteID))
             {
-                Tuple<SolidColorBrush, SolidColorBrush> colors = new Tuple<SolidColorBrush, SolidColorBrush>(pressedNote.noteColor, pressedNote.titleColor);
-                Note note = new Note(pressedNote.noteID, this);
+                Tuple<SolidColorBrush, SolidColorBrush> colors = new Tuple<SolidColorBrush, SolidColorBrush>(pressedNote.NoteColor, pressedNote.TitleColor);
+                Note note = new Note(pressedNote.NoteID, this);
                 notes.Add(note);
                 note.Show();
             }
             else
             {
-                Note open = notes.First(note => note.current_note.noteID == pressedNote.noteID);
+                Note open = notes.First(note => note.current_note.NoteID == pressedNote.NoteID);
                 notes.Remove(open);
                 open.Close();
             }
@@ -213,26 +213,28 @@ namespace WindowsCloudStickies
         private void btnLogout_Click(object sender, RoutedEventArgs e)
         {
             //If it's a connected user, save all the notes to the cloud first, then logout
-            Globals.user = null;
             WindowManager.OpenLogin(this);
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            bool result = Messager.CloseApplication();
-            if (result)
+            if (!this.isLogout)
             {
-                foreach (Note n in notes)
-                    n.Close(); //Maybe save first, the notes
-                notes = null;
-                Globals.stickies = null;
-                Globals.ni.Visible = false;
-                Globals.ni.Icon.Dispose();
-                Globals.ni.Dispose();
-                Application.Current.Shutdown();
+                bool result = Messager.CloseApplication();
+                if (result)
+                {
+                    foreach (Note n in notes)
+                        n.Close(); //Maybe save first, the notes
+                    notes = null;
+                    Globals.stickies = null;
+                    Globals.ni.Visible = false;
+                    Globals.ni.Icon.Dispose();
+                    Globals.ni.Dispose();
+                    Application.Current.Shutdown();
+                }
+                else
+                    e.Cancel = true;
             }
-            else
-                e.Cancel = true;
         }
     }
 }

@@ -21,5 +21,13 @@ namespace WindowsCloudStickies
                 return true;
             return false;
         }
+
+        internal static bool Logout()
+        {
+            MessageBoxResult result = MessageBox.Show("This will log you out of the account, are you sure?", "Logout warning", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (result == MessageBoxResult.Yes)
+                return true;
+            return false;
+        }
     }
 }

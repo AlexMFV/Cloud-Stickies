@@ -12,12 +12,44 @@ async function createUser(id, user, pass){
     try {
         let numRows = await callProcedureNonQuery('createUser', [id, user, pass]);
 
-        if (numRows == 1) {
+        if (numRows == 1)
             return true;
-        }
         return false;
+
     }
     catch(e){
+        return false;
+    }
+}
+
+async function createNote(conID, userID, note_id, noteText, noteTitle, noteColor, titleColor,
+    dateCreated, baseFont, baseFontSize, baseFontColor, posX, posY, width, height, isClosed, isLocked){
+    try {
+        let numRows = await callProcedureNonQuery('createNote', [conID, userID, note_id, noteText, noteTitle, noteColor, titleColor,
+            dateCreated, baseFont, baseFontSize, baseFontColor, posX, posY, width, height, isClosed, isLocked]);
+
+        if(numRows == 1)
+            return true;
+        return false;
+
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+}
+
+async function updateNote(note_id, noteText, noteTitle, noteColor, titleColor,
+    baseFont, baseFontSize, baseFontColor, posX, posY, width, height, isClosed, isLocked){
+    try {
+        let numRows = await callProcedureNonQuery('updateNote', [note_id, noteText, noteTitle, noteColor, titleColor,
+            baseFont, baseFontSize, baseFontColor, posX, posY, width, height, isClosed, isLocked]);
+
+        if(numRows > 0)
+            return true;
+        return false;
+
+    } catch (e) {
+        console.log(e);
         return false;
     }
 }
@@ -62,6 +94,7 @@ async function callProcedureFirstRow(name, parameters){
  */
 async function callProcedureNonQuery(name, parameters){
     let [rows] = await con.promise().query(formatQuery(name, parameters));
+    console.log(rows);
     return rows.affectedRows;
 }
 
@@ -72,4 +105,4 @@ function formatQuery(name, parameters){
                         .replace('<parameters>', parameters.join(','));
 }
 
-module.exports = { checkUserLogin, createUser, checkUserExists, getUserID }
+module.exports = { checkUserLogin, createUser, checkUserExists, getUserID, createNote, updateNote }

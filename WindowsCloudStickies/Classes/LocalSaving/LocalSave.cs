@@ -82,7 +82,7 @@ namespace WindowsCloudStickies
             foreach (StickyNote note in Globals.stickies)
             {
                 //From Stickies Collection To JSON To File
-                using (StreamWriter file = File.CreateText(userDir + "\\" + note.NoteID.ToString()))
+                using (StreamWriter file = File.CreateText(userDir + "\\" + note.Note_ID.ToString()))
                 using (JsonTextWriter writer = new JsonTextWriter(file))
                 {
                     JObject toAdd = new JObject();
@@ -110,7 +110,7 @@ namespace WindowsCloudStickies
 
             StickyNote note = Globals.stickies.GetNoteFromGUID(noteID);
 
-            using (StreamWriter file = File.CreateText(userDir + "\\" + note.NoteID.ToString()))
+            using (StreamWriter file = File.CreateText(userDir + "\\" + note.Note_ID.ToString()))
             using (JsonTextWriter writer = new JsonTextWriter(file))
             {
                 JObject toAdd = new JObject();
@@ -121,7 +121,7 @@ namespace WindowsCloudStickies
 
         private static JObject AddNoteProperties(StickyNote note, JObject toAdd)
         {
-            toAdd.Add("noteID", note.NoteID);
+            toAdd.Add("noteID", note.Note_ID);
             toAdd.Add("noteText", note.NoteText);
             toAdd.Add("noteTitle", note.NoteTitle);
             toAdd.Add("noteColor", ColorRGBToString(note.NoteColor));
@@ -130,8 +130,8 @@ namespace WindowsCloudStickies
             toAdd.Add("baseFont", note.BaseFont);
             toAdd.Add("baseFontSize", note.BaseFontSize);
             toAdd.Add("baseFontColor", note.BaseFontColor);
-            toAdd.Add("x", note.X);
-            toAdd.Add("y", note.Y);
+            toAdd.Add("x", note.PosX);
+            toAdd.Add("y", note.PosY);
             toAdd.Add("width", note.Width);
             toAdd.Add("height", note.Height);
             return toAdd;
@@ -139,7 +139,7 @@ namespace WindowsCloudStickies
 
         private static StickyNote LoadNoteProperties(StickyNote note, JObject toLoad)
         {
-            note.NoteID = Guid.Parse(toLoad.Property("noteID").Value.ToString());
+            note.Note_ID = Guid.Parse(toLoad.Property("noteID").Value.ToString());
             note.NoteText = toLoad.Property("noteText").Value.ToString();
             note.NoteTitle = toLoad.Property("noteTitle").Value.ToString();
             note.NoteColor = Parser.ToColor(toLoad.Property("noteColor").Value.ToString());
@@ -148,8 +148,8 @@ namespace WindowsCloudStickies
             note.BaseFont = toLoad.Property("baseFont").Value.ToString();
             note.BaseFontSize = int.Parse(toLoad.Property("baseFontSize").Value.ToString());
             note.BaseFontColor = toLoad.Property("baseFontColor").Value.ToString();
-            note.X = int.Parse(toLoad.Property("x").Value.ToString());
-            note.Y = int.Parse(toLoad.Property("y").Value.ToString());
+            note.PosX = int.Parse(toLoad.Property("x").Value.ToString());
+            note.PosY = int.Parse(toLoad.Property("y").Value.ToString());
             note.Width = int.Parse(toLoad.Property("width").Value.ToString());
             note.Height = int.Parse(toLoad.Property("height").Value.ToString());
             note.isNew = false;

@@ -45,7 +45,7 @@ namespace WindowsCloudStickies
 
         public StickyNote() { }
 
-        public Guid NoteID
+        public Guid Note_ID
         {
             get { return this.noteID; }
             set { this.noteID = value; }
@@ -98,12 +98,12 @@ namespace WindowsCloudStickies
             get { return this.baseFontColor; }
             set { this.baseFontColor = value; }
         }
-        public int X
+        public int PosX
         {
             get { return this.x; }
             set { this.x = value; }
         }
-        public int Y
+        public int PosY
         {
             get { return this.y; }
             set { this.y = value; }

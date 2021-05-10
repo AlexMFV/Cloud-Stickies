@@ -37,9 +37,7 @@ namespace WindowsCloudStickies
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             txtVersion.Text = "v" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
             AutoUpdater.Synchronous = true;
-            LocalSave.LoadStickyNotes(Globals.user.ID);
-            lstNotes.ItemsSource = Globals.stickies;
-            txtUsername.Text = "Logged in as: " + Globals.user.Username;
+            //LocalSave.LoadStickyNotes(Globals.user.ID);
 
             //Do stuff depending on Registered, Login or Guest user
             //Use: Globals.user.authType
@@ -135,14 +133,14 @@ namespace WindowsCloudStickies
                 for(int j = 0; j < lstNotes.SelectedItems.Count; j++)
                 {
                     if (lstNotes.SelectedItems[j].Equals(Globals.stickies[i]))
-                        toDelete.Add(Globals.stickies[i].NoteID);
+                        toDelete.Add(Globals.stickies[i].Note_ID);
                 }
             }
 
             foreach (Guid delID in toDelete)
             {
                 StickyNote note = Globals.stickies.GetNoteFromGUID(delID);
-                LocalSave.DeleteNote(Globals.user.ID, note.NoteID);
+                LocalSave.DeleteNote(Globals.user.ID, note.Note_ID);
                 Globals.stickies.Remove(note);
             }
 
@@ -174,7 +172,7 @@ namespace WindowsCloudStickies
 
         public void DeleteNoteForm(Guid id)
         {
-            Note toDelete = notes.First(note => note.current_note.NoteID == id);
+            Note toDelete = notes.First(note => note.current_note.Note_ID == id);
             notes.Remove(toDelete);
         }
 
@@ -195,16 +193,16 @@ namespace WindowsCloudStickies
 
         void ShowPressedNote(StickyNote pressedNote)
         {
-            if (!notes.Exists(note => note.current_note.NoteID == pressedNote.NoteID))
+            if (!notes.Exists(note => note.current_note.Note_ID == pressedNote.Note_ID))
             {
                 Tuple<SolidColorBrush, SolidColorBrush> colors = new Tuple<SolidColorBrush, SolidColorBrush>(pressedNote.NoteColor, pressedNote.TitleColor);
-                Note note = new Note(pressedNote.NoteID, this);
+                Note note = new Note(pressedNote.Note_ID, this);
                 notes.Add(note);
                 note.Show();
             }
             else
             {
-                Note open = notes.First(note => note.current_note.NoteID == pressedNote.NoteID);
+                Note open = notes.First(note => note.current_note.Note_ID == pressedNote.Note_ID);
                 notes.Remove(open);
                 open.Close();
             }
@@ -235,6 +233,18 @@ namespace WindowsCloudStickies
                 else
                     e.Cancel = true;
             }
+        }
+
+        private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!Network.HasInternetAccess())
+                LocalSave.LoadStickyNotes(Globals.user.ID);
+            else
+                await DAL.GetNotesFromUser(Globals.user.ID);
+
+            LocalSave.SaveAllStickyNotes(Globals.user.ID);
+            lstNotes.ItemsSource = Globals.stickies;
+            txtUsername.Text = "Logged in as: " + Globals.user.Username;
         }
     }
 }

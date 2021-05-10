@@ -28,6 +28,7 @@ namespace WindowsCloudStickies
         public StickyNote current_note;
         System.Timers.Timer saveWait = new System.Timers.Timer();
         NoteManager manager;
+        bool isInitialRender = false;
 
         double h = 0;
 
@@ -35,6 +36,7 @@ namespace WindowsCloudStickies
         {
             MakeWin();
             InitializeComponent();
+
             current_note = Globals.stickies.GetNoteFromGUID(_noteID);
 
             this.ShowInTaskbar = false;
@@ -98,6 +100,17 @@ namespace WindowsCloudStickies
         private void btnLockNote_Click(object sender, RoutedEventArgs e)
         {
             current_note.IsLocked = !current_note.IsLocked;
+            LockNote();
+            this.current_note.hasUpdated = true;
+
+            saveWait.Stop();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() => ChangeSavedState(State.NotSaved)));
+            saveWait.Start();
+        }
+
+        public void LockNote()
+        {
             if (current_note.IsLocked)
             {
                 btnLockNote.Background = (SolidColorBrush)Application.Current.Resources["ButtonSelected"]; //Set button Toggle color
@@ -110,30 +123,27 @@ namespace WindowsCloudStickies
                 this.ResizeMode = ResizeMode.CanResizeWithGrip;
                 textCanvas.IsReadOnly = false;
             }
-            this.current_note.hasUpdated = true;
-
-            saveWait.Stop();
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                new Action(() => ChangeSavedState(State.NotSaved)));
-            saveWait.Start();
         }
 
         private void noteWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.Height < 15 && !current_note.IsClosed)
-                this.Height = 30;
+            if (!isInitialRender)
+            {
+                if (this.Height < 15 && !current_note.IsClosed)
+                    this.Height = 30;
 
-            if (this.Width <= 100)
-                this.Width = 100;
+                if (this.Width <= 100)
+                    this.Width = 100;
 
-            this.current_note.Width = (int)this.Width;
-            this.current_note.Height = (int)this.Height;
-            this.current_note.hasUpdated = true;
+                this.current_note.Width = (int)this.Width;
+                this.current_note.Height = (int)this.Height;
+                this.current_note.hasUpdated = true;
 
-            saveWait.Stop();
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                new Action(() => ChangeSavedState(State.NotSaved)));
-            saveWait.Start();
+                saveWait.Stop();
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                    new Action(() => ChangeSavedState(State.NotSaved)));
+                saveWait.Start();
+            }
         }
 
         private void gripBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -141,27 +151,37 @@ namespace WindowsCloudStickies
             if (e.ClickCount == 2 && !current_note.IsClosed)
             {
                 current_note.IsClosed = !current_note.IsClosed;
-                h = this.Height;
-                this.Height = 14;
-                this.ResizeMode = ResizeMode.NoResize;
-                this.current_note.hasUpdated = true;
+                CloseTheNote();   
                 return;
             }
 
             if(e.ClickCount == 2 && current_note.IsClosed)
             {
                 current_note.IsClosed = !current_note.IsClosed;
-                this.Height = h;
-                this.ResizeMode = ResizeMode.CanResizeWithGrip;
-                this.current_note.hasUpdated = true;
+                OpenTheNote();
                 return;
             }
+        }
+
+        public void CloseTheNote()
+        {
+            h = this.Height;
+            this.Height = 14;
+            this.ResizeMode = ResizeMode.NoResize;
+            this.current_note.hasUpdated = true;
+        }
+
+        public void OpenTheNote()
+        {
+            this.Height = h;
+            this.ResizeMode = ResizeMode.CanResizeWithGrip;
+            this.current_note.hasUpdated = true;
         }
 
         private void btnHideNote_Click(object sender, RoutedEventArgs e)
         {
             //Save Note, position, color and size
-            manager.DeleteNoteForm(this.current_note.NoteID);
+            manager.DeleteNoteForm(this.current_note.Note_ID);
             this.Close();
         }
 
@@ -257,12 +277,12 @@ namespace WindowsCloudStickies
         {
             try
             {
-                Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.NoteID)] = this.current_note;
+                Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.Note_ID)] = this.current_note;
 
                 //await Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Globals.user.ID,, this.current_note.noteID)); //DEBUG: Change later to user ID)
 
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                    new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.NoteID)));
+                    new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.Note_ID)));
 
                 if (Globals.user.AuthType != AuthType.Guest)
                 {
@@ -294,12 +314,12 @@ namespace WindowsCloudStickies
         {
             try
             {
-                Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.NoteID)] = this.current_note;
+                Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.Note_ID)] = this.current_note;
                 //Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Globals.user.ID,, this.current_note.noteID)); //DEBUG: Change later to user ID)
 
                 //TEST: add await if not working or uncomment code above, and delete this one, below
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                    new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.NoteID)));
+                    new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.Note_ID)));
             }
             catch (Exception ex)
             {
@@ -309,16 +329,16 @@ namespace WindowsCloudStickies
 
         public void CloseAndDeleteNote()
         {
-            manager.DeleteNoteForm(this.current_note.NoteID);
-            Globals.stickies.RemoveAt(Globals.stickies.GetNoteIndex(this.current_note.NoteID));
+            manager.DeleteNoteForm(this.current_note.Note_ID);
+            Globals.stickies.RemoveAt(Globals.stickies.GetNoteIndex(this.current_note.Note_ID));
             manager.updateList();
-            LocalSave.DeleteNote(Globals.user.ID, this.current_note.NoteID);
+            LocalSave.DeleteNote(Globals.user.ID, this.current_note.Note_ID);
             this.Close();
         }
 
         public void CloseNote()
         {
-            manager.DeleteNoteForm(this.current_note.NoteID);
+            manager.DeleteNoteForm(this.current_note.Note_ID);
             this.Close();
         }
 
@@ -330,8 +350,8 @@ namespace WindowsCloudStickies
 
         private void noteWindow_LocationChanged(object sender, EventArgs e)
         {
-            this.current_note.X = (int)this.Left;
-            this.current_note.Y = (int)this.Top;
+            this.current_note.PosX = (int)this.Left;
+            this.current_note.PosY = (int)this.Top;
 
             saveWait.Stop();
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
@@ -346,22 +366,30 @@ namespace WindowsCloudStickies
             //This is necessary to have, because if this code was on the Loaded event
             //the note would ignore the positions and size set, and move randomly across the screen
             if ((this.current_note.Width > 0 && this.current_note.Height > 0) &&
-                (this.current_note.X > 0 && this.current_note.Y > 0))
+                (this.current_note.PosX > 0 && this.current_note.PosY > 0))
             {
                 this.Width = this.current_note.Width;
                 this.Height = this.current_note.Height;
-                this.Left = this.current_note.X;
-                this.Top = this.current_note.Y;
+                this.Left = this.current_note.PosX;
+                this.Top = this.current_note.PosY;
             }
+
+            isInitialRender = true;
+
+            LockNote();
+            if (this.current_note.IsClosed)
+                CloseTheNote();
+
+            isInitialRender = false;
         }
 
         private void noteWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if ((this.current_note.Width <= 0 || this.current_note.Height <= 0) ||
-                (this.current_note.X <= 0 || this.current_note.Y <= 0))
+                (this.current_note.PosX <= 0 || this.current_note.PosY <= 0))
             {
-                this.current_note.X = (int)this.Left;
-                this.current_note.Y = (int)this.Top;
+                this.current_note.PosX = (int)this.Left;
+                this.current_note.PosY = (int)this.Top;
                 this.current_note.Width = (int)this.Width;
                 this.current_note.Height = (int)this.Height;
             }

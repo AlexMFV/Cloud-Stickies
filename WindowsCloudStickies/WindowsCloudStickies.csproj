@@ -186,7 +186,9 @@
     <Compile Include="Classes\Enums\ReadType.cs" />
     <Compile Include="Classes\Enums\RequestType.cs" />
     <Compile Include="Classes\Enums\SavedState.cs" />
+    <Compile Include="Classes\Exceptions.cs" />
     <Compile Include="Classes\Messager.cs" />
+    <Compile Include="Classes\Network.cs" />
     <Compile Include="Classes\Parser.cs" />
     <Compile Include="Classes\Settings\Settings.cs" />
     <Compile Include="Classes\StickyNotes\StickyNotes.cs" />
@@ -283,6 +285,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ReleaseNotes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="NETWORKLIST">
+      <Guid>{DCB00D01-570F-4A9B-8D69-199FDBA5723B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

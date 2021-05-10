@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-
 var config = require('./config.json')
 var con = mysql.createConnection(config);
 
@@ -54,6 +53,11 @@ async function updateNote(note_id, noteText, noteTitle, noteColor, titleColor,
     }
 }
 
+async function getNotesFromUser(userID){
+    let rows = await callProcedureRows('getNotesFromUser', [userID]);
+    return rows;
+}
+
 async function createCookie(id, user, cookie, expire){
     try {
         let numRows = await callProcedureNonQuery('createCookie', [id, user, cookie, expire]);
@@ -61,7 +65,6 @@ async function createCookie(id, user, cookie, expire){
         if (numRows == 1)
             return true;
         return false;
-
     }
     catch(e){
         return false;
@@ -107,9 +110,7 @@ async function checkUserExists(user){
 }
 
 async function getUserID(user){
-    console.log(user);
     let userData = await callProcedureFirstRow('getUserID', [user]);
-    console.log(userData);
     return userData.user_id !== undefined ? userData.user_id : null;
 }
 
@@ -154,4 +155,4 @@ function formatQuery(name, parameters){
 }
 
 module.exports = { checkUserLogin, createUser, checkUserExists, getUserID, createNote,
-    updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire }
+    updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire, getNotesFromUser }

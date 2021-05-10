@@ -73,7 +73,7 @@ namespace WindowsCloudStickies
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("conID", Guid.NewGuid().ToString());
                 parameters.Add("userID", user);
-                parameters.Add("note_id", note.NoteID.ToString());
+                parameters.Add("note_id", note.Note_ID.ToString());
                 parameters.Add("noteText", note.NoteText);
                 parameters.Add("noteTitle", note.NoteTitle);
                 parameters.Add("noteColor", note.NoteColorHex);
@@ -82,8 +82,8 @@ namespace WindowsCloudStickies
                 parameters.Add("baseFont", note.BaseFont);
                 parameters.Add("baseFontSize", note.BaseFontSize.ToString());
                 parameters.Add("baseFontColor", note.BaseFontColor);
-                parameters.Add("posX", note.X.ToString());
-                parameters.Add("posY", note.Y.ToString());
+                parameters.Add("posX", note.PosX.ToString());
+                parameters.Add("posY", note.PosY.ToString());
                 parameters.Add("width", note.Width.ToString());
                 parameters.Add("height", note.Height.ToString());
                 parameters.Add("isClosed", note.IsClosed ? "1" : "0");
@@ -104,7 +104,7 @@ namespace WindowsCloudStickies
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
-                parameters.Add("note_id", note.NoteID.ToString());
+                parameters.Add("note_id", note.Note_ID.ToString());
                 parameters.Add("noteText", note.NoteText);
                 parameters.Add("noteTitle", note.NoteTitle);
                 parameters.Add("noteColor", note.NoteColorHex);
@@ -112,8 +112,8 @@ namespace WindowsCloudStickies
                 parameters.Add("baseFont", note.BaseFont);
                 parameters.Add("baseFontSize", note.BaseFontSize.ToString());
                 parameters.Add("baseFontColor", note.BaseFontColor);
-                parameters.Add("posX", note.X.ToString());
-                parameters.Add("posY", note.Y.ToString());
+                parameters.Add("posX", note.PosX.ToString());
+                parameters.Add("posY", note.PosY.ToString());
                 parameters.Add("width", note.Width.ToString());
                 parameters.Add("height", note.Height.ToString());
                 parameters.Add("isClosed", note.IsClosed ? "1" : "0");
@@ -121,6 +121,31 @@ namespace WindowsCloudStickies
 
                 bool response = Convert.ToBoolean(await API.Fetch(RequestType.POST, "/api/note/update", parameters));
                 return response;
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return false;
+            }
+        }
+
+        public static async Task<bool> GetNotesFromUser(Guid id)
+        {
+            try
+            {
+                object response = await API.Fetch(RequestType.GET, "/api/note/get/" + id.ToString());
+                List<StickyNote> notes = JsonConvert.DeserializeObject<List<StickyNote>>((string)response);
+                StickyNotes stickies = new StickyNotes();
+
+                foreach(StickyNote note in notes)
+                {
+                    note.BaseFont = note.BaseFont == "null" ? "" : note.BaseFont;
+                    note.BaseFontColor = note.BaseFontColor == "null" ? "" : note.BaseFontColor;
+                    stickies.Add(note);
+                }
+
+                Globals.stickies = stickies;
+                return true;
             }
             catch (Exception ex)
             {

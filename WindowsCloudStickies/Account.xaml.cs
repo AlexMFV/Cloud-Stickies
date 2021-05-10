@@ -33,6 +33,9 @@ namespace WindowsCloudStickies
         {
             try
             {
+                if (!Network.HasInternetAccess())
+                    throw new NoInternetConnection();
+
                 if (txtUserR.Text == "" || txtPassR.Password == "" || txtPass2R.Password == "")
                     MessageBox.Show("Username and password cannot be empty!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 else
@@ -67,7 +70,10 @@ namespace WindowsCloudStickies
         {
             try
             {
-                if(txtUserL.Text == "" || txtPassL.Password == "")
+                if (!Network.HasInternetAccess())
+                    throw new NoInternetConnection();
+
+                if (txtUserL.Text == "" || txtPassL.Password == "")
                     MessageBox.Show("Username and password cannot be empty!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 else
                 {

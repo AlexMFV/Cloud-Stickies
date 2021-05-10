@@ -70,3 +70,10 @@ begin
 	delete from user_cookies
 	where user_cookies.expire_date < now();
 end
+
+create procedure getNotesFromUser(in userID varchar(64))
+begin
+	select * from notes
+	inner join user_notes on notes.note_id = user_notes.note_id
+	where user_notes.user_id = userID;
+end

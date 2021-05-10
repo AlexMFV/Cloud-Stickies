@@ -20,6 +20,7 @@ app.get('/api/getUserID/:user', func.getUserID);
 //NOTE METHODS
 app.post('/api/note/create', func.createNote);
 app.post('/api/note/update', func.updateNote);
+app.get('/api/note/get/:userID', func.getNotesFromUser)
 
 //COOKIE METHODS
 app.get('/api/cookie/check/:user/:cookie', func.checkCookie);

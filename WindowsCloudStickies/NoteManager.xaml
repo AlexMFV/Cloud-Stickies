@@ -6,7 +6,7 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:WindowsCloudStickies"        
         mc:Ignorable="d"
-        Title="Stickies Manager" Height="455" Width="800" WindowStartupLocation="CenterScreen" Closing="MetroWindow_Closing">
+        Title="Stickies Manager" Height="455" Width="800" WindowStartupLocation="CenterScreen" Closing="MetroWindow_Closing" Loaded="MetroWindow_Loaded">
     <Grid Background="{StaticResource Dark}">
         <Button x:Name="btnAdd" Content="Add Note" Click="btnAdd_Click" Margin="10,10,0,0" Height="37" VerticalAlignment="Top" HorizontalAlignment="Left" Width="102"/>
         <Button x:Name="btnRemoveAll" Content="Remove All Notes" Margin="117,10,0,0" Click="btnRemoveAll_Click" HorizontalAlignment="Left" Width="110" Height="37" VerticalAlignment="Top"/>

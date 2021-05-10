@@ -44,7 +44,6 @@ async function checkUserExists(req, res){
 
 async function getUserID(req, res){
     try {
-        console.log(req.params.user);
         const result = await db.getUserID(req.params.user)
         res.json(result);
     } catch (error) {
@@ -109,6 +108,15 @@ async function deleteCookie(req, res){
     }
 }
 
+async function getNotesFromUser(req, res){
+    try {
+        const result = await db.getNotesFromUser(req.params.userID);
+        res.json(result);
+    } catch (error) {
+        error(res, e);
+    }
+}
+
 function error(res, msg) {
     res.sendStatus(500);
     console.error(msg);
@@ -121,4 +129,4 @@ async function checkCookieExpire()
 }
 
 module.exports = { processLogin, processRegistration, checkUserExists, getUserID,
-    createNote, updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire }
+    createNote, updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire, getNotesFromUser }

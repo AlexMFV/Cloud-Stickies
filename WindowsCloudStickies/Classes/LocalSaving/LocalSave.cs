@@ -189,7 +189,7 @@ namespace WindowsCloudStickies
                 MessageBox.Show("There was a problem deleting the note!");
         }
 
-        public static void CreateCookieFile(string cookie, string user, string pass)
+        public static void CreateCookieFile(string cookie, string user, string pass, string username)
         {
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config");
 
@@ -204,6 +204,7 @@ namespace WindowsCloudStickies
                 obj.Add("cookie", cookie);
                 obj.Add("usr", user);
                 obj.Add("pwd", pass);
+                obj.Add("username", username);
 
                 obj.WriteTo(writer);
             }
@@ -217,17 +218,17 @@ namespace WindowsCloudStickies
             return false;
         }
 
-        public static Tuple<string, string, string> GetCookieFile()
+        public static Tuple<string, string, string, string> GetCookieFile()
         {
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config");
-            Tuple<string, string, string> values = null;
+            Tuple<string, string, string, string> values = null;
 
             if (new FileInfo(cacheDir + "\\cookie").Length > 0)
             {
                 JObject obj = JObject.Parse(File.ReadAllText(cacheDir + "\\cookie"));
 
-                values = new Tuple<string, string, string>(obj.Property("cookie").Value.ToString(),
-                    obj.Property("usr").Value.ToString(), obj.Property("pwd").Value.ToString());
+                values = new Tuple<string, string, string, string>(obj.Property("cookie").Value.ToString(),
+                    obj.Property("usr").Value.ToString(), obj.Property("pwd").Value.ToString(), obj.Property("username").Value.ToString());
             }
 
             return values;

@@ -23,7 +23,7 @@ namespace WindowsCloudStickies
             {
                 if (LocalSave.CheckCookieFile())
                 {
-                    Tuple<string, string, string> values = LocalSave.GetCookieFile();
+                    Tuple<string, string, string, string> values = LocalSave.GetCookieFile();
                     LocalSave.DeleteCookieFile();
                     await DAL.DeleteCookie(values.Item1, values.Item2); //From the database
                 }

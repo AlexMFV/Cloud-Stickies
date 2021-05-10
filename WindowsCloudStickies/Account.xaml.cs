@@ -48,7 +48,7 @@ namespace WindowsCloudStickies
                             case "OK": MessageBox.Show("User created successfully!");
                                 string id = JsonConvert.DeserializeObject<string>(await DAL.GetUserID(Encrypt.ComputeHash(txtUserL.Text)));
                                 Globals.user = new User(id, txtUserL.Text, AuthType.Login, true);
-                                LocalSave.CreateCookieFile(Guid.NewGuid().ToString(), Encrypt.ComputeHash(txtUserR.Text), Encrypt.ComputeHash(txtPassR.Password));
+                                //LocalSave.CreateCookieFile(Guid.NewGuid().ToString(), Encrypt.ComputeHash(txtUserR.Text), Encrypt.ComputeHash(txtPassR.Password));
                                 CloseLogin(); break;
                             case "ERROR": MessageBox.Show("There was an error creating the account, please try again later!"); break;
                             case "EXISTS": MessageBox.Show("This username already exists, please choose another one!"); break;
@@ -78,7 +78,7 @@ namespace WindowsCloudStickies
                         if (chkRemember.IsChecked == true)
                         {
                             Guid cookieID = Guid.NewGuid();
-                            LocalSave.CreateCookieFile(cookieID.ToString(), userID, pass);
+                            LocalSave.CreateCookieFile(cookieID.ToString(), userID, pass, txtUserL.Text);
                             await DAL.CreateCookie(cookieID.ToString(), userID);
                         }
 
@@ -128,7 +128,7 @@ namespace WindowsCloudStickies
         {
             if (LocalSave.CheckCookieFile()) //Checks if there is a cookie stored (locally)
             {
-                Tuple<string, string, string> session = LocalSave.GetCookieFile();
+                Tuple<string, string, string, string> session = LocalSave.GetCookieFile();
                 if (session is null)
                     Messager.CookieError();
                 else
@@ -138,7 +138,7 @@ namespace WindowsCloudStickies
                         if (await DAL.CheckUserLogin(session.Item2, session.Item3))
                         {
                             string id = JsonConvert.DeserializeObject<string>(await DAL.GetUserID(session.Item2));
-                            Globals.user = new User(id, txtUserL.Text, AuthType.Login, true);
+                            Globals.user = new User(id, session.Item4, AuthType.Login, true);
                             CloseLogin();
                         }
                     }
@@ -149,9 +149,6 @@ namespace WindowsCloudStickies
                         LocalSave.DeleteCookieFile();
                         MessageBox.Show("You session has expired, please login again!", "Session Expired", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
-
-                    //Create checkCookieExpire procedure
-                    //Create deleteCookieTimer method NodeJS (every hour it runs the procedure checkCookieExpire, and deletes the cookies that have an expirity date later than current date
                 }
             }
         }

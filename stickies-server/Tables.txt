@@ -36,3 +36,12 @@ CREATE TABLE `user_notes` (
   PRIMARY KEY (`userNote_id`),
   UNIQUE KEY `user_notes_un` (`userNote_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `user_cookies` (
+  `id` varchar(64) NOT NULL,
+  `user_id` varchar(64) NOT NULL,
+  `cookie_id` varchar(64) NOT NULL,
+  `expire_date` timestamp NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_cookies_un` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

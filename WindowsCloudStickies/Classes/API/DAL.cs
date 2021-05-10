@@ -12,8 +12,6 @@ namespace WindowsCloudStickies
     public static class DAL
     {
 
-        #region User Account
-
         #region Login
 
         public static async Task<bool> CheckUserLogin(string user, string pass)
@@ -21,8 +19,8 @@ namespace WindowsCloudStickies
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
-                parameters.Add("user", Encrypt.ComputeHash(user));
-                parameters.Add("pass", Encrypt.ComputeHash(pass));
+                parameters.Add("user", user);
+                parameters.Add("pass", pass);
                 bool response = Convert.ToBoolean(await API.Fetch(RequestType.POST, "/api/login", parameters));
                 return response;
             }
@@ -133,6 +131,58 @@ namespace WindowsCloudStickies
 
         #endregion
 
+        #region Cookies
+
+        public static async Task<string> CreateCookie(string cookie, string encryptedUser)
+        {
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("id", Guid.NewGuid().ToString());
+                parameters.Add("userID", encryptedUser);
+                parameters.Add("cookieID", cookie);
+                parameters.Add("expire", DateTime.Now.AddDays(7).ToString("yyyy-MM-dd HH:mm:ss"));
+
+                string response = (string)await API.Fetch(RequestType.POST, "/api/cookie/create", parameters);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return null;
+            }
+        }
+
+        public static async Task<bool> CheckCookie(string userID, string cookie)
+        {
+            try
+            {
+                bool response = Convert.ToBoolean(await API.Fetch(RequestType.GET, "/api/cookie/check/" + userID + "/" + cookie));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return false;
+            }
+        }
+
+        public static async Task<bool> DeleteCookie(string cookie, string userID)
+        {
+            try
+            {
+                bool response = Convert.ToBoolean(await API.Fetch(RequestType.DELETE, "/api/cookie/delete/" + userID + "/" + cookie));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return false;
+            }
+        }
+
+        #endregion
+
         #region Misc
 
         public static async Task<bool> CheckUserExists(string user)
@@ -153,7 +203,8 @@ namespace WindowsCloudStickies
         {
             try
             {                
-                return (string)(await API.Fetch(RequestType.GET, "/api/getUserID/" + Encrypt.ComputeHash(user)));
+                string response = (string)await API.Fetch(RequestType.GET, "/api/getUserID/" + user);
+                return response;
             }
             catch (Exception ex)
             {
@@ -161,8 +212,6 @@ namespace WindowsCloudStickies
                 return null;
             }
         }
-
-        #endregion
 
         #endregion
 

@@ -21,4 +21,13 @@ app.get('/api/getUserID/:user', func.getUserID);
 app.post('/api/note/create', func.createNote);
 app.post('/api/note/update', func.updateNote);
 
+//COOKIE METHODS
+app.get('/api/cookie/check/:user/:cookie', func.checkCookie);
+app.post('/api/cookie/create', func.createCookie);
+app.delete('/api/cookie/delete/:user/:cookie', func.deleteCookie);
+
+function run() { func.checkCookieExpire().catch((e) => console.log('An error ocurred while running checkCookieExpire()'))};
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+run();

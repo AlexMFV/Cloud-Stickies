@@ -54,13 +54,62 @@ async function updateNote(note_id, noteText, noteTitle, noteColor, titleColor,
     }
 }
 
+async function createCookie(id, user, cookie, expire){
+    try {
+        let numRows = await callProcedureNonQuery('createCookie', [id, user, cookie, expire]);
+
+        if (numRows == 1)
+            return true;
+        return false;
+
+    }
+    catch(e){
+        return false;
+    }
+}
+
+async function deleteCookie(user, cookie){
+    try {
+        let numRows = await callProcedureNonQuery('deleteCookie', [user, cookie]);
+
+        if (numRows == 1)
+            return true;
+        return false;
+
+    }
+    catch(e){
+        return false;
+    }
+}
+
+async function checkCookie(user, cookie){
+    let count = await callProcedureFirstRow('checkCookie', [user, cookie]);
+    return count.result == 1 ? true : false;
+}
+
+async function checkCookieExpire(){
+    try {
+        let numRows = await callProcedureNonQuery('checkCookieExpire', []);
+
+        if (numRows == 1)
+            return true;
+        return false;
+
+    }
+    catch(e){
+        return false;
+    }
+}
+
 async function checkUserExists(user){
     let count = await callProcedureFirstRow('checkUserExists', [user]);
     return count.result == 1 ? true : false;
 }
 
 async function getUserID(user){
+    console.log(user);
     let userData = await callProcedureFirstRow('getUserID', [user]);
+    console.log(userData);
     return userData.user_id !== undefined ? userData.user_id : null;
 }
 
@@ -104,4 +153,5 @@ function formatQuery(name, parameters){
                         .replace('<parameters>', parameters.join(','));
 }
 
-module.exports = { checkUserLogin, createUser, checkUserExists, getUserID, createNote, updateNote }
+module.exports = { checkUserLogin, createUser, checkUserExists, getUserID, createNote,
+    updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire }

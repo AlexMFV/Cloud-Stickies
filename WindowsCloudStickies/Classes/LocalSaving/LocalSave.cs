@@ -189,74 +189,61 @@ namespace WindowsCloudStickies
                 MessageBox.Show("There was a problem deleting the note!");
         }
 
-        //public static void LoadUserSettings(Guid userID)
-        //{
-        //    //-------------------------------DEBUG ONLY-----------------------------------
-        //    userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
+        public static void CreateCookieFile(string cookie, string user, string pass)
+        {
+            string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config");
 
-        //    string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies"); //Change To Sticky Notes
-        //    string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            if (!Directory.Exists(cacheDir))
+                Directory.CreateDirectory(cacheDir);
 
-        //    StickyNotes collection = new StickyNotes();
+            //From Accounts Collection To JSON To File
+            using (StreamWriter file = File.CreateText(cacheDir + "\\cookie"))
+            using (JsonTextWriter writer = new JsonTextWriter(file))
+            {
+                JObject obj = new JObject();
+                obj.Add("cookie", cookie);
+                obj.Add("usr", user);
+                obj.Add("pwd", pass);
 
-        //    //If the directory of the user exists
-        //    if (Directory.Exists(userDir))
-        //    {
-        //        //Get all the files inside the directory
-        //        foreach (string file in Directory.GetFiles(userDir))
-        //        {
-        //            JObject obj = JObject.Parse(File.ReadAllText(file));
-        //            StickyNote note = new StickyNote();
-        //            note.noteID = Guid.Parse(obj.Property("noteID").Value.ToString());
-        //            note.noteText = obj.Property("noteText").Value.ToString();
-        //            note.noteTitle = obj.Property("noteTitle").Value.ToString();
-        //            note.noteColor = Parser.ToColor(obj.Property("noteColor").Value.ToString());
-        //            note.titleColor = Parser.ToColor(obj.Property("titleColor").Value.ToString());
-        //            note.dateCreated = DateTime.Parse(obj.Property("dateCreated").Value.ToString());
-        //            note.baseFont = obj.Property("baseFont").Value.ToString();
-        //            note.baseFontSize = obj.Property("baseFontSize").Value.ToString();
-        //            note.baseFontColor = obj.Property("baseFontColor").Value.ToString();
-        //            collection.Add(note);
-        //        }
-        //    }
+                obj.WriteTo(writer);
+            }
+        }
 
-        //    Globals.stickies = collection;
-        //}
+        public static bool CheckCookieFile()
+        {
+            string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config");
+            if (File.Exists(cacheDir + "\\cookie"))
+                return true;
+            return false;
+        }
 
-        //public static void SaveUserSettings(Guid userID)
-        //{
-        //    //-------------DEBUG ONLY----------------
-        //    userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
+        public static Tuple<string, string, string> GetCookieFile()
+        {
+            string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config");
+            Tuple<string, string, string> values = null;
 
-        //    string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-        //    string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            if (new FileInfo(cacheDir + "\\cookie").Length > 0)
+            {
+                JObject obj = JObject.Parse(File.ReadAllText(cacheDir + "\\cookie"));
 
-        //    if (!Directory.Exists(cacheDir))
-        //        Directory.CreateDirectory(cacheDir);
+                values = new Tuple<string, string, string>(obj.Property("cookie").Value.ToString(),
+                    obj.Property("usr").Value.ToString(), obj.Property("pwd").Value.ToString());
+            }
 
-        //    if (!Directory.Exists(userDir))
-        //        Directory.CreateDirectory(userDir);
+            return values;
+        }
 
-        //    foreach (StickyNote note in Globals.stickies)
-        //    {
-        //        //From Stickies Collection To JSON To File
-        //        using (StreamWriter file = File.CreateText(userDir + "\\" + note.noteID.ToString()))
-        //        using (JsonTextWriter writer = new JsonTextWriter(file))
-        //        {
-        //            JObject toAdd = new JObject();
-        //            toAdd.Add("noteID", note.noteID);
-        //            toAdd.Add("noteText", note.noteText);
-        //            toAdd.Add("noteTitle", note.noteTitle);
-        //            toAdd.Add("noteColor", ColorRGBToString(note.noteColor));
-        //            toAdd.Add("titleColor", ColorRGBToString(note.titleColor));
-        //            toAdd.Add("dateCreated", note.dateCreated);
-        //            toAdd.Add("baseFont", note.baseFont);
-        //            toAdd.Add("baseFontSize", note.baseFontSize);
-        //            toAdd.Add("baseFontColor", note.baseFontColor);
-        //            toAdd.WriteTo(writer);
-        //        }
-        //    }
-        //}
+        public static void DeleteCookieFile()
+        {
+            string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config", "cookie");
+
+            if (File.Exists(cacheDir))
+                File.Delete(cacheDir);
+        }
+
+        //TODO:
+        //Save User Settings
+        //Load User Settings
 
         public static string ColorRGBToString(SolidColorBrush brush)
         {

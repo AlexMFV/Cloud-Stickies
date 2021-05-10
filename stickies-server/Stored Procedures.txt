@@ -46,3 +46,27 @@ begin
 	baseFontSize = baseFSize, baseFontColor = baseFColor, posX = xPos, posY = yPos, width = w, height = h, isClosed = closed, isLocked = locked
 	where note_id = id;
 end
+
+create procedure createCookie(in newID varchar(64), in cookieID varchar(64), in userID varchar(64), in expire timestamp)
+begin
+	insert into user_cookies
+	values(newID, cookieID, userID, expire);
+end
+
+create procedure checkCookie(in userID varchar(64), in cookieID varchar(64))
+begin
+	select count(*) as result from user_cookies
+	where user_cookies.cookie_id = cookie_id and user_cookies.user_id = userID;
+end
+
+create procedure deleteCookie(in userID varchar(64),in cookieID varchar(64))
+begin
+	delete from user_cookies
+	where user_cookies.user_id = userID and user_cookies.cookie_id = cookieID;
+end
+
+create procedure checkCookieExpire()
+begin
+	delete from user_cookies
+	where user_cookies.expire_date < now();
+end

@@ -1,5 +1,6 @@
 const { restart } = require('nodemon');
 const db = require('./dbconnection');
+const Promise = require("bluebird");
 
 async function processLogin(req, res){
     try{
@@ -43,6 +44,7 @@ async function checkUserExists(req, res){
 
 async function getUserID(req, res){
     try {
+        console.log(req.params.user);
         const result = await db.getUserID(req.params.user)
         res.json(result);
     } catch (error) {
@@ -80,9 +82,43 @@ async function updateNote(req, res){
     }
 }
 
+async function createCookie(req, res){
+    try {
+        const result = await db.createCookie(req.body.id, req.body.userID, req.body.cookieID, req.body.expire);
+        res.json(result);
+    } catch (error) {
+        error(res, e);
+    }
+}
+
+async function checkCookie(req, res){
+    try {
+        const result = await db.checkCookie(req.params.user, req.params.cookie);
+        res.json(result);
+    } catch (error) {
+        error(res, e);
+    }
+}
+
+async function deleteCookie(req, res){
+    try {
+        const result = await db.deleteCookie(req.params.user, req.params.cookie);
+        res.json(result);
+    } catch (error) {
+        error(res, e);
+    }
+}
+
 function error(res, msg) {
     res.sendStatus(500);
     console.error(msg);
 }
 
-module.exports = { processLogin, processRegistration, checkUserExists, getUserID, createNote, updateNote }
+async function checkCookieExpire()
+{
+    await db.checkCookieExpire();
+    return Promise.delay(3600000).then(() => checkCookieExpire());
+}
+
+module.exports = { processLogin, processRegistration, checkUserExists, getUserID,
+    createNote, updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire }

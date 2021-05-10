@@ -31,7 +31,11 @@ Patches:
 - Added Exception handling
 - Notes now stay where they were with the sizes they were set to
 - On login, password boxes now hide the password
-- Users now have independent note, depending on the login
+- Users now have independent notes, depending on the login (also applies to local notes)
 - Notes are now hidden from the Alt+Tab menu for consistency
 - Manager confirms if the user wants to close the application before closing
 - Manager goes to System Tray when minimized and can be right-clicked to Close the application
+- Notes can now be synced online (when logged in)
+- When logged in the username of the account now shows in the manager
+- When the manager is closed, all the notes now close with it
+- (Major) Implemented a "Cookie" system  with some security factors

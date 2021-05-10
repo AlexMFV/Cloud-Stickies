@@ -210,10 +210,10 @@ namespace WindowsCloudStickies
             }
         }
 
-        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        private async void btnLogout_Click(object sender, RoutedEventArgs e)
         {
             //If it's a connected user, save all the notes to the cloud first, then logout
-            WindowManager.OpenLogin(this);
+            await WindowManager.OpenLogin(this);
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

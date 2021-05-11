@@ -58,6 +58,27 @@ async function getNotesFromUser(userID){
     return rows;
 }
 
+async function deleteNotesFromUser(userID, noteIDs){
+    try {
+        let idArray = noteIDs.split(',');
+        var numRows = 0;
+
+        for(var noteID of idArray){
+            numRows += await callProcedureNonQuery('deleteNotesFromUser', [userID, noteID]);
+        }
+
+        //If the number of altered rows (notes deleted)
+        //are the same as the number of noteID that were given
+        if (numRows/2 == idArray.length)
+            return true;
+        return false;
+
+    }
+    catch(e){
+        return false;
+    }
+}
+
 async function createCookie(id, user, cookie, expire){
     try {
         let numRows = await callProcedureNonQuery('createCookie', [id, user, cookie, expire]);
@@ -155,4 +176,5 @@ function formatQuery(name, parameters){
 }
 
 module.exports = { checkUserLogin, createUser, checkUserExists, getUserID, createNote,
-    updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire, getNotesFromUser }
+    updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire, getNotesFromUser,
+    deleteNotesFromUser }

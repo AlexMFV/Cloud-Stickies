@@ -78,13 +78,13 @@ namespace WindowsCloudStickies
             Globals.helperWindow.Hide(); // Hide helper window just in case
         }
 
-        private void btnClose_Click(object sender, RoutedEventArgs e)
+        private async void btnClose_Click(object sender, RoutedEventArgs e)
         {
             if (!this.current_note.IsLocked)
             {
                 MessageBoxResult res = MessageBox.Show("Are you sure you want to delete the note?", "Delete Note", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (res == MessageBoxResult.Yes)
-                    CloseAndDeleteNote();
+                    await CloseAndDeleteNote();
             }
         }
 
@@ -327,11 +327,16 @@ namespace WindowsCloudStickies
             }
         }
 
-        public void CloseAndDeleteNote()
+        public async Task CloseAndDeleteNote()
         {
             manager.DeleteNoteForm(this.current_note.Note_ID);
             Globals.stickies.RemoveAt(Globals.stickies.GetNoteIndex(this.current_note.Note_ID));
             manager.updateList();
+
+            List<string> noteIDs = new List<string>();
+            noteIDs.Add(this.current_note.Note_ID.ToString());
+            await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
+
             LocalSave.DeleteNote(Globals.user.ID, this.current_note.Note_ID);
             this.Close();
         }

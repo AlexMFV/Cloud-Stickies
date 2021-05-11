@@ -117,6 +117,15 @@ async function getNotesFromUser(req, res){
     }
 }
 
+async function deleteNotesFromUser(req, res){
+    try {
+        const result = await db.deleteNotesFromUser(req.body.userID, req.body.noteIDs);
+        res.json(result);
+    } catch (error) {
+        error(res, e);
+    }
+}
+
 function error(res, msg) {
     res.sendStatus(500);
     console.error(msg);
@@ -129,4 +138,5 @@ async function checkCookieExpire()
 }
 
 module.exports = { processLogin, processRegistration, checkUserExists, getUserID,
-    createNote, updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire, getNotesFromUser }
+    createNote, updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire,
+    getNotesFromUser, deleteNotesFromUser }

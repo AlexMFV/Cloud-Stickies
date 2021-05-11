@@ -39,3 +39,5 @@ Patches:
 - When logged in the username of the account now shows in the manager
 - When the manager is closed, all the notes now close with it
 - (Major) Implemented a "Cookie" system  with some security factors
+- When logging in to the account the user can now see the notes associated with his account (online)
+- User can now delete the notes from his account on the DB

@@ -73,8 +73,15 @@ namespace WindowsCloudStickies
                 default: return false;
             }
 
+            string ip;
+#if DEBUG
+            ip = Properties.Resources.LocalIP;
+#else
+            ip = Properties.Resources.ServerIP;
+#endif
+
             using (var client = new HttpClient())
-            using (var request = new HttpRequestMessage(method, Properties.Resources.LocalIP + route))
+            using (var request = new HttpRequestMessage(method, ip + route))
             {
                 if(parameters == null)
                 {

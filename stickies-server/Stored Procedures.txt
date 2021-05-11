@@ -77,3 +77,10 @@ begin
 	inner join user_notes on notes.note_id = user_notes.note_id
 	where user_notes.user_id = userID;
 end
+
+create procedure deleteNotesFromUser(in userID varchar(64), in noteID varchar(64))
+begin
+	delete notes, user_notes from notes
+	inner join user_notes on user_notes.note_id = notes.note_id
+	where user_notes.user_id = userID and user_notes.note_id = noteID;
+end

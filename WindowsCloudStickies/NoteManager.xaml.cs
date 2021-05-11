@@ -88,14 +88,22 @@ namespace WindowsCloudStickies
             //lstNotes.Items[lstNotes.Items.Count - 1];
         }
 
-        private void btnRemoveAll_Click(object sender, RoutedEventArgs e)
+        private async void btnRemoveAll_Click(object sender, RoutedEventArgs e)
         {
             ///DELETE ALL
             for(int i = notes.Count-1; i >= 0; i--)
                 notes[i].Close();
 
             notes = new List<Note>();
+
+            List<string> noteIDs = new List<string>();
+
+            foreach (StickyNote note in Globals.stickies)
+                noteIDs.Add(note.Note_ID.ToString());
+
             Globals.stickies = new StickyNotes();
+
+            await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
             LocalSave.DeleteAllNotes(Globals.user.ID);
 
             updateList();
@@ -124,7 +132,7 @@ namespace WindowsCloudStickies
             return new Tuple<SolidColorBrush, SolidColorBrush>(color1, color2);
         }
 
-        private void btnRemoveSelected_Click(object sender, RoutedEventArgs e)
+        private async void btnRemoveSelected_Click(object sender, RoutedEventArgs e)
         {
             List<Guid> toDelete = new List<Guid>();
 
@@ -137,12 +145,18 @@ namespace WindowsCloudStickies
                 }
             }
 
+            List<string> noteIDs = new List<string>();
+
             foreach (Guid delID in toDelete)
             {
+                noteIDs.Add(delID.ToString());
                 StickyNote note = Globals.stickies.GetNoteFromGUID(delID);
                 LocalSave.DeleteNote(Globals.user.ID, note.Note_ID);
                 Globals.stickies.Remove(note);
-            }
+            }                
+
+            if(noteIDs.Count > 0)
+                await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
 
             updateList();
         }

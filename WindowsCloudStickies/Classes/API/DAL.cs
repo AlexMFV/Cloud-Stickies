@@ -154,6 +154,26 @@ namespace WindowsCloudStickies
             }
         }
 
+        public static async Task<bool> DeleteNotesFromUser(Guid userID, List<string> noteIDs)
+        {
+            try
+            {
+                string stringArray = string.Join(",", noteIDs);
+
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("userID", userID.ToString());
+                parameters.Add("noteIDs", stringArray);
+
+                bool response = Convert.ToBoolean(await API.Fetch(RequestType.POST, "/api/note/delete", parameters));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Messager.Process(ex);
+                return false;
+            }
+        }
+
         #endregion
 
         #region Cookies

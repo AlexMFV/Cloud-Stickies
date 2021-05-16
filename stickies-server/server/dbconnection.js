@@ -108,7 +108,7 @@ async function deleteCookie(user, cookie){
 
 async function checkCookie(user, cookie){
     let count = await callProcedureFirstRow('checkCookie', [user, cookie]);
-    return count.result == 1 ? true : false;
+    return count.result > 0 ? true : false;
 }
 
 async function checkCookieExpire(){

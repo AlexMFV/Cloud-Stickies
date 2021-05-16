@@ -1,13 +1,43 @@
-import React from "react";
+import React, { useEffect } from "react";
 import '../register.css';
-import { Button, FormGroup, Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { sha256 } from 'js-sha256';
+import Cookies from 'universal-cookie';
+import { v4 as uuidv4 } from 'uuid';
+import { useHistory } from 'react-router-dom';
+import * as glob from '../globals';
 
 //Functional Component 
 const RegisterPage = () => {
   document.body.style.backgroundColor = "#4f4f4f";
+  const history = useHistory();
+
+  useEffect(() => {
+    async function getCookie() {
+      const cookies = new Cookies(); //Instantiate the cookie
+      const cookie = cookies.get('logn');
+
+      if (cookie !== undefined) {
+        const userID = cookie["userID"];
+        const cookieID = cookie["cookieID"];
+
+        const response = await fetch('/api/cookie/check/' + userID + '/' + cookieID);
+        const data = await response.json();
+
+        if (!data) {
+          //Delete cookie
+          cookies.remove('logn');
+        }
+        else {
+          glob.redirectToHome(history);
+        }
+      }
+    }
+    getCookie();
+  }, [history]);
 
   async function processRegistration() {
+    const id = uuidv4();
     const user = sha256(document.getElementById('txtUser').value);
     const pass = sha256(document.getElementById('txtPass').value);
     const pass2 = sha256(document.getElementById('txtPass2').value);
@@ -17,7 +47,7 @@ const RegisterPage = () => {
       clearFields();
     }
     else {
-      const data = { user, pass };
+      const data = { id, user, pass };
 
       const userExists = await fetch('/api/user/' + user).then((res) => {
         return res.json();
@@ -41,8 +71,11 @@ const RegisterPage = () => {
 
           res.json().then(function (success) {
             if (success) {
-              alert("Register successful, you can login now!");
-              //redirectToIndex(); //?user=" + usr;
+              const cookies = new Cookies();
+              let id = uuidv4(); //Create UUID for the DB
+              let cookieID = uuidv4(); //Create the cookie UUID
+              glob.createCookies(cookies, id, cookieID, user, pass);
+              glob.redirectToHome(history);
             }
             else {
               alert("There was an error creating the account, please try again later!");

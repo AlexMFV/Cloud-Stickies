@@ -134,7 +134,7 @@ function error(res, msg) {
 async function checkCookieExpire()
 {
     await db.checkCookieExpire();
-    return Promise.delay(3600000).then(() => checkCookieExpire());
+    return Promise.delay(1800000).then(() => checkCookieExpire());
 }
 
 module.exports = { processLogin, processRegistration, checkUserExists, getUserID,

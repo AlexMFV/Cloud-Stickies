@@ -124,6 +124,6 @@
     <value>http://localhost:5000</value>
   </data>
   <data name="ServerIP" xml:space="preserve">
-    <value>Change this to Server IP, later</value>
+    <value>https://stickiesapi.alexmfv.com</value>
   </data>
 </root>

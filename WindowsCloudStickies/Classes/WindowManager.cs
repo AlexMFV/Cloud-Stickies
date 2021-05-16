@@ -10,16 +10,31 @@ namespace WindowsCloudStickies
     {
         public static void OpenManager(Account toClose)
         {
-            NoteManager manager = new NoteManager(toClose.UserSuccessfullyAuthenticated);
+            NoteManager manager = new NoteManager();
             toClose.Close();
             manager.Show();
         }
 
-        public static void OpenLogin(NoteManager toClose)
+        public async static Task<bool> OpenLogin(NoteManager toClose)
         {
-            Account login = new Account();
-            toClose.Close();
-            login.Show();
+            bool result = Messager.Logout();
+
+            if (result)
+            {
+                if (LocalSave.CheckCookieFile())
+                {
+                    Tuple<string, string, string, string> values = LocalSave.GetCookieFile();
+                    LocalSave.DeleteCookieFile();
+                    await DAL.DeleteCookie(values.Item1, values.Item2); //From the database
+                }
+                toClose.isLogout = true;
+                Globals.user = null;
+                toClose.Close();
+                Account login = new Account();
+                login.Show();
+                return true;
+            }
+            return false;
         }
     }
 }

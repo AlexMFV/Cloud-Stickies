@@ -79,7 +79,7 @@ namespace WindowsCloudStickies.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change this to Server IP, later.
+        ///   Looks up a localized string similar to https://stickiesapi.alexmfv.com.
         /// </summary>
         internal static string ServerIP {
             get {

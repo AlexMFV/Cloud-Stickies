@@ -5,12 +5,10 @@ import RegisterPage from "./pages/register";
 import HomePage from "./pages/home";
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-//Import all needed Component for this tutorial
+//Import all needed Component
 import {
   BrowserRouter as Router,
   Route,
-  Switch,
-  Link,
   Redirect
 } from "react-router-dom";
 

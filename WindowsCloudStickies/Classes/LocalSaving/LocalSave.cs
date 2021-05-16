@@ -23,11 +23,14 @@ namespace WindowsCloudStickies
         public static void LoadStickyNotes(Guid userID)
         {
             bool isCorrupted = false;
-            //-------------------------------DEBUG ONLY-----------------------------------
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
 
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies"); //Change To Sticky Notes
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            string userDir;
+
+            if (userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
 
             StickyNotes collection = new StickyNotes();
 
@@ -42,15 +45,7 @@ namespace WindowsCloudStickies
                     {
                         JObject obj = JObject.Parse(content);
                         StickyNote note = new StickyNote();
-                        note.noteID = Guid.Parse(obj.Property("noteID").Value.ToString());
-                        note.noteText = obj.Property("noteText").Value.ToString();
-                        note.noteTitle = obj.Property("noteTitle").Value.ToString();
-                        note.noteColor = Parser.ToColor(obj.Property("noteColor").Value.ToString());
-                        note.titleColor = Parser.ToColor(obj.Property("titleColor").Value.ToString());
-                        note.dateCreated = DateTime.Parse(obj.Property("dateCreated").Value.ToString());
-                        note.baseFont = obj.Property("baseFont").Value.ToString();
-                        note.baseFontSize = obj.Property("baseFontSize").Value.ToString();
-                        note.baseFontColor = obj.Property("baseFontColor").Value.ToString();
+                        note = LoadNoteProperties(note, obj);
                         collection.Add(note);
                     }
                     else
@@ -70,11 +65,13 @@ namespace WindowsCloudStickies
 
         public static void SaveAllStickyNotes(Guid userID)
         {
-            //-------------DEBUG ONLY----------------
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
-
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+
+            string userDir;
+            if(userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
 
             if (!Directory.Exists(cacheDir))
                 Directory.CreateDirectory(cacheDir);
@@ -85,19 +82,11 @@ namespace WindowsCloudStickies
             foreach (StickyNote note in Globals.stickies)
             {
                 //From Stickies Collection To JSON To File
-                using (StreamWriter file = File.CreateText(userDir + "\\" + note.noteID.ToString()))
+                using (StreamWriter file = File.CreateText(userDir + "\\" + note.Note_ID.ToString()))
                 using (JsonTextWriter writer = new JsonTextWriter(file))
                 {
                     JObject toAdd = new JObject();
-                    toAdd.Add("noteID", note.noteID);
-                    toAdd.Add("noteText", note.noteText);
-                    toAdd.Add("noteTitle", note.noteTitle);
-                    toAdd.Add("noteColor", ColorRGBToString(note.noteColor));
-                    toAdd.Add("titleColor", ColorRGBToString(note.titleColor));
-                    toAdd.Add("dateCreated", note.dateCreated);
-                    toAdd.Add("baseFont", note.baseFont);
-                    toAdd.Add("baseFontSize", note.baseFontSize);
-                    toAdd.Add("baseFontColor", note.baseFontColor);
+                    toAdd = AddNoteProperties(note, toAdd);
                     toAdd.WriteTo(writer);
                 }
             }
@@ -105,11 +94,13 @@ namespace WindowsCloudStickies
 
         public static void SaveStickyNote(Guid userID, Guid noteID)
         {
-            //-------------DEBUG ONLY----------------
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
-
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+
+            string userDir;
+            if (userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
 
             if (!Directory.Exists(cacheDir))
                 Directory.CreateDirectory(cacheDir);
@@ -119,40 +110,77 @@ namespace WindowsCloudStickies
 
             StickyNote note = Globals.stickies.GetNoteFromGUID(noteID);
 
-            using (StreamWriter file = File.CreateText(userDir + "\\" + note.noteID.ToString()))
+            using (StreamWriter file = File.CreateText(userDir + "\\" + note.Note_ID.ToString()))
             using (JsonTextWriter writer = new JsonTextWriter(file))
             {
                 JObject toAdd = new JObject();
-                toAdd.Add("noteID", note.noteID);
-                toAdd.Add("noteText", note.noteText);
-                toAdd.Add("noteTitle", note.noteTitle);
-                toAdd.Add("noteColor", ColorRGBToString(note.noteColor));
-                toAdd.Add("titleColor", ColorRGBToString(note.titleColor));
-                toAdd.Add("dateCreated", note.dateCreated);
-                toAdd.Add("baseFont", note.baseFont);
-                toAdd.Add("baseFontSize", note.baseFontSize);
-                toAdd.Add("baseFontColor", note.baseFontColor);
+                toAdd = AddNoteProperties(note, toAdd);
                 toAdd.WriteTo(writer);
             }
         }
 
+        private static JObject AddNoteProperties(StickyNote note, JObject toAdd)
+        {
+            toAdd.Add("noteID", note.Note_ID);
+            toAdd.Add("noteText", note.NoteText);
+            toAdd.Add("noteTitle", note.NoteTitle);
+            toAdd.Add("noteColor", ColorRGBToString(note.NoteColor));
+            toAdd.Add("titleColor", ColorRGBToString(note.TitleColor));
+            toAdd.Add("dateCreated", note.DateCreated);
+            toAdd.Add("baseFont", note.BaseFont);
+            toAdd.Add("baseFontSize", note.BaseFontSize);
+            toAdd.Add("baseFontColor", note.BaseFontColor);
+            toAdd.Add("x", note.PosX);
+            toAdd.Add("y", note.PosY);
+            toAdd.Add("width", note.Width);
+            toAdd.Add("height", note.Height);
+            return toAdd;
+        }
+
+        private static StickyNote LoadNoteProperties(StickyNote note, JObject toLoad)
+        {
+            note.Note_ID = Guid.Parse(toLoad.Property("noteID").Value.ToString());
+            note.NoteText = toLoad.Property("noteText").Value.ToString();
+            note.NoteTitle = toLoad.Property("noteTitle").Value.ToString();
+            note.NoteColor = Parser.ToColor(toLoad.Property("noteColor").Value.ToString());
+            note.TitleColor = Parser.ToColor(toLoad.Property("titleColor").Value.ToString());
+            note.DateCreated = DateTime.Parse(toLoad.Property("dateCreated").Value.ToString());
+            note.BaseFont = toLoad.Property("baseFont").Value.ToString();
+            note.BaseFontSize = int.Parse(toLoad.Property("baseFontSize").Value.ToString());
+            note.BaseFontColor = toLoad.Property("baseFontColor").Value.ToString();
+            note.PosX = int.Parse(toLoad.Property("x").Value.ToString());
+            note.PosY = int.Parse(toLoad.Property("y").Value.ToString());
+            note.Width = int.Parse(toLoad.Property("width").Value.ToString());
+            note.Height = int.Parse(toLoad.Property("height").Value.ToString());
+            note.isNew = false;
+            note.hasUpdated = false;
+            return note;
+        }
+
         public static void DeleteAllNotes(Guid userID)
         {
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
-
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
 
-            foreach(string filePath in Directory.GetFiles(userDir).ToList())
+            string userDir;
+            if (userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
+
+            foreach (string filePath in Directory.GetFiles(userDir).ToList())
                 File.Delete(filePath);
         }
 
         public static void DeleteNote(Guid userID, Guid noteID)
         {
-            userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
-
             string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-            string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+
+            string userDir;
+            if (userID != Guid.Empty)
+                userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            else
+                userDir = Path.Combine(cacheDir + "\\Guest");
+
             string filepath = Path.Combine(userDir + "\\" + noteID);
 
             if (File.Exists(filepath))
@@ -161,79 +189,62 @@ namespace WindowsCloudStickies
                 MessageBox.Show("There was a problem deleting the note!");
         }
 
-        //public static void DeleteSelectedNotes(Guid userID, Guid noteIDs)
-        //{
+        public static void CreateCookieFile(string cookie, string user, string pass, string username)
+        {
+            string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config");
 
-        //}
+            if (!Directory.Exists(cacheDir))
+                Directory.CreateDirectory(cacheDir);
 
-        //public static void LoadUserSettings(Guid userID)
-        //{
-        //    //-------------------------------DEBUG ONLY-----------------------------------
-        //    userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
+            //From Accounts Collection To JSON To File
+            using (StreamWriter file = File.CreateText(cacheDir + "\\cookie"))
+            using (JsonTextWriter writer = new JsonTextWriter(file))
+            {
+                JObject obj = new JObject();
+                obj.Add("cookie", cookie);
+                obj.Add("usr", user);
+                obj.Add("pwd", pass);
+                obj.Add("username", username);
 
-        //    string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies"); //Change To Sticky Notes
-        //    string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+                obj.WriteTo(writer);
+            }
+        }
 
-        //    StickyNotes collection = new StickyNotes();
+        public static bool CheckCookieFile()
+        {
+            string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config");
+            if (File.Exists(cacheDir + "\\cookie"))
+                return true;
+            return false;
+        }
 
-        //    //If the directory of the user exists
-        //    if (Directory.Exists(userDir))
-        //    {
-        //        //Get all the files inside the directory
-        //        foreach (string file in Directory.GetFiles(userDir))
-        //        {
-        //            JObject obj = JObject.Parse(File.ReadAllText(file));
-        //            StickyNote note = new StickyNote();
-        //            note.noteID = Guid.Parse(obj.Property("noteID").Value.ToString());
-        //            note.noteText = obj.Property("noteText").Value.ToString();
-        //            note.noteTitle = obj.Property("noteTitle").Value.ToString();
-        //            note.noteColor = Parser.ToColor(obj.Property("noteColor").Value.ToString());
-        //            note.titleColor = Parser.ToColor(obj.Property("titleColor").Value.ToString());
-        //            note.dateCreated = DateTime.Parse(obj.Property("dateCreated").Value.ToString());
-        //            note.baseFont = obj.Property("baseFont").Value.ToString();
-        //            note.baseFontSize = obj.Property("baseFontSize").Value.ToString();
-        //            note.baseFontColor = obj.Property("baseFontColor").Value.ToString();
-        //            collection.Add(note);
-        //        }
-        //    }
+        public static Tuple<string, string, string, string> GetCookieFile()
+        {
+            string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config");
+            Tuple<string, string, string, string> values = null;
 
-        //    Globals.stickies = collection;
-        //}
+            if (new FileInfo(cacheDir + "\\cookie").Length > 0)
+            {
+                JObject obj = JObject.Parse(File.ReadAllText(cacheDir + "\\cookie"));
 
-        //public static void SaveUserSettings(Guid userID)
-        //{
-        //    //-------------DEBUG ONLY----------------
-        //    userID = Guid.Parse("3878d481-54e2-40a1-95e7-af664a1fd140");
+                values = new Tuple<string, string, string, string>(obj.Property("cookie").Value.ToString(),
+                    obj.Property("usr").Value.ToString(), obj.Property("pwd").Value.ToString(), obj.Property("username").Value.ToString());
+            }
 
-        //    string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies");
-        //    string userDir = Path.Combine(cacheDir + "\\" + userID.ToString());
+            return values;
+        }
 
-        //    if (!Directory.Exists(cacheDir))
-        //        Directory.CreateDirectory(cacheDir);
+        public static void DeleteCookieFile()
+        {
+            string cacheDir = Path.Combine(Globals.AppData, "alexmfv_stickies", "config", "cookie");
 
-        //    if (!Directory.Exists(userDir))
-        //        Directory.CreateDirectory(userDir);
+            if (File.Exists(cacheDir))
+                File.Delete(cacheDir);
+        }
 
-        //    foreach (StickyNote note in Globals.stickies)
-        //    {
-        //        //From Stickies Collection To JSON To File
-        //        using (StreamWriter file = File.CreateText(userDir + "\\" + note.noteID.ToString()))
-        //        using (JsonTextWriter writer = new JsonTextWriter(file))
-        //        {
-        //            JObject toAdd = new JObject();
-        //            toAdd.Add("noteID", note.noteID);
-        //            toAdd.Add("noteText", note.noteText);
-        //            toAdd.Add("noteTitle", note.noteTitle);
-        //            toAdd.Add("noteColor", ColorRGBToString(note.noteColor));
-        //            toAdd.Add("titleColor", ColorRGBToString(note.titleColor));
-        //            toAdd.Add("dateCreated", note.dateCreated);
-        //            toAdd.Add("baseFont", note.baseFont);
-        //            toAdd.Add("baseFontSize", note.baseFontSize);
-        //            toAdd.Add("baseFontColor", note.baseFontColor);
-        //            toAdd.WriteTo(writer);
-        //        }
-        //    }
-        //}
+        //TODO:
+        //Save User Settings
+        //Load User Settings
 
         public static string ColorRGBToString(SolidColorBrush brush)
         {

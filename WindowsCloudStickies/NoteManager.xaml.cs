@@ -17,6 +17,7 @@ using AutoUpdaterDotNET;
 using System.Windows.Threading;
 using System.Reflection;
 using System.Net;
+using System.IO;
 
 namespace WindowsCloudStickies
 {
@@ -26,18 +27,53 @@ namespace WindowsCloudStickies
     public partial class NoteManager : MetroWindow
     {
         List<Note> notes = new List<Note>();
-        string auth = null;
+        public bool isLogout = false;
 
-        public NoteManager(string auth)
+        public NoteManager()
         {
             InitializeComponent();
-            this.auth = auth;
+            SetSystemTrayNotification();
+
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             txtVersion.Text = "v" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
             AutoUpdater.Synchronous = true;
-            LocalSave.LoadStickyNotes(Guid.NewGuid());
-            lstNotes.ItemsSource = Globals.stickies;
-            //this.WindowState = WindowState.Minimized;
+            //LocalSave.LoadStickyNotes(Globals.user.ID);
+
+            //Do stuff depending on Registered, Login or Guest user
+            //Use: Globals.user.authType
+        }
+
+        public void SetSystemTrayNotification()
+        {
+            Globals.ni = new System.Windows.Forms.NotifyIcon();
+            Globals.ni.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+
+            Globals.ni.ContextMenuStrip.Items.Add("Close").Click +=
+                delegate (object sender, EventArgs e)
+                {
+                    this.Close();
+                };
+
+            Globals.ni.Icon = new System.Drawing.Icon(new DirectoryInfo(Environment.CurrentDirectory).Parent.Parent.FullName + "/Images/notes.ico");
+            Globals.ni.Visible = false;
+            Globals.ni.DoubleClick +=
+                delegate (object sender, EventArgs args)
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                    Globals.ni.Visible = false;
+                };
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+                Globals.ni.Visible = true;
+            }
+
+            base.OnStateChanged(e);
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -52,15 +88,23 @@ namespace WindowsCloudStickies
             //lstNotes.Items[lstNotes.Items.Count - 1];
         }
 
-        private void btnRemoveAll_Click(object sender, RoutedEventArgs e)
+        private async void btnRemoveAll_Click(object sender, RoutedEventArgs e)
         {
             ///DELETE ALL
             for(int i = notes.Count-1; i >= 0; i--)
                 notes[i].Close();
 
             notes = new List<Note>();
+
+            List<string> noteIDs = new List<string>();
+
+            foreach (StickyNote note in Globals.stickies)
+                noteIDs.Add(note.Note_ID.ToString());
+
             Globals.stickies = new StickyNotes();
-            LocalSave.DeleteAllNotes(Guid.NewGuid()); //REMOVE THE NEWGUID as this will override the actual user GUID
+
+            await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
+            LocalSave.DeleteAllNotes(Globals.user.ID);
 
             updateList();
         }
@@ -88,7 +132,7 @@ namespace WindowsCloudStickies
             return new Tuple<SolidColorBrush, SolidColorBrush>(color1, color2);
         }
 
-        private void btnRemoveSelected_Click(object sender, RoutedEventArgs e)
+        private async void btnRemoveSelected_Click(object sender, RoutedEventArgs e)
         {
             List<Guid> toDelete = new List<Guid>();
 
@@ -97,16 +141,22 @@ namespace WindowsCloudStickies
                 for(int j = 0; j < lstNotes.SelectedItems.Count; j++)
                 {
                     if (lstNotes.SelectedItems[j].Equals(Globals.stickies[i]))
-                        toDelete.Add(Globals.stickies[i].noteID);
+                        toDelete.Add(Globals.stickies[i].Note_ID);
                 }
             }
 
+            List<string> noteIDs = new List<string>();
+
             foreach (Guid delID in toDelete)
             {
+                noteIDs.Add(delID.ToString());
                 StickyNote note = Globals.stickies.GetNoteFromGUID(delID);
-                LocalSave.DeleteNote(new Guid(), note.noteID);
+                LocalSave.DeleteNote(Globals.user.ID, note.Note_ID);
                 Globals.stickies.Remove(note);
-            }
+            }                
+
+            if(noteIDs.Count > 0)
+                await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
 
             updateList();
         }
@@ -120,7 +170,7 @@ namespace WindowsCloudStickies
         private void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
             if(Globals.stickies.Count > 0)
-                LocalSave.SaveAllStickyNotes(Guid.NewGuid()); //Change to User GUID later
+                LocalSave.SaveAllStickyNotes(Globals.user.ID);
         }
 
         private void btnCloseAll_Click(object sender, RoutedEventArgs e)
@@ -136,7 +186,7 @@ namespace WindowsCloudStickies
 
         public void DeleteNoteForm(Guid id)
         {
-            Note toDelete = notes.First(note => note.current_note.noteID == id);
+            Note toDelete = notes.First(note => note.current_note.Note_ID == id);
             notes.Remove(toDelete);
         }
 
@@ -157,19 +207,58 @@ namespace WindowsCloudStickies
 
         void ShowPressedNote(StickyNote pressedNote)
         {
-            if (!notes.Exists(note => note.current_note.noteID == pressedNote.noteID))
+            if (!notes.Exists(note => note.current_note.Note_ID == pressedNote.Note_ID))
             {
-                Tuple<SolidColorBrush, SolidColorBrush> colors = new Tuple<SolidColorBrush, SolidColorBrush>(pressedNote.noteColor, pressedNote.titleColor);
-                Note note = new Note(pressedNote.noteID, this);
+                Tuple<SolidColorBrush, SolidColorBrush> colors = new Tuple<SolidColorBrush, SolidColorBrush>(pressedNote.NoteColor, pressedNote.TitleColor);
+                Note note = new Note(pressedNote.Note_ID, this);
                 notes.Add(note);
                 note.Show();
             }
             else
             {
-                Note open = notes.First(note => note.current_note.noteID == pressedNote.noteID);
+                Note open = notes.First(note => note.current_note.Note_ID == pressedNote.Note_ID);
                 notes.Remove(open);
                 open.Close();
             }
+        }
+
+        private async void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            //If it's a connected user, save all the notes to the cloud first, then logout
+            await WindowManager.OpenLogin(this);
+        }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.isLogout)
+            {
+                bool result = Messager.CloseApplication();
+                if (result)
+                {
+                    foreach (Note n in notes)
+                        n.Close(); //Maybe save first, the notes
+                    notes = null;
+                    Globals.stickies = null;
+                    Globals.ni.Visible = false;
+                    Globals.ni.Icon.Dispose();
+                    Globals.ni.Dispose();
+                    Application.Current.Shutdown();
+                }
+                else
+                    e.Cancel = true;
+            }
+        }
+
+        private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!Network.HasInternetAccess())
+                LocalSave.LoadStickyNotes(Globals.user.ID);
+            else
+                await DAL.GetNotesFromUser(Globals.user.ID);
+
+            LocalSave.SaveAllStickyNotes(Globals.user.ID);
+            lstNotes.ItemsSource = Globals.stickies;
+            txtUsername.Text = "Logged in as: " + Globals.user.Username;
         }
     }
 }

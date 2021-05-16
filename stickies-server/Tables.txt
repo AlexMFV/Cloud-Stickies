@@ -1,9 +1,47 @@
 CREATE TABLE `users` (
-  `user_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(36) NOT NULL,
   `usr` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `pwd` varchar(64) NOT NULL,
+  `pwd` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `settings_id` int DEFAULT NULL,
   `time_created` timestamp NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `users_un` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `notes` (
+  `note_id` varchar(64) NOT NULL,
+  `noteText` text,
+  `noteTitle` text,
+  `noteColor` varchar(7) NOT NULL,
+  `titleColor` varchar(7) NOT NULL,
+  `dateCreated` timestamp NOT NULL,
+  `lastUpdate` timestamp NULL DEFAULT NULL,
+  `baseFont` varchar(100) DEFAULT NULL,
+  `baseFontSize` int DEFAULT NULL,
+  `baseFontColor` varchar(7) DEFAULT NULL,
+  `posX` int NOT NULL,
+  `posY` int NOT NULL,
+  `width` int NOT NULL,
+  `height` int NOT NULL,
+  `isClosed` tinyint(1) NOT NULL,
+  `isLocked` tinyint(1) NOT NULL,
+  PRIMARY KEY (`note_id`),
+  UNIQUE KEY `notes_un` (`note_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `user_notes` (
+  `userNote_id` varchar(64) NOT NULL,
+  `user_id` varchar(64) NOT NULL,
+  `note_id` varchar(64) NOT NULL,
+  PRIMARY KEY (`userNote_id`),
+  UNIQUE KEY `user_notes_un` (`userNote_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `user_cookies` (
+  `id` varchar(64) NOT NULL,
+  `user_id` varchar(64) NOT NULL,
+  `cookie_id` varchar(64) NOT NULL,
+  `expire_date` timestamp NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_cookies_un` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Threading;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace WindowsCloudStickies
 {
@@ -52,7 +53,19 @@ namespace WindowsCloudStickies
 
             LoadNoteProperties();
 
+            textCanvas.IsDocumentEnabled = true;
+
             RemoveFromAltTab();
+        }
+
+        public void SaveRichTextXAML()
+        {
+            TextRange range;
+            FileStream fStream;
+            range = new TextRange(textCanvas.Document.ContentStart, textCanvas.Document.ContentEnd);
+            fStream = new FileStream("D:\\test.xaml", FileMode.Create);
+            range.Save(fStream, DataFormats.Xaml);
+            fStream.Close();
         }
 
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
@@ -182,6 +195,7 @@ namespace WindowsCloudStickies
         {
             //Save Note, position, color and size
             manager.DeleteNoteForm(this.current_note.Note_ID);
+            SaveRichTextXAML();
             this.Close();
         }
 
@@ -457,13 +471,19 @@ namespace WindowsCloudStickies
 
         private void MakeItalic(object sender, RoutedEventArgs e)
         {
-            this.textCanvas.Selection.ApplyPropertyValue(Run.FontWeightProperty, FontWeights.Bold);
+            this.textCanvas.Selection.ApplyPropertyValue(Run.FontStyleProperty, FontStyles.Italic);
             ForceSave();
         }
 
         private void MakeNormal(object sender, RoutedEventArgs e)
         {
             this.textCanvas.Selection.ApplyPropertyValue(Run.FontWeightProperty, FontWeights.Normal);
+            ForceSave();
+        }
+
+        private void MakeStyleNormal(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.ApplyPropertyValue(Run.FontStyleProperty, FontStyles.Normal);
             ForceSave();
         }
 
@@ -511,6 +531,38 @@ namespace WindowsCloudStickies
                 new Action(() => ChangeSavedState(State.NotSaved)));
             this.current_note.hasUpdated = true;
             saveWait.Start();
+        }
+
+        private void AddSelectionDateTime(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.Text = DateTime.Now.ToString();
+        }
+
+        private void AddSelectionTimestamp(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.Text = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        }
+
+        private void CreateURL(object sender, RoutedEventArgs e)
+        {
+            Paragraph paraSelection = new Paragraph();
+            paraSelection.Margin = new Thickness(0); // remove indent between paragraphs
+
+            string linkURL = textCanvas.Selection.Text;
+            Regex reg = new Regex(@"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?"); //Regex to detect URL
+
+            if (reg.IsMatch(linkURL))
+            {
+                Hyperlink link = new Hyperlink();
+                link.IsEnabled = true;
+                link.Inlines.Add(linkURL);
+                link.NavigateUri = new Uri(linkURL);
+                link.RequestNavigate += (newSender, args) => Process.Start(args.Uri.ToString()); //Click event for URL
+                paraSelection.Inlines.Add(link);
+
+                textCanvas.Document.Blocks.InsertBefore(textCanvas.CaretPosition.Paragraph, paraSelection); //Insert clickable URL
+                textCanvas.Document.Blocks.Remove(textCanvas.CaretPosition.Paragraph); //Remove Text URL
+            }
         }
     }
 }

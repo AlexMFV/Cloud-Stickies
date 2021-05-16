@@ -225,11 +225,6 @@ namespace WindowsCloudStickies
 
         string TextFromRichTextBox(RichTextBox rtb)
         {
-            /*foreach(Block block in rtb.Document.Blocks)
-            {
-                break;
-            }*/
-
             return new TextRange( rtb.Document.ContentStart,
                 rtb.Document.ContentEnd).Text;
         }
@@ -283,6 +278,9 @@ namespace WindowsCloudStickies
 
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                     new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.Note_ID)));
+
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                   new Action(() => manager.updateList()));
 
                 if (Globals.user.AuthType != AuthType.Guest)
                 {
@@ -350,6 +348,10 @@ namespace WindowsCloudStickies
         private void savedIndicator_Click(object sender, RoutedEventArgs e)
         {
             saveWait.Stop();
+            this.current_note.NoteText = (string)Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
+                new Func<string>(() => TextFromRichTextBox(this.textCanvas)));
+            this.current_note.ChangeTitleToParagraph();
+            this.current_note.hasUpdated = true;
             SaveFullNote();
         }
 

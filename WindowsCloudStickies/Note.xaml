@@ -36,6 +36,25 @@
         </Button>
 
         <Button x:Name="btnSettings" Width="15" Height="12" VerticalAlignment="Top" BorderThickness="0" Background="Transparent" Click="btnSettings_Click" Margin="24,1,0,0" HorizontalAlignment="Left">
+            <Button.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Change Color to Green" Click="changeToGreen"></MenuItem>
+                    <MenuItem Header="Change Color to Pink" Click="changeToPink"></MenuItem>
+                    <MenuItem Header="Change Color to Yellow" Click="changeToYellow"></MenuItem>
+                    <MenuItem Header="Change Color to Blue" Click="changeToBlue"></MenuItem>
+                    <MenuItem Header="Change Color to Orange" Click="changeToOrange"></MenuItem>
+                    <Separator />
+                    <MenuItem Header="Make Selection Normal" Click="MakeNormal"></MenuItem>
+                    <MenuItem Header="Make Selection Bold" Click="MakeBold"></MenuItem>
+                    <MenuItem Header="Make Selection Italic" Click="MakeItalic"></MenuItem>
+                    <Separator />
+                    <MenuItem Header="Change Selection Size to 4" Click="ChangeSize4"></MenuItem>
+                    <MenuItem Header="Change Selection Size to 8" Click="ChangeSize8"></MenuItem>
+                    <MenuItem Header="Change Selection Size to 12" Click="ChangeSize12"></MenuItem>
+                    <MenuItem Header="Change Selection Size to 16" Click="ChangeSize16"></MenuItem>
+                    <MenuItem Header="Change Selection Size to 20" Click="ChangeSize20"></MenuItem>
+                </ContextMenu>
+            </Button.ContextMenu>
             <Button.Style>
                 <Style></Style>
             </Button.Style>

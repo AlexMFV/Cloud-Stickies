@@ -187,6 +187,11 @@ namespace WindowsCloudStickies
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
+            Button btn = sender as Button;
+            ContextMenu contextMenu = btn.ContextMenu;
+            contextMenu.PlacementTarget = btn;
+            contextMenu.IsOpen = true;
+            e.Handled = true;
             //Open Settings Context Menu
             //Change Color
             //Always On Top (Toggle)
@@ -404,22 +409,108 @@ namespace WindowsCloudStickies
             saveWait.Start();
         }
 
-        //private void noteWindow_MouseEnter(object sender, MouseEventArgs e)
-        //{
-        //    gripBar.Visibility = Visibility.Visible;
-        //    btnHideNote.Visibility = Visibility.Visible;
-        //    btnClose.Visibility = Visibility.Visible;
-        //    btnLockNote.Visibility = Visibility.Visible;
-        //    btnSettings.Visibility = Visibility.Visible;
-        //}
+        private void changeToGreen(object sender, RoutedEventArgs e)
+        {
+            this.current_note.NoteColor = NoteColors.GreenNote;
+            this.current_note.TitleColor = NoteColors.GreenTitle;
+            ChangeColor();
+            ForceSave();
+        }
 
-        //private void noteWindow_MouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    gripBar.Visibility = Visibility.Hidden;
-        //    btnHideNote.Visibility = Visibility.Hidden;
-        //    btnClose.Visibility = Visibility.Hidden;
-        //    btnLockNote.Visibility = Visibility.Hidden;
-        //    btnSettings.Visibility = Visibility.Hidden;
-        //}
+        private void changeToPink(object sender, RoutedEventArgs e)
+        {
+            this.current_note.NoteColor = NoteColors.PinkNote;
+            this.current_note.TitleColor = NoteColors.PinkTitle;
+            ChangeColor();
+            ForceSave();
+        }
+
+        private void changeToYellow(object sender, RoutedEventArgs e)
+        {
+            this.current_note.NoteColor = NoteColors.YellowNote;
+            this.current_note.TitleColor = NoteColors.YellowTitle;
+            ChangeColor();
+            ForceSave();
+        }
+
+        private void changeToBlue(object sender, RoutedEventArgs e)
+        {
+            this.current_note.NoteColor = NoteColors.AquaNote;
+            this.current_note.TitleColor = NoteColors.AquaTitle;
+            ChangeColor();
+            ForceSave();
+        }
+
+        private void changeToOrange(object sender, RoutedEventArgs e)
+        {
+            this.current_note.NoteColor = NoteColors.OrangeNote;
+            this.current_note.TitleColor = NoteColors.OrangeTitle;
+            ChangeColor();
+            ForceSave();
+        }
+
+        private void MakeBold(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.ApplyPropertyValue(Run.FontWeightProperty, FontWeights.Bold);
+            ForceSave();
+        }
+
+        private void MakeItalic(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.ApplyPropertyValue(Run.FontWeightProperty, FontWeights.Bold);
+            ForceSave();
+        }
+
+        private void MakeNormal(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.ApplyPropertyValue(Run.FontWeightProperty, FontWeights.Normal);
+            ForceSave();
+        }
+
+        private void ChangeSize4(object sender, RoutedEventArgs e)
+        {
+            ChangeSize(4);
+        }
+
+        private void ChangeSize8(object sender, RoutedEventArgs e)
+        {
+            ChangeSize(8);
+        }
+
+        private void ChangeSize12(object sender, RoutedEventArgs e)
+        {
+            ChangeSize(12);
+        }
+
+        private void ChangeSize16(object sender, RoutedEventArgs e)
+        {
+            ChangeSize(16);
+        }
+
+        private void ChangeSize20(object sender, RoutedEventArgs e)
+        {
+            ChangeSize(20);
+        }
+
+        public void ChangeColor()
+        {
+            textCanvas.Background = current_note.NoteColor;
+            gripBar.Background = current_note.TitleColor;
+        }
+
+        public void ChangeSize(double size)
+        {
+            this.textCanvas.Selection.ApplyPropertyValue(Run.FontSizeProperty, size);
+            ForceSave();
+        }
+
+        public void ForceSave()
+        {
+            saveWait.Stop();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() => ChangeSavedState(State.NotSaved)));
+            this.current_note.hasUpdated = true;
+            saveWait.Start();
+        }
     }
 }

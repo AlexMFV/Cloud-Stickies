@@ -37,10 +37,6 @@ namespace WindowsCloudStickies
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             txtVersion.Text = "v" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
             AutoUpdater.Synchronous = true;
-            //LocalSave.LoadStickyNotes(Globals.user.ID);
-
-            //Do stuff depending on Registered, Login or Guest user
-            //Use: Globals.user.authType
         }
 
         public void SetSystemTrayNotification()
@@ -251,10 +247,17 @@ namespace WindowsCloudStickies
 
         private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!Network.HasInternetAccess())
+            if(Globals.user.AuthType == AuthType.Guest)
+            {
                 LocalSave.LoadStickyNotes(Globals.user.ID);
+            }
             else
-                await DAL.GetNotesFromUser(Globals.user.ID);
+            {
+                if (!Network.HasInternetAccess())
+                    LocalSave.LoadStickyNotes(Globals.user.ID);
+                else
+                    await DAL.GetNotesFromUser(Globals.user.ID);
+            }
 
             LocalSave.SaveAllStickyNotes(Globals.user.ID);
             lstNotes.ItemsSource = Globals.stickies;

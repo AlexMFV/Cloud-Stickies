@@ -46,7 +46,7 @@ async function getUserID(req, res){
     try {
         const result = await db.getUserID(req.params.user)
         res.json(result);
-    } catch (error) {
+    } catch (e) {
         error(res, e);
     }
 }
@@ -61,7 +61,7 @@ async function createNote(req, res){
             req.body.isLocked);
 
         res.json(result);
-    } catch (error) {
+    } catch (e) {
         error(res, e);
     }
 }
@@ -76,7 +76,7 @@ async function updateNote(req, res){
             req.body.isLocked);
 
         res.json(result);
-    } catch (error) {
+    } catch (e) {
         error(res, e);
     }
 }
@@ -85,7 +85,7 @@ async function createCookie(req, res){
     try {
         const result = await db.createCookie(req.body.id, req.body.userID, req.body.cookieID, req.body.expire);
         res.json(result);
-    } catch (error) {
+    } catch (e) {
         error(res, e);
     }
 }
@@ -94,7 +94,7 @@ async function checkCookie(req, res){
     try {
         const result = await db.checkCookie(req.params.user, req.params.cookie);
         res.json(result);
-    } catch (error) {
+    } catch (e) {
         error(res, e);
     }
 }
@@ -103,7 +103,7 @@ async function deleteCookie(req, res){
     try {
         const result = await db.deleteCookie(req.params.user, req.params.cookie);
         res.json(result);
-    } catch (error) {
+    } catch (e) {
         error(res, e);
     }
 }
@@ -112,7 +112,7 @@ async function getNotesFromUser(req, res){
     try {
         const result = await db.getNotesFromUser(req.params.userID);
         res.json(result);
-    } catch (error) {
+    } catch (e) {
         error(res, e);
     }
 }
@@ -121,7 +121,7 @@ async function deleteNotesFromUser(req, res){
     try {
         const result = await db.deleteNotesFromUser(req.body.userID, req.body.noteIDs);
         res.json(result);
-    } catch (error) {
+    } catch (e) {
         error(res, e);
     }
 }

@@ -41,3 +41,12 @@ Patches:
 - (Major) Implemented a "Cookie" system  with some security factors
 - When logging in to the account the user can now see the notes associated with his account (online)
 - User can now delete the notes from his account on the DB
+- Added new Right-Click menu when inside the note:
+	- Change Font Styling
+	- Change Font Weight
+	- Copy
+	- Paste
+	- Undo
+	- Add Date
+	- Add Timestamp
+- Search selection on google (inside the notes)

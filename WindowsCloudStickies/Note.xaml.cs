@@ -531,5 +531,25 @@ namespace WindowsCloudStickies
                 textCanvas.Document.Blocks.Remove(textCanvas.CaretPosition.Paragraph); //Remove Text URL
             }
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (menuGoogle.IsEnabled && !textCanvas.Selection.IsEmpty)
+                Process.Start("https://www.google.com/search?q=" + textCanvas.Selection.Text);
+        }
+
+        private void ContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            if (textCanvas.Selection.Text.Length > 0)
+            {
+                menuGoogle.IsEnabled = true;
+                menuGoogle.Header = "Search on Google for '" + textCanvas.Selection.Text + "'";
+            }
+            else
+            {
+                menuGoogle.Header = "Search on Google";
+                menuGoogle.IsEnabled = false;
+            }
+        }
     }
 }

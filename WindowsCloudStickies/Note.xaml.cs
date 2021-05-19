@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Threading;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace WindowsCloudStickies
 {
@@ -52,8 +53,20 @@ namespace WindowsCloudStickies
 
             LoadNoteProperties();
 
+            textCanvas.IsDocumentEnabled = true;
+
             RemoveFromAltTab();
         }
+
+        //public void SaveRichTextXAML()
+        //{
+        //    TextRange range;
+        //    FileStream fStream;
+        //    range = new TextRange(textCanvas.Document.ContentStart, textCanvas.Document.ContentEnd);
+        //    fStream = new FileStream("D:\\test.xaml", FileMode.Create);
+        //    range.Save(fStream, DataFormats.Xaml);
+        //    fStream.Close();
+        //}
 
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -182,6 +195,7 @@ namespace WindowsCloudStickies
         {
             //Save Note, position, color and size
             manager.DeleteNoteForm(this.current_note.Note_ID);
+            //SaveRichTextXAML();
             this.Close();
         }
 
@@ -234,35 +248,6 @@ namespace WindowsCloudStickies
                 rtb.Document.ContentEnd).Text;
         }
 
-        private void textCanvas_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            /* This is where the image will be implemented
-            bool ctrlV = e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V;
-            bool shiftIns = e.KeyboardDevice.Modifiers == ModifierKeys.Shift && e.Key == Key.Insert;
-            if (ctrlV || shiftIns)
-                if (Clipboard.ContainsImage())
-                {
-                    BitmapSource source = Clipboard.GetImage();
-                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-                    encoder.QualityLevel = 100;
-
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        encoder.Frames.Add(BitmapFrame.Create(source));
-                        encoder.Save(stream);
-                        byte[] bit = stream.ToArray();
-                        stream.Close();
-                        Paragraph imageBlock = new Paragraph();
-                        Figure image = new Figure(imageBlock);
-                        this.textCanvas.Document.Blocks.Add(image);
-                        string base64 = Convert.ToBase64String(bit); //Base64 String to add to the noteText, then convert it back to image (when coming from DB)
-                    }
-                    //Allow the user to also paste text
-                    e.Handled = true;
-                }
-            */
-        }
-
         public void ChangeSavedState(State state)
         {
             switch (state)
@@ -278,8 +263,6 @@ namespace WindowsCloudStickies
             try
             {
                 Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.Note_ID)] = this.current_note;
-
-                //await Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Globals.user.ID,, this.current_note.noteID)); //DEBUG: Change later to user ID)
 
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                     new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.Note_ID)));
@@ -318,9 +301,7 @@ namespace WindowsCloudStickies
             try
             {
                 Globals.stickies[Globals.stickies.GetNoteIndex(this.current_note.Note_ID)] = this.current_note;
-                //Task.Factory.StartNew(() => LocalSave.SaveStickyNote(Globals.user.ID,, this.current_note.noteID)); //DEBUG: Change later to user ID)
 
-                //TEST: add await if not working or uncomment code above, and delete this one, below
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                     new Action(() => LocalSave.SaveStickyNote(Globals.user.ID, this.current_note.Note_ID)));
             }
@@ -457,13 +438,19 @@ namespace WindowsCloudStickies
 
         private void MakeItalic(object sender, RoutedEventArgs e)
         {
-            this.textCanvas.Selection.ApplyPropertyValue(Run.FontWeightProperty, FontWeights.Bold);
+            this.textCanvas.Selection.ApplyPropertyValue(Run.FontStyleProperty, FontStyles.Italic);
             ForceSave();
         }
 
         private void MakeNormal(object sender, RoutedEventArgs e)
         {
             this.textCanvas.Selection.ApplyPropertyValue(Run.FontWeightProperty, FontWeights.Normal);
+            ForceSave();
+        }
+
+        private void MakeStyleNormal(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.ApplyPropertyValue(Run.FontStyleProperty, FontStyles.Normal);
             ForceSave();
         }
 
@@ -511,6 +498,38 @@ namespace WindowsCloudStickies
                 new Action(() => ChangeSavedState(State.NotSaved)));
             this.current_note.hasUpdated = true;
             saveWait.Start();
+        }
+
+        private void AddSelectionDateTime(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.Text = DateTime.Now.ToString();
+        }
+
+        private void AddSelectionTimestamp(object sender, RoutedEventArgs e)
+        {
+            this.textCanvas.Selection.Text = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        }
+
+        private void CreateURL(object sender, RoutedEventArgs e)
+        {
+            Paragraph paraSelection = new Paragraph();
+            paraSelection.Margin = new Thickness(0); // remove indent between paragraphs
+
+            string linkURL = textCanvas.Selection.Text;
+            Regex reg = new Regex(@"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?"); //Regex to detect URL
+
+            if (reg.IsMatch(linkURL))
+            {
+                Hyperlink link = new Hyperlink();
+                link.IsEnabled = true;
+                link.Inlines.Add(linkURL);
+                link.NavigateUri = new Uri(linkURL);
+                link.RequestNavigate += (newSender, args) => Process.Start(args.Uri.ToString()); //Click event for URL
+                paraSelection.Inlines.Add(link);
+
+                textCanvas.Document.Blocks.InsertBefore(textCanvas.CaretPosition.Paragraph, paraSelection); //Insert clickable URL
+                textCanvas.Document.Blocks.Remove(textCanvas.CaretPosition.Paragraph); //Remove Text URL
+            }
         }
     }
 }

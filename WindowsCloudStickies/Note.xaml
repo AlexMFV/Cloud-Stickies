@@ -38,21 +38,11 @@
         <Button x:Name="btnSettings" Width="15" Height="12" VerticalAlignment="Top" BorderThickness="0" Background="Transparent" Click="btnSettings_Click" Margin="24,1,0,0" HorizontalAlignment="Left">
             <Button.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Change Color to Green" Click="changeToGreen"></MenuItem>
-                    <MenuItem Header="Change Color to Pink" Click="changeToPink"></MenuItem>
-                    <MenuItem Header="Change Color to Yellow" Click="changeToYellow"></MenuItem>
-                    <MenuItem Header="Change Color to Blue" Click="changeToBlue"></MenuItem>
-                    <MenuItem Header="Change Color to Orange" Click="changeToOrange"></MenuItem>
-                    <Separator />
-                    <MenuItem Header="Make Selection Normal" Click="MakeNormal"></MenuItem>
-                    <MenuItem Header="Make Selection Bold" Click="MakeBold"></MenuItem>
-                    <MenuItem Header="Make Selection Italic" Click="MakeItalic"></MenuItem>
-                    <Separator />
-                    <MenuItem Header="Change Selection Size to 4" Click="ChangeSize4"></MenuItem>
-                    <MenuItem Header="Change Selection Size to 8" Click="ChangeSize8"></MenuItem>
-                    <MenuItem Header="Change Selection Size to 12" Click="ChangeSize12"></MenuItem>
-                    <MenuItem Header="Change Selection Size to 16" Click="ChangeSize16"></MenuItem>
-                    <MenuItem Header="Change Selection Size to 20" Click="ChangeSize20"></MenuItem>
+                    <MenuItem Header="Note Color to Green" Click="changeToGreen"></MenuItem>
+                    <MenuItem Header="Note Color to Pink" Click="changeToPink"></MenuItem>
+                    <MenuItem Header="Note Color to Yellow" Click="changeToYellow"></MenuItem>
+                    <MenuItem Header="Note Color to Blue" Click="changeToBlue"></MenuItem>
+                    <MenuItem Header="Note Color to Orange" Click="changeToOrange"></MenuItem>
                 </ContextMenu>
             </Button.ContextMenu>
             <Button.Style>
@@ -67,7 +57,47 @@
             </Button.Style>
         </Button>
 
-        <RichTextBox x:Name="textCanvas" PreviewKeyDown="textCanvas_PreviewKeyDown" TextChanged="textCanvas_TextChanged" Margin="1,14,1,0" Background="{StaticResource GreenNote}" BorderBrush="Black" BorderThickness="0">
+        <RichTextBox x:Name="textCanvas" TextChanged="textCanvas_TextChanged" Margin="1,14,1,0" Background="{StaticResource GreenNote}" BorderBrush="Black" BorderThickness="0">
+            <RichTextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="Undo"/>
+                    <MenuItem Command="Copy"/>
+                    <MenuItem Command="Cut"/>
+                    <MenuItem Command="Paste"/>
+                    <Separator />
+                    <MenuItem Header="Create Hyperlink" Click="CreateURL"></MenuItem>
+                    <Separator />
+                    <MenuItem Header="Font Weights">
+                        <MenuItem Header="Selection Normal" Click="MakeNormal"></MenuItem>
+                        <MenuItem Header="Selection Bold" Click="MakeBold"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Font Styling">
+                        <MenuItem Header="Selection Normal" Click="MakeStyleNormal"></MenuItem>
+                        <MenuItem Header="Selection Italic" Click="MakeItalic"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Font Size">
+                        <MenuItem Header="Font Size 4" Click="ChangeSize4"></MenuItem>
+                        <MenuItem Header="Font Size 8" Click="ChangeSize8"></MenuItem>
+                        <MenuItem Header="Font Size 12" Click="ChangeSize12"></MenuItem>
+                        <MenuItem Header="Font Size 16" Click="ChangeSize16"></MenuItem>
+                        <MenuItem Header="Font Size 20" Click="ChangeSize20"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Text Align">
+                        <MenuItem Header="Align Left" Command="EditingCommands.AlignLeft"></MenuItem>
+                        <MenuItem Header="Align Center" Command="EditingCommands.AlignCenter"></MenuItem>
+                        <MenuItem Header="Align Right" Command="EditingCommands.AlignRight"></MenuItem>
+                        <MenuItem Header="Justify Text" Command="EditingCommands.AlignJustify"></MenuItem>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Toggle Bullet Points" Command="EditingCommands.ToggleBullets"></MenuItem>
+                    <MenuItem Header="Toggle Numbering" Command="EditingCommands.ToggleNumbering"></MenuItem>
+                    <Separator />
+                    <MenuItem Header="Extra Features">
+                        <MenuItem Header="Add Date and Time" Click="AddSelectionDateTime"></MenuItem>
+                        <MenuItem Header="Add Unix Timestamp" Click="AddSelectionTimestamp"></MenuItem>
+                    </MenuItem>
+                </ContextMenu>
+            </RichTextBox.ContextMenu>
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter x:Name="paragraphSpacing" Property="Margin" Value="0"/>

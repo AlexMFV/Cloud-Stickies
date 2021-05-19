@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import '../home.css';
 import Cookies from 'universal-cookie';
 import { useHistory } from 'react-router-dom';
@@ -10,7 +10,6 @@ const HomePage = () => {
   document.body.style.backgroundColor = "#4f4f4f";
   const history = useHistory();
   const [stickies, setStickies] = useState([])
-  const stickyNameRef = useRef()  
 
   function clickSticky(id){
     const newStickies = [...stickies];
@@ -28,7 +27,6 @@ const HomePage = () => {
       if (cookie !== undefined) {
         const userID = cookie["userID"];
         const cookieID = cookie["cookieID"];
-        const pass = cookie["pass"];
 
         const response = await fetch('/api/cookie/check/' + userID + '/' + cookieID);
         const data = await response.json();
@@ -39,14 +37,14 @@ const HomePage = () => {
           cookie.remove('logn');
         }
 
-        getStickies(userID, pass);
+        getStickies(userID);
       }
       else {
         glob.redirectToLogin(history);
       }
     }
     
-    async function getStickies(user, pass){
+    async function getStickies(user){
       const response = await fetch('/api/getUserID/' + user);
       const userID = await response.json();
 
@@ -61,7 +59,6 @@ const HomePage = () => {
     }
 
     getCookie();
-    getStickies();
   }, [history]);
 
   function logoutUser(){

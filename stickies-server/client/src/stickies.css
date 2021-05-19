@@ -10,3 +10,45 @@
     border-radius: 6px;
     font-weight: bold;
 }
+
+@media (min-width: 768px) and (max-width: 1024px) {    
+    .note{
+        height: 3.5em;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {    
+    .note{
+        height: 3.5em;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {    
+    .note{
+        height: 3.5em;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {    
+    .note{
+        height: 3.5em;
+    }
+}
+
+@media(min-height: 600px) and (max-height: 800px){
+    .note{
+        height: 3.5em;
+    }
+}
+
+@media(min-height: 400px) and (max-height: 600px){
+    .note{
+        height: 3.5em;
+    }
+}
+
+@media(min-height: 100px) and (max-height: 400px){
+    .note{
+        height: 3.5em;
+    }
+}

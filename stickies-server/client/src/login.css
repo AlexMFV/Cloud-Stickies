@@ -13,7 +13,7 @@ body {
     height: 400px;
     top: 50%;
     left: 50%;
-    transform: translate(-300px, -200px);
+    transform: translate(-50%, -50%);
     justify-content: space-evenly;
 }
 
@@ -39,3 +39,69 @@ body {
     font-weight: 500;
     font-size: 17px;
 }
+  
+  @media (min-width: 768px) and (max-width: 1024px) {    
+    .loginContainer{
+        width: 50%;
+        height: 30%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        justify-content: space-around;
+    }
+  }
+  
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {    
+    .loginContainer{
+        width: 50%;
+        height: 350px;
+        transform: translate(-50%, -50%);
+        justify-content: space-around;
+    }
+
+    .loginButton {
+        width: 150px;
+    }
+  }
+  
+  @media (min-width: 481px) and (max-width: 767px) {    
+    .loginContainer{
+        width: 90%;
+        height: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        justify-content: space-around;
+    }
+  }
+
+  @media(min-height: 600px) and (max-height: 800px){
+    .loginContainer{
+        height: 60%;
+    }
+}
+
+  @media(min-height: 400px) and (max-height: 600px){
+    .loginContainer{
+        height: 80%;
+    }
+}
+
+  @media(min-height: 100px) and (max-height: 400px){
+      .loginContainer{
+          height: 100%;
+      }
+  }
+  
+  @media (min-width: 320px) and (max-width: 480px) {    
+    .loginContainer{
+        width: 90%;
+        height: 55%;
+        transform: translate(-50%, -50%);
+        justify-content: space-between;  
+    }
+
+    .loginButton {
+        width: 150px;
+    }
+  }

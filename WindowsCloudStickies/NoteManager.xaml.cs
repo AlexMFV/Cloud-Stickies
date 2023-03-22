@@ -50,7 +50,8 @@ namespace WindowsCloudStickies
                     this.Close();
                 };
 
-            Globals.ni.Icon = new System.Drawing.Icon(new DirectoryInfo(Environment.CurrentDirectory).Parent.Parent.FullName + "/Images/notes.ico");
+            Globals.ni.Icon = Properties.Resources.notes;
+
             Globals.ni.Visible = false;
             Globals.ni.DoubleClick +=
                 delegate (object sender, EventArgs args)
@@ -87,6 +88,7 @@ namespace WindowsCloudStickies
         private async void btnRemoveAll_Click(object sender, RoutedEventArgs e)
         {
             ///DELETE ALL
+            //TODO: Update this to use the StickyNote.CloseNoteIfExists(), instead of a global list
             for(int i = notes.Count-1; i >= 0; i--)
                 notes[i].Close();
 
@@ -99,7 +101,9 @@ namespace WindowsCloudStickies
 
             Globals.stickies = new StickyNotes();
 
-            await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
+            if(!Globals.user.IsGuest)
+                await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
+
             LocalSave.DeleteAllNotes(Globals.user.ID);
 
             updateList();
@@ -147,11 +151,13 @@ namespace WindowsCloudStickies
             {
                 noteIDs.Add(delID.ToString());
                 StickyNote note = Globals.stickies.GetNoteFromGUID(delID);
+                note.CloseNoteIfExists();
                 LocalSave.DeleteNote(Globals.user.ID, note.Note_ID);
                 Globals.stickies.Remove(note);
-            }                
+            }
 
-            if(noteIDs.Count > 0)
+            //TODO: Needs to check DB connection first, and if successful proceed
+            if (noteIDs.Count > 0 && !Globals.user.IsGuest)
                 await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
 
             updateList();
@@ -190,6 +196,7 @@ namespace WindowsCloudStickies
 
         private void btnUpdates_Click(object sender, RoutedEventArgs e)
         {
+            //TODO: If no new updates are available, show a message to the user.
             AutoUpdater.Start("http://alexmfv.com/StickyUpdates/latest_update.xml");
         }
 
@@ -256,7 +263,10 @@ namespace WindowsCloudStickies
                 if (!Network.HasInternetAccess())
                     LocalSave.LoadStickyNotes(Globals.user.ID);
                 else
-                    await DAL.GetNotesFromUser(Globals.user.ID);
+                {
+                    if (!Globals.user.IsGuest)
+                        await DAL.GetNotesFromUser(Globals.user.ID);
+                }
             }
 
             LocalSave.SaveAllStickyNotes(Globals.user.ID);

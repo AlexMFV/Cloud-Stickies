@@ -39,6 +39,7 @@ namespace WindowsCloudStickies
             InitializeComponent();
 
             current_note = Globals.stickies.GetNoteFromGUID(_noteID);
+            current_note.noteRef = this;
 
             this.ShowInTaskbar = false;
 
@@ -270,7 +271,7 @@ namespace WindowsCloudStickies
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                    new Action(() => manager.updateList()));
 
-                if (Globals.user.AuthType != AuthType.Guest)
+                if (!Globals.user.IsGuest)
                 {
                     if (this.current_note.isNew)
                     {
@@ -319,7 +320,10 @@ namespace WindowsCloudStickies
 
             List<string> noteIDs = new List<string>();
             noteIDs.Add(this.current_note.Note_ID.ToString());
-            await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
+
+            //TODO: Needs to check DB connection first, and if successful proceed
+            if (!Globals.user.IsGuest)
+                await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
 
             LocalSave.DeleteNote(Globals.user.ID, this.current_note.Note_ID);
             this.Close();

@@ -24,20 +24,39 @@ Patches:
 
 ----------------------------------------------
 
-**Release Notes v0.1.3.0** (Unreleased)
+**Release Notes v0.2.0.0** Released
 
-- Added the ability to register a new user
-- Quality of life update on the Fetch method
-- Added Exception handling
-- Notes now stay where they were with the sizes they were set to
-- On login, password boxes now hide the password
-- Users now have independent notes, depending on the login (also applies to local notes)
-- Notes are now hidden from the Alt+Tab menu for consistency
-- Manager confirms if the user wants to close the application before closing
-- Manager goes to System Tray when minimized and can be right-clicked to Close the application
-- Notes can now be synced online (when logged in)
-- When logged in the username of the account now shows in the manager
-- When the manager is closed, all the notes now close with it
-- (Major) Implemented a "Cookie" system  with some security factors
-- When logging in to the account the user can now see the notes associated with his account (online)
-- User can now delete the notes from his account on the DB
+New Features:
+	- Added the ability to register a new user
+	- Quality of life update on the Fetch method
+	- Added Exception handling
+	- Notes now stay where they were with the sizes they were set to
+	- On login, password boxes now hide the password
+	- Users now have independent notes, depending on the login (also applies to local notes)
+	- Notes are now hidden from the Alt+Tab menu for consistency
+	- Manager confirms if the user wants to close the application before closing
+	- Manager goes to System Tray when minimized and can be right-clicked to Close the application
+	- Notes can now be synced online (when logged in)
+	- When logged in the username of the account now shows in the manager
+	- When the manager is closed, all the notes now close with it
+	- (Major) Implemented a "Cookie" system  with some security factors
+	- When logging in to the account the user can now see the notes associated with his account (online)
+	- User can now delete the notes from his account on the DB
+	- Search selection on google (inside the notes)
+	- Added new Right-Click menu when inside the note:
+		- Change Font Styling
+		- Change Font Weight
+		- Copy
+		- Paste
+		- Undo
+		- Add Date
+		- Add Timestamp
+
+Patches:
+	- Prevented some random errors from showing
+	- When pressing the remove all or remove selected button all the open notes will be closed before being removed
+	- Updated application icon to use Resource icon instead of path, as this sometimes caused problems in new installations
+
+Developer Log:
+	- Quality of life update on the Fetch method
+	- Added Exception handling

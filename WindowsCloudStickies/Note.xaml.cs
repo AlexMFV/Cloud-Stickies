@@ -46,7 +46,7 @@ namespace WindowsCloudStickies
             textCanvas.Background = current_note.NoteColor;
             gripBar.Background = current_note.TitleColor;
 
-            saveWait.Interval = 3000;
+            saveWait.Interval = 1000;
             saveWait.Elapsed += SaveWait_Elapsed;
             saveWait.AutoReset = false;
 
@@ -547,7 +547,10 @@ namespace WindowsCloudStickies
             if (textCanvas.Selection.Text.Length > 0)
             {
                 menuGoogle.IsEnabled = true;
-                menuGoogle.Header = "Search on Google for '" + textCanvas.Selection.Text + "'";
+                if(textCanvas.Selection.Text.Length > 20)
+                    menuGoogle.Header = "Search on Google for '" + textCanvas.Selection.Text.Substring(0, 20) + "...'";
+                else
+                    menuGoogle.Header = "Search on Google for '" + textCanvas.Selection.Text + "'";
             }
             else
             {

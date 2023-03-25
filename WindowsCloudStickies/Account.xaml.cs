@@ -45,6 +45,8 @@ namespace WindowsCloudStickies
                         MessageBox.Show("Passwords must match! Please try again", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     else
                     {
+                        //TODO: Needs to check DB connection first, and if successful proceed
+
                         string result = await DAL.CreateUser(txtUserR.Text, txtPassR.Password);
 
                         switch (result)
@@ -78,6 +80,8 @@ namespace WindowsCloudStickies
                     MessageBox.Show("Username and password cannot be empty!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 else
                 {
+                    //TODO: Needs to check DB connection first, and if successful proceed
+
                     string userID = Encrypt.ComputeHash(txtUserL.Text);
                     string pass = Encrypt.ComputeHash(txtPassL.Password);
                     if (await DAL.CheckUserLogin(userID, pass))

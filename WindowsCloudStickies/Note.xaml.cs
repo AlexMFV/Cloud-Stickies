@@ -39,13 +39,14 @@ namespace WindowsCloudStickies
             InitializeComponent();
 
             current_note = Globals.stickies.GetNoteFromGUID(_noteID);
+            current_note.noteRef = this;
 
             this.ShowInTaskbar = false;
 
             textCanvas.Background = current_note.NoteColor;
             gripBar.Background = current_note.TitleColor;
 
-            saveWait.Interval = 3000;
+            saveWait.Interval = 1000;
             saveWait.Elapsed += SaveWait_Elapsed;
             saveWait.AutoReset = false;
 
@@ -270,7 +271,7 @@ namespace WindowsCloudStickies
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                    new Action(() => manager.updateList()));
 
-                if (Globals.user.AuthType != AuthType.Guest)
+                if (!Globals.user.IsGuest)
                 {
                     if (this.current_note.isNew)
                     {
@@ -319,7 +320,10 @@ namespace WindowsCloudStickies
 
             List<string> noteIDs = new List<string>();
             noteIDs.Add(this.current_note.Note_ID.ToString());
-            await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
+
+            //TODO: Needs to check DB connection first, and if successful proceed
+            if (!Globals.user.IsGuest)
+                await DAL.DeleteNotesFromUser(Globals.user.ID, noteIDs);
 
             LocalSave.DeleteNote(Globals.user.ID, this.current_note.Note_ID);
             this.Close();
@@ -529,6 +533,29 @@ namespace WindowsCloudStickies
 
                 textCanvas.Document.Blocks.InsertBefore(textCanvas.CaretPosition.Paragraph, paraSelection); //Insert clickable URL
                 textCanvas.Document.Blocks.Remove(textCanvas.CaretPosition.Paragraph); //Remove Text URL
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (menuGoogle.IsEnabled && !textCanvas.Selection.IsEmpty)
+                Process.Start("https://www.google.com/search?q=" + textCanvas.Selection.Text);
+        }
+
+        private void ContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            if (textCanvas.Selection.Text.Length > 0)
+            {
+                menuGoogle.IsEnabled = true;
+                if(textCanvas.Selection.Text.Length > 20)
+                    menuGoogle.Header = "Search on Google for '" + textCanvas.Selection.Text.Substring(0, 20) + "...'";
+                else
+                    menuGoogle.Header = "Search on Google for '" + textCanvas.Selection.Text + "'";
+            }
+            else
+            {
+                menuGoogle.Header = "Search on Google";
+                menuGoogle.IsEnabled = false;
             }
         }
     }

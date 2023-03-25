@@ -30,6 +30,7 @@ namespace WindowsCloudStickies
         //This way we can only send the notes this way we can filter them when before sending the http request
         public bool hasUpdated { get; set; }
         public bool isNew { get; set; }
+        public Note noteRef { get; set; }
 
         public StickyNote(Guid _noteGuid, Tuple<SolidColorBrush, SolidColorBrush> _noteColors)
         {
@@ -136,6 +137,12 @@ namespace WindowsCloudStickies
                 string pre = this.noteText.Split('\n', '\r')[0];
                 this.noteTitle = pre.Length > 30 ? pre.Substring(0,30) : pre;
             }
+        }
+
+        public void CloseNoteIfExists()
+        {
+            if (this.noteRef != null && this.noteRef.GetType() == typeof(Note))
+                this.noteRef.Close();
         }
     }
 }

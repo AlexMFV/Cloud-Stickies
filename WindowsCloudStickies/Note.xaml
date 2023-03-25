@@ -59,11 +59,12 @@
 
         <RichTextBox x:Name="textCanvas" TextChanged="textCanvas_TextChanged" Margin="1,14,1,0" Background="{StaticResource GreenNote}" BorderBrush="Black" BorderThickness="0">
             <RichTextBox.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Opened="ContextMenu_Opened">
                     <MenuItem Command="Undo"/>
                     <MenuItem Command="Copy"/>
                     <MenuItem Command="Cut"/>
                     <MenuItem Command="Paste"/>
+                    <MenuItem x:Name="menuGoogle" Header="Search on Google 'selection'" Click="MenuItem_Click"/>
                     <Separator />
                     <MenuItem Header="Create Hyperlink" Click="CreateURL"></MenuItem>
                     <Separator />

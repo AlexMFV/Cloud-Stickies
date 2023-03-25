@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace WindowsCloudStickies
 {
@@ -10,9 +11,16 @@ namespace WindowsCloudStickies
     {
         public static void OpenManager(Account toClose)
         {
-            NoteManager manager = new NoteManager();
-            toClose.Close();
-            manager.Show();
+            try
+            {
+                NoteManager manager = new NoteManager();
+                toClose.Close();
+                manager.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
 
         public async static Task<bool> OpenLogin(NoteManager toClose)
@@ -25,6 +33,8 @@ namespace WindowsCloudStickies
                 {
                     Tuple<string, string, string, string> values = LocalSave.GetCookieFile();
                     LocalSave.DeleteCookieFile();
+
+                    //TODO: Needs to check DB connection first, and if successful and logged in, proceed
                     await DAL.DeleteCookie(values.Item1, values.Item2); //From the database
                 }
                 toClose.isLogout = true;

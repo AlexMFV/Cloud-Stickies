@@ -12,6 +12,7 @@ namespace WindowsCloudStickies
         private string username { get; set; }
         private AuthType authType { get; set; }
         private bool successfulAuth { get; set; }
+        private bool isGuest { get; set; }
 
         public User() { }
 
@@ -26,6 +27,7 @@ namespace WindowsCloudStickies
         {
             this.id = Guid.Parse(usr_id);
             this.username = usr;
+            this.isGuest = false;
             this.authType = type;
             this.successfulAuth = status;
         }
@@ -38,6 +40,7 @@ namespace WindowsCloudStickies
         {
             this.id = Guid.Empty;
             this.username = "Guest";
+            this.isGuest = true;
             this.authType = AuthType.Guest;
             this.successfulAuth = success;
         }
@@ -64,6 +67,12 @@ namespace WindowsCloudStickies
         {
             get { return this.successfulAuth; }
             set { this.successfulAuth = value; }
+        }
+
+        public bool IsGuest
+        {
+            get { return this.isGuest; }
+            set { this.isGuest = value; }
         }
     }
 }

@@ -27,6 +27,7 @@ namespace WindowsCloudStickies
         {
             InitializeComponent();
             CheckCookie();
+            CheckStatus();
         }
 
         private async void btnRegister_Click(object sender, RoutedEventArgs e)
@@ -163,6 +164,45 @@ namespace WindowsCloudStickies
         {
             if (!isInternal)
                 Application.Current.Shutdown();
+        }
+
+        SolidColorBrush lastColor = new SolidColorBrush(Colors.Green);
+
+        private async void lblStatus_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            await CheckStatus();
+        }
+
+        private void lblStatus_MouseLeave(object sender, MouseEventArgs e)
+        {
+            lblStatus.Foreground = lastColor;
+            this.Cursor = Cursors.Arrow;
+        }
+
+        private void lblStatus_MouseEnter(object sender, MouseEventArgs e)
+        {
+            lblStatus.Foreground = new SolidColorBrush(Colors.White);
+            this.Cursor = Cursors.Hand;
+        }
+
+        private async Task<bool> CheckStatus()
+        {
+            bool isUp = await DAL.ServerStatus();
+
+            if (isUp)
+            {
+                lastColor = new SolidColorBrush(Colors.Green);
+                lblStatus.Foreground = lastColor;
+                lblStatus.Content = new TextBlock { Text = "Server Status: OK" };
+            }
+            else
+            {
+                lastColor = new SolidColorBrush(Colors.Red);
+                lblStatus.Foreground = lastColor;
+                lblStatus.Content = new TextBlock { Text = "Server Status: X" };
+            }
+
+            return isUp;
         }
     }
 }

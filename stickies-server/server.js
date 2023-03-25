@@ -10,6 +10,7 @@ app.use(morgan('common'));
 app.use(express.json());
 
 //LOGIN/REGISTER METHODS
+app.get('/status', func.status);
 app.post('/api/login', func.processLogin);
 app.post('/api/register', func.processRegistration);
 
@@ -30,6 +31,6 @@ app.delete('/api/cookie/delete/:user/:cookie', func.deleteCookie);
 
 function run() { func.checkCookieExpire().catch((e) => console.log('An error ocurred while running checkCookieExpire()'))};
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(port, () => console.log(`API listening on port: ${port}`));
 
 run();

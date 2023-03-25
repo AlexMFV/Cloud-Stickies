@@ -258,6 +258,21 @@ namespace WindowsCloudStickies
             }
         }
 
+        public static async Task<bool> ServerStatus()
+        {
+            try
+            {
+                bool response = Convert.ToBoolean(await API.Fetch(RequestType.GET, "/status"));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                //TODO: Add a loggin to log to a file
+                //Messager.Process(ex);
+                return false;
+            }
+        }
+
         #endregion
 
         #region Common

@@ -30,5 +30,8 @@
         <Label x:Name="lblGuest" Width="130" Height="28" Foreground="CornflowerBlue" MouseDown="lblGuest_MouseDown" MouseLeave="lblGuest_MouseLeave"  MouseEnter="lblGuest_MouseEnter" Margin="180,247,180,10" FontWeight="Bold" HorizontalContentAlignment="Center">
             <TextBlock TextDecorations="Underline">Or login as a Guest</TextBlock>
         </Label>
+        <Label x:Name="lblStatus" Height="28" Foreground="CornflowerBlue" MouseDown="lblStatus_MouseDown"  MouseLeave="lblStatus_MouseLeave"  MouseEnter="lblStatus_MouseEnter"  Margin="10,0,0,10" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="130">
+            <TextBlock TextDecorations="Underline">Server Status: ?</TextBlock>
+        </Label>
     </Grid>
 </Window>

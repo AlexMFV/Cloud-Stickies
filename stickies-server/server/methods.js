@@ -2,6 +2,10 @@ const { restart } = require('nodemon');
 const db = require('./dbconnection');
 const Promise = require("bluebird");
 
+async function status(req, res) {
+    res.json(true);
+}
+
 async function processLogin(req, res){
     try{
         const exists = await db.checkUserLogin(req.body.user, req.body.pass);
@@ -139,4 +143,4 @@ async function checkCookieExpire()
 
 module.exports = { processLogin, processRegistration, checkUserExists, getUserID,
     createNote, updateNote, createCookie, checkCookie, deleteCookie, checkCookieExpire,
-    getNotesFromUser, deleteNotesFromUser }
+    getNotesFromUser, deleteNotesFromUser, status }

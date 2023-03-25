@@ -31,12 +31,12 @@ namespace WindowsCloudStickies
 
         public StickyNote GetNoteFromGUID(Guid id)
         {
-            return List.Cast<StickyNote>().First(note => note.Note_ID == id);
+            return List.Cast<StickyNote>().FirstOrDefault(note => note.Note_ID == id);
         }
 
         public int GetNoteIndex(Guid id)
         {
-            return List.IndexOf(List.Cast<StickyNote>().First(note => note.Note_ID == id));
+            return List.IndexOf(List.Cast<StickyNote>().FirstOrDefault(note => note.Note_ID == id));
         }
 
         public StickyNote this[int index]

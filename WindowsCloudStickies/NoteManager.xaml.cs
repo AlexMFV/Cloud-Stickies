@@ -18,6 +18,8 @@ using System.Windows.Threading;
 using System.Reflection;
 using System.Net;
 using System.IO;
+using System.Windows;
+using System.Windows.Forms;
 
 namespace WindowsCloudStickies
 {
@@ -33,6 +35,7 @@ namespace WindowsCloudStickies
         {
             InitializeComponent();
             SetSystemTrayNotification();
+            AutoUpdater.CheckForUpdateEvent += AutoUpdater_CheckForUpdateEvent;
 
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             txtVersion.Text = "v" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
@@ -204,7 +207,7 @@ namespace WindowsCloudStickies
 
         private void btnShowHide_Click(object sender, RoutedEventArgs e)
         {
-            ShowPressedNote(((sender as Button).DataContext as StickyNote));            
+            ShowPressedNote(((sender as System.Windows.Controls.Button).DataContext as StickyNote));            
         }
 
         public void DeleteNoteForm(Guid id)
@@ -219,6 +222,72 @@ namespace WindowsCloudStickies
         {
             //TODO: If no new updates are available, show a message to the user.
             AutoUpdater.Start("http://alexmfv.com/StickyUpdates/latest_update.xml");
+        }
+
+        private void AutoUpdater_CheckForUpdateEvent(UpdateInfoEventArgs args)
+        {
+            if (args.Error == null)
+            {
+                if (args.IsUpdateAvailable)
+                {
+                    DialogResult dialogResult;
+                    if (args.Mandatory.Value)
+                    {
+                        dialogResult =
+                            System.Windows.Forms.MessageBox.Show(
+                                $@"There is new version {args.CurrentVersion} available. You are using version {args.InstalledVersion}. This is required update. Press Ok to begin updating the application.", @"Update Available",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        dialogResult =
+                            System.Windows.Forms.MessageBox.Show(
+                                $@"There is new version {args.CurrentVersion} available. You are using version {args.InstalledVersion}. Do you want to update the application now?", @"Update Available",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Information);
+                    }
+
+                    // Uncomment the following line if you want to show standard update dialog instead.
+                    // AutoUpdater.ShowUpdateForm(args);
+
+                    if (dialogResult.Equals(System.Windows.Forms.DialogResult.Yes) || dialogResult.Equals(System.Windows.Forms.DialogResult.OK))
+                    {
+                        try
+                        {
+                            if (AutoUpdater.DownloadUpdate(args))
+                            {
+                                System.Windows.Forms.Application.Exit();
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            System.Windows.Forms.MessageBox.Show(exception.Message, exception.GetType().ToString(), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show(@"There is no update available please try again later.", @"No update available",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                if (args.Error is WebException)
+                {
+                    System.Windows.Forms.MessageBox.Show(
+                        @"There is a problem reaching update server. Please check your internet connection and try again later.",
+                        @"Update Check Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show(args.Error.Message,
+                        args.Error.GetType().ToString(), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
         }
 
         #endregion
@@ -266,7 +335,7 @@ namespace WindowsCloudStickies
                     Globals.ni.Visible = false;
                     Globals.ni.Icon.Dispose();
                     Globals.ni.Dispose();
-                    Application.Current.Shutdown();
+                    System.Windows.Application.Current.Shutdown();
                 }
                 else
                     e.Cancel = true;

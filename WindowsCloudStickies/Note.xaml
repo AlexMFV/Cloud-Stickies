@@ -57,7 +57,7 @@
             </Button.Style>
         </Button>
 
-        <RichTextBox x:Name="textCanvas" TextChanged="textCanvas_TextChanged" Margin="1,14,1,0" Background="{StaticResource GreenNote}" BorderBrush="Black" BorderThickness="0">
+        <RichTextBox x:Name="textCanvas" TextChanged="textCanvas_TextChanged" Margin="1,14,1,1" Background="{StaticResource GreenNote}" BorderBrush="Black" BorderThickness="0">
             <RichTextBox.ContextMenu>
                 <ContextMenu Opened="ContextMenu_Opened">
                     <MenuItem Command="Undo"/>

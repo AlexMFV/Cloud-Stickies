@@ -31,7 +31,7 @@ namespace WindowsCloudStickies
         NoteManager manager;
         bool isInitialRender = false;
 
-        double h = 0;
+        double tmp_h = 0;
 
         public Note(Guid _noteID, NoteManager _manager)
         {
@@ -82,6 +82,14 @@ namespace WindowsCloudStickies
             SetParent(new WindowInteropHelper(this).Handle, nWinHandle);
         }
 
+        void QueueNoteSave()
+        {
+            saveWait.Stop();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                new Action(() => ChangeSavedState(State.NotSaved)));
+            saveWait.Start();
+        }
+
         /// <summary>
         /// Method responsible for hiding the notes from the Alt+Tab menu
         /// </summary>
@@ -117,10 +125,7 @@ namespace WindowsCloudStickies
             LockNote();
             this.current_note.hasUpdated = true;
 
-            saveWait.Stop();
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                new Action(() => ChangeSavedState(State.NotSaved)));
-            saveWait.Start();
+            QueueNoteSave();
         }
 
         public void LockNote()
@@ -150,13 +155,11 @@ namespace WindowsCloudStickies
                     this.Width = 100;
 
                 this.current_note.Width = (int)this.Width;
-                this.current_note.Height = (int)this.Height;
+                if(!this.current_note.IsClosed)
+                    this.current_note.Height = (int)this.Height;
                 this.current_note.hasUpdated = true;
 
-                saveWait.Stop();
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                    new Action(() => ChangeSavedState(State.NotSaved)));
-                saveWait.Start();
+                QueueNoteSave();
             }
         }
 
@@ -179,17 +182,19 @@ namespace WindowsCloudStickies
 
         public void CloseTheNote()
         {
-            h = this.Height;
+            tmp_h = this.Height;
             this.Height = 14;
             this.ResizeMode = ResizeMode.NoResize;
             this.current_note.hasUpdated = true;
+            QueueNoteSave();
         }
 
         public void OpenTheNote()
         {
-            this.Height = h;
             this.ResizeMode = ResizeMode.CanResizeWithGrip;
+            this.Height = tmp_h;
             this.current_note.hasUpdated = true;
+            QueueNoteSave();
         }
 
         private void btnHideNote_Click(object sender, RoutedEventArgs e)
@@ -293,7 +298,7 @@ namespace WindowsCloudStickies
             }
             catch (Exception ex)
             {
-                //MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -350,10 +355,7 @@ namespace WindowsCloudStickies
             this.current_note.PosX = (int)this.Left;
             this.current_note.PosY = (int)this.Top;
 
-            saveWait.Stop();
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                new Action(() => ChangeSavedState(State.NotSaved)));
-            saveWait.Start();
+            QueueNoteSave();
         }
 
         public void LoadNoteProperties()

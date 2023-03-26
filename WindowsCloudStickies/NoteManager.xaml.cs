@@ -169,10 +169,31 @@ namespace WindowsCloudStickies
             lstNotes.ItemsSource = Globals.stickies;
         }
 
-        private void btnSaveAll_Click(object sender, RoutedEventArgs e)
+        private async void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
-            if(Globals.stickies.Count > 0)
-                LocalSave.SaveAllStickyNotes(Globals.user.ID);
+            if (Messager.SaveAllNotes() == MessageBoxResult.Yes)
+            {
+                bool hasError = false;
+                if (Globals.stickies.Count > 0)
+                {
+                    if (!Globals.user.IsGuest)
+                    {
+                        //TODO: Instead of launching multiple updates, create a new save all notes and run only once but for all the notes
+                        foreach (StickyNote note in Globals.stickies)
+                        {
+                            bool updateResult = await DAL.UpdateNote(Globals.user.Username, note, true);
+                            if(!updateResult && !hasError)
+                                hasError = true;
+                        }
+                    }
+                    LocalSave.SaveAllStickyNotes(Globals.user.ID);
+                }
+
+                if(hasError)
+                    Messager.SaveAllNotesError();
+                else
+                    Messager.SaveAllNotesSuccess();
+            }
         }
 
         private void btnCloseAll_Click(object sender, RoutedEventArgs e)

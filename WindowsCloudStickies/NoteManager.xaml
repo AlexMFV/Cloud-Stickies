@@ -32,7 +32,6 @@
                         <Button x:Name="btnShowHide" HorizontalAlignment="Right" Click="btnShowHide_Click">
                             <Image Source="/Images/hide.png" Width="20" Height="20"/>
                         </Button>
-                        <Label Content="{Binding DateCreated}" Foreground="White" Width="250" VerticalAlignment="Center"></Label>
                     </DockPanel>
                     <!-- Note Color -->
                     <!-- Note Title -->

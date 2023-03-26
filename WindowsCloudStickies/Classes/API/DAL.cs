@@ -99,7 +99,7 @@ namespace WindowsCloudStickies
             }
         }
 
-        public static async Task<bool> UpdateNote(string user, StickyNote note)
+        public static async Task<bool> UpdateNote(string user, StickyNote note, bool suppressWarning = false)
         {
             try
             {
@@ -124,7 +124,8 @@ namespace WindowsCloudStickies
             }
             catch (Exception ex)
             {
-                Messager.Process(ex);
+                if(!suppressWarning)
+                    Messager.Process(ex);
                 return false;
             }
         }

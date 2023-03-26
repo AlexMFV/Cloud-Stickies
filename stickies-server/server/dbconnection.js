@@ -1,6 +1,5 @@
 const mysql = require('mysql2');
 var config = require('./config.json')
-var con = mysql.createConnection(config);
 
 async function checkUserLogin(user, pass){
     let rows = await callProcedureRows('checkUserLogin', [user, pass]);
@@ -142,7 +141,9 @@ async function getUserID(user){
  * @returns All rows returned from the database (JSON format)
  */
 async function callProcedureRows(name, parameters){
+    var con = mysql.createConnection(config);
     let [rows] = await con.promise().query(formatQuery(name, parameters));
+    con.end();
     return rows[0];
 }
 
@@ -153,7 +154,9 @@ async function callProcedureRows(name, parameters){
  * @returns First row returned from the database (JSON format)
  */
 async function callProcedureFirstRow(name, parameters){
+    var con = mysql.createConnection(config);
     let [rows] = await con.promise().query(formatQuery(name, parameters));
+    con.end();
     return rows[0][0];
 }
 
@@ -164,7 +167,9 @@ async function callProcedureFirstRow(name, parameters){
  * @returns An integer, representing the number of affected rows.
  */
 async function callProcedureNonQuery(name, parameters){
+    var con = mysql.createConnection(config);
     let [rows] = await con.promise().query(formatQuery(name, parameters));
+    con.end();
     return rows.affectedRows;
 }
 

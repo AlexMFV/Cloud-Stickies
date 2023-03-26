@@ -29,6 +29,9 @@ namespace WindowsCloudStickies
 
             if (result)
             {
+                foreach (StickyNote note in Globals.stickies)
+                    note.CloseNoteIfExists();
+
                 if (LocalSave.CheckCookieFile())
                 {
                     Tuple<string, string, string, string> values = LocalSave.GetCookieFile();

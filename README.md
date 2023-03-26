@@ -16,3 +16,6 @@ database/config.json, needs to be added and the format is:
     "password": "db_password",
     "database": "db_name"
 }
+
+## Important Notes:
+- Update server MUST have a valid certificate, otherwise the check for updates will not work!

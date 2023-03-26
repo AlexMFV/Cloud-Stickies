@@ -1,34 +1,40 @@
-CREATE PROCEDURE cloudstickies.checkUserLogin(in username varchar(64), in pass varchar(64))
+delimiter $$
+CREATE PROCEDURE checkUserLogin(in username varchar(64), in pass varchar(64))
 begin
 	select * from cloudstickies.users
 	where users.usr = username and users.pwd = pass limit 1;
 end
-
-CREATE PROCEDURE cloudstickies.createUser(in id varchar(36), in username varchar(64), in pass varchar(64))
+$$
+delimiter $$
+CREATE PROCEDURE createUser(in id varchar(36), in username varchar(64), in pass varchar(64))
 begin
 	insert into users (user_id, usr, pwd, time_created)
 	values (id, username, pass, now());
 end
-
-CREATE PROCEDURE cloudstickies.checkUserExists(in username varchar(64))
+$$
+delimiter $$
+CREATE PROCEDURE checkUserExists(in username varchar(64))
 BEGIN
 	select count(usr) as result from users
     where users.usr = username;
 END
-
-CREATE PROCEDURE cloudstickies.getUserID(in username varchar(64))
+$$
+delimiter $$
+CREATE PROCEDURE getUserID(in username varchar(64))
 BEGIN
 	select user_id from users
     where users.usr = username;
 end
-
-CREATE DEFINER=`alexmfv`@`%` PROCEDURE `cloudstickies`.`connectNote`(in id varchar(64), in userID varchar(64), in noteID varchar(64))
+$$
+delimiter $$
+CREATE PROCEDURE `connectNote`(in id varchar(64), in userID varchar(64), in noteID varchar(64))
 begin
 	insert into user_notes
 	values(id, userID, noteID);
 end
-
-CREATE DEFINER=`alexmfv`@`%` PROCEDURE `cloudstickies`.`createNote`(in conID varchar(64), in userID varchar(64), in id varchar(64), in nText text, in nTitle text, in noteC varchar(10), in titleC varchar(10),
+$$
+delimiter $$
+CREATE PROCEDURE `createNote`(in conID varchar(64), in userID varchar(64), in id varchar(64), in nText text, in nTitle text, in noteC varchar(10), in titleC varchar(10),
 in dateC timestamp, in baseF varchar(100), in baseFSize int, in baseFColor varchar(10), in xPos int, in yPos int, in w int,
 in h int, in closed bool, in locked bool)
 begin
@@ -36,8 +42,9 @@ begin
 	values(id, nText, nTitle, noteC, titleC, dateC, null, baseF, baseFSize, baseFColor, xPos, yPos, w, h, closed, locked);
 	call connectNote(conID, userID, id);
 end
-
-CREATE DEFINER=`alexmfv`@`%` PROCEDURE `cloudstickies`.`updateNote`(in id varchar(64), in nText text, in nTitle text, in noteC varchar(10), in titleC varchar(10),
+$$
+delimiter $$
+CREATE PROCEDURE `updateNote`(in id varchar(64), in nText text, in nTitle text, in noteC varchar(10), in titleC varchar(10),
 in baseF varchar(100), in baseFSize int, in baseFColor varchar(10), in xPos int, in yPos int, in w int,
 in h int, in closed bool, in locked bool)
 begin
@@ -46,41 +53,48 @@ begin
 	baseFontSize = baseFSize, baseFontColor = baseFColor, posX = xPos, posY = yPos, width = w, height = h, isClosed = closed, isLocked = locked
 	where note_id = id;
 end
-
+$$
+delimiter $$
 create procedure createCookie(in newID varchar(64), in cookieID varchar(64), in userID varchar(64), in expire timestamp)
 begin
 	insert into user_cookies
 	values(newID, cookieID, userID, expire);
 end
-
+$$
+delimiter $$
 create procedure checkCookie(in userID varchar(64), in cookieID varchar(64))
 begin
 	select count(*) as result from user_cookies
 	where user_cookies.cookie_id = cookie_id and user_cookies.user_id = userID;
 end
-
+$$
+delimiter $$
 create procedure deleteCookie(in userID varchar(64),in cookieID varchar(64))
 begin
 	delete from user_cookies
 	where user_cookies.user_id = userID and user_cookies.cookie_id = cookieID;
 end
-
+$$
+delimiter $$
 create procedure checkCookieExpire()
 begin
 	delete from user_cookies
 	where user_cookies.expire_date < now();
 end
-
+$$
+delimiter $$
 create procedure getNotesFromUser(in userID varchar(64))
 begin
 	select * from notes
 	inner join user_notes on notes.note_id = user_notes.note_id
 	where user_notes.user_id = userID;
 end
-
+$$
+delimiter $$
 create procedure deleteNotesFromUser(in userID varchar(64), in noteID varchar(64))
 begin
 	delete notes, user_notes from notes
 	inner join user_notes on user_notes.note_id = notes.note_id
 	where user_notes.user_id = userID and user_notes.note_id = noteID;
 end
+$$

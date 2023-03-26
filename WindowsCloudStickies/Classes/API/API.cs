@@ -9,12 +9,19 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using System.Windows;
+using System.Net;
 
 namespace WindowsCloudStickies
 {
     public static class API
     {
         static HttpClient http = new HttpClient();
+
+        public static void Initialize()
+        {
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+        }
 
         //public static async Task<object> Fetch(RequestType type, ReadType rType, string route, Dictionary<string, string> parameters = null)
         //{
@@ -80,35 +87,47 @@ namespace WindowsCloudStickies
             ip = Properties.Resources.ServerIP;
 #endif
 
-            using (var client = new HttpClient())
-            using (var request = new HttpRequestMessage(method, ip + route))
+            try
             {
-                if(parameters == null)
-                {
-                    using (var response = await client
-                            .SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
-                            .ConfigureAwait(false))
-                    {
-                        response.EnsureSuccessStatusCode();
-                        return await response.Content.ReadAsStringAsync();
-                    }
-                }
-                else
-                {
-                    var json = JsonConvert.SerializeObject(parameters);
-                    using (var stringContent = new StringContent(json, Encoding.UTF8, "application/json"))
-                    {
-                        request.Content = stringContent;
 
+                ip = Properties.Resources.ServerIP;
+                string test = ip + route;
+
+                using (var client = new HttpClient())
+                using (var request = new HttpRequestMessage(method, ip + route))
+                {
+                    if (parameters == null)
+                    {
                         using (var response = await client
-                            .SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
-                            .ConfigureAwait(false))
+                                .SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
+                                .ConfigureAwait(false))
                         {
                             response.EnsureSuccessStatusCode();
                             return await response.Content.ReadAsStringAsync();
                         }
                     }
+                    else
+                    {
+                        var json = JsonConvert.SerializeObject(parameters);
+                        using (var stringContent = new StringContent(json, Encoding.UTF8, "application/json"))
+                        {
+                            request.Content = stringContent;
+
+                            using (var response = await client
+                                .SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
+                                .ConfigureAwait(false))
+                            {
+                                response.EnsureSuccessStatusCode();
+                                return await response.Content.ReadAsStringAsync();
+                            }
+                        }
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return null;
             }
         }
     }

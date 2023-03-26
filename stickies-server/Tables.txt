@@ -1,12 +1,12 @@
 CREATE TABLE `users` (
   `user_id` varchar(36) NOT NULL,
-  `usr` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `pwd` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `usr` varchar(64) CHARACTER SET utf8mb4 NOT NULL,
+  `pwd` varchar(64) CHARACTER SET utf8mb4 NOT NULL,
   `settings_id` int DEFAULT NULL,
   `time_created` timestamp NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `users_un` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE `notes` (
   `note_id` varchar(64) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `notes` (
   `isLocked` tinyint(1) NOT NULL,
   PRIMARY KEY (`note_id`),
   UNIQUE KEY `notes_un` (`note_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE `user_notes` (
   `userNote_id` varchar(64) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `user_notes` (
   `note_id` varchar(64) NOT NULL,
   PRIMARY KEY (`userNote_id`),
   UNIQUE KEY `user_notes_un` (`userNote_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE `user_cookies` (
   `id` varchar(64) NOT NULL,
@@ -44,4 +44,4 @@ CREATE TABLE `user_cookies` (
   `expire_date` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_cookies_un` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

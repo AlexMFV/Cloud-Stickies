@@ -16,6 +16,7 @@ namespace WindowsCloudStickies
         public App()
         {
             ShutdownMode = ShutdownMode.OnLastWindowClose;
+            API.Initialize();
         }
     }
 }
